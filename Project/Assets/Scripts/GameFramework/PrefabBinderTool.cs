@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 /*
- * 自动绑定工具 版本: V1.0.0，设计思路：
+ * 自动绑定工具 版本: V1.0.1，设计思路：
  * 1. 目的为了减少机械的序列化引用对象，加快开发效率
  * 2. 可以手动一键绑定对象
  * 3. 添加对象时，添加_AB后缀可以自动添加绑定对象
@@ -14,6 +14,7 @@ using UnityEngine;
  * 7. 引用对象带有标记，方便查看引用对象
  * 8. 自动绑定工具只对自己非预制体对象有效，防止影响其他预制体
  * 9. 所有逻辑内聚一个脚本，方便迁移
+ * 10. 属性命名简约化，防止与 Key 相同导致无法混淆 - v1.0.1
  */
 public class PrefabBinderTool : MonoBehaviour
 {
@@ -53,13 +54,18 @@ public class PrefabBinderTool : MonoBehaviour
 
         public Type componentType => _componentTypes[componentTypeIndex];
 
-        public void SetKey()
+        private string GetName()
         {
             string name = component.name;
             name = name.Replace(PrefabBinderTool_Static.SuffixTag, "");
-            name = GetAlphanumeric(name);
+            name = GetAlphanumeric(name); 
+            
+            return name;
+        }
 
-            key = $"{name}_{component.GetType().Name}";
+        public void SetKey()
+        {
+            key = $"{GetName()}_{component.GetType().Name}";
         }
 
         public static string GetAlphanumeric(string input)
@@ -75,7 +81,7 @@ public class PrefabBinderTool : MonoBehaviour
         {
             string fullTypeName = component.GetType().FullName;
 
-            string filedInfoString = $"private {fullTypeName} {key} => prefabBinderTool.GetTarget<{fullTypeName}>(\"{key}\");";
+            string filedInfoString = $"private {fullTypeName} {GetName()} => prefabBinderTool.GetTarget<{fullTypeName}>(\"{key}\");";
 
             return filedInfoString;
         }
@@ -88,7 +94,7 @@ public class PrefabBinderTool : MonoBehaviour
             {
                 case UnityEngine.UI.Button button:
                 {
-                    awakeCodeString = $"    {key}.onClick.AddListener(OnClick_{key});";
+                    awakeCodeString = $"    {GetName()}.onClick.AddListener(OnClick_{GetName()});";
                     break;
                 }
             }
@@ -104,7 +110,7 @@ public class PrefabBinderTool : MonoBehaviour
             {
                 case UnityEngine.UI.Button button:
                 {
-                    methodCodeString = @$"private void OnClick_{key}()" + "\n" + "{" + "\n" + "}";
+                    methodCodeString = @$"private void OnClick_{GetName()}()" + "\n" + "{" + "\n" + "}";
                     break;
                 }
             }
