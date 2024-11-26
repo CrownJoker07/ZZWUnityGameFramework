@@ -3,6 +3,18 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
+/*
+ * 自动绑定工具 版本: V1.0.0，设计思路：
+ * 1. 目的为了减少机械的序列化引用对象，加快开发效率
+ * 2. 可以手动一键绑定对象
+ * 3. 添加对象时，添加_AB后缀可以自动添加绑定对象
+ * 4. 删除对象时，会自动检测并删除相关引用
+ * 5. 可以引用指定类型，减少获取时使用 GetGetComponent 带来的性能消耗
+ * 6. 一键导出代码，包含添加点击事件等常用方法
+ * 7. 引用对象带有标记，方便查看引用对象
+ * 8. 自动绑定工具只对自己非预制体对象有效，防止影响其他预制体
+ * 9. 所有逻辑内聚一个脚本，方便迁移
+ */
 public class PrefabBinderTool : MonoBehaviour
 {
     [Serializable]
@@ -61,29 +73,43 @@ public class PrefabBinderTool : MonoBehaviour
 
         public string GetFiledInfoString()
         {
-            string typeName = component.GetType().Name;
+            string fullTypeName = component.GetType().FullName;
 
-            string filedInfoString = $"private {typeName} M_{typeName} => prefabBinderTool.GetTarget<{typeName}>(\"{key}\")";
+            string filedInfoString = $"private {fullTypeName} {key} => prefabBinderTool.GetTarget<{fullTypeName}>(\"{key}\");";
 
             return filedInfoString;
         }
 
         public string GetAwakeCodeString()
         {
+            string awakeCodeString = string.Empty;
+
             switch (component)
             {
                 case UnityEngine.UI.Button button:
                 {
+                    awakeCodeString = $"    {key}.onClick.AddListener(OnClick_{key});";
                     break;
                 }
             }
 
-            return string.Empty;
+            return awakeCodeString;
         }
 
         public string GetMethodCodeString()
         {
-            return string.Empty; 
+            string methodCodeString = string.Empty;
+
+            switch (component)
+            {
+                case UnityEngine.UI.Button button:
+                {
+                    methodCodeString = @$"private void OnClick_{key}()" + "\n" + "{" + "\n" + "}";
+                    break;
+                }
+            }
+
+            return methodCodeString;
         }
 #endif
     }
@@ -267,12 +293,14 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
     {
         if (GUILayout.Button("All Code"))
         {
-            string codeString = "[SerializeField] private PrefabBinderTool prefabBinderTool;";
-            codeString += "\n";
+            string codeString = string.Empty;
+
+            string temFiledInfoString = "[SerializeField] private PrefabBinderTool prefabBinderTool;";
+            temFiledInfoString += "\n";
             foreach (var bindInfo in _prefabBinderTool.bindInfos)
             {
-                codeString += "\n";
-                codeString += bindInfo.GetFiledInfoString();
+                temFiledInfoString += "\n";
+                temFiledInfoString += bindInfo.GetFiledInfoString();
             }
 
             string temScript = @"private void Awake()
@@ -280,12 +308,45 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
     ###
 }";
 
-            string temAwakeCodeString = string.Empty;
+            string temAwakeCodeStrings = string.Empty;
+            for (var index = 0; index < _prefabBinderTool.bindInfos.Count; index++)
+            {
+                PrefabBinderTool.BindInfo bindInfo = _prefabBinderTool.bindInfos[index];
+                string awakeCodeString = bindInfo.GetAwakeCodeString();
+
+                if (!string.IsNullOrEmpty(awakeCodeString))
+                {
+                    if (index != 0)
+                    {
+                        temAwakeCodeStrings += "\n";
+                    }
+
+                    temAwakeCodeStrings += awakeCodeString;
+                }
+            }
+
+            string temMethodCodeString = string.Empty;
             foreach (var bindInfo in _prefabBinderTool.bindInfos)
             {
-                codeString += "\n";
-                temAwakeCodeString += bindInfo.GetAwakeCodeString();
+                string methodCodeString = bindInfo.GetMethodCodeString();
+
+                if (!string.IsNullOrEmpty(methodCodeString))
+                {
+                    temMethodCodeString += "\n\n";
+                    temMethodCodeString += methodCodeString;
+                }
             }
+
+            codeString += temFiledInfoString;
+
+            codeString += "\n";
+
+            if (!string.IsNullOrEmpty(temAwakeCodeStrings))
+            {
+                codeString += "\n" + temScript.Replace("###", temAwakeCodeStrings);
+            }
+
+            codeString += temMethodCodeString;
 
             GUIUtility.systemCopyBuffer = codeString;
         }
@@ -294,7 +355,7 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
 
 public static class PrefabBinderTool_Static
 {
-    public const string SuffixTag = "_B";
+    public const string SuffixTag = "_AB";
 
     public static List<PrefabBinderTool> prefabBinderTools = new List<PrefabBinderTool>();
 
