@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 /*
- * 自动绑定工具 版本: V1.0.1，设计思路：
+ * 自动绑定工具 版本: V1.0.2，设计思路：
  * 1. 目的为了减少机械的序列化引用对象，加快开发效率
  * 2. 可以手动一键绑定对象
  * 3. 添加对象时，添加_AB后缀可以自动添加绑定对象
@@ -309,10 +309,7 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                 temFiledInfoString += bindInfo.GetFiledInfoString();
             }
 
-            string temScript = @"private void Awake()
-{
-    ###
-}";
+            string temScript = "private void Awake()\n{\n###\n}";
 
             string temAwakeCodeStrings = string.Empty;
             for (var index = 0; index < _prefabBinderTool.bindInfos.Count; index++)
