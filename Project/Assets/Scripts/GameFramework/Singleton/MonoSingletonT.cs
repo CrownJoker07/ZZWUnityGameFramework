@@ -34,4 +34,14 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
                 $"typeName:{typeof(T).Name} is Already Exist");
         }
     }
+
+    protected virtual void Destroy()
+    {
+        _instance = null;
+    }
+    
+    public static void Dispose()
+    {
+        UnityEngine.Object.Destroy(_instance.gameObject);
+    }
 }

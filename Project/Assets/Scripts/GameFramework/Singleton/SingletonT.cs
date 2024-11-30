@@ -14,4 +14,9 @@ public abstract class Singleton<T> where T : class, new()
             return _instance;
         }
     }
+    
+    public static void Dispose()
+    {
+        _instance = null;
+    }
 }
