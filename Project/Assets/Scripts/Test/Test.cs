@@ -5,14 +5,16 @@ public class Test : MonoBehaviour
 {
     private void Awake()
     {
-        MonoSingletonTestDontDestroyOnLoad monoSingletonTestDontDestroyOnLoad =
-            MonoSingletonTestDontDestroyOnLoad.instance;
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        MonoSingletonTestDontDestroyOnLoad monoSingletonTestDontDestroyOnLoad =
+            MonoSingletonTestDontDestroyOnLoad.instance; 
         
+        MonoSingletonTestAwake monoSingletonTestAwake = MonoSingletonTestAwake.instance;
     }
 
     // Update is called once per frame
