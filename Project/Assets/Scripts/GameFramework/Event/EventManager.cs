@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EventManager : Singleton<EventManager>
 {
-    public delegate void EventDelegate(EventArgs eventArgs);
+    public delegate void EventDelegate(EventArgs eventArgs = null);
 
     private readonly Dictionary<string, List<EventDelegate>> _eventDelegateDictionary =
         new Dictionary<string, List<EventDelegate>>();
@@ -44,7 +44,7 @@ public class EventManager : Singleton<EventManager>
         eventDelegateList.Remove(eventDelegate);
     }
 
-    public void NotifyEvent(string eventName, EventArgs eventArgs)
+    public void NotifyEvent(string eventName, EventArgs eventArgs = null)
     {
         if (!_eventDelegateDictionary.TryGetValue(eventName, out List<EventDelegate> eventDelegateList)) return;
         
