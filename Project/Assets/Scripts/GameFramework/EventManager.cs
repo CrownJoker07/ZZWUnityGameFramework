@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EventManager : Singleton<EventManager>
 {
-    public delegate void EventDelegate(params object[] objs);
+    public delegate void EventDelegate(EventArgs eventArgs);
 
     private readonly Dictionary<string, List<EventDelegate>> _eventDelegateDictionary =
         new Dictionary<string, List<EventDelegate>>();
@@ -44,7 +44,7 @@ public class EventManager : Singleton<EventManager>
         eventDelegateList.Remove(eventDelegate);
     }
 
-    public void NotifyEvent(string eventName, params object[] objs)
+    public void NotifyEvent(string eventName, EventArgs eventArgs)
     {
         if (!_eventDelegateDictionary.TryGetValue(eventName, out List<EventDelegate> eventDelegateList)) return;
         
@@ -52,7 +52,7 @@ public class EventManager : Singleton<EventManager>
         {
             try
             {
-                eventDelegate.Invoke(objs);
+                eventDelegate.Invoke(eventArgs);
             }
             catch (Exception e)
             {
