@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class DebugTool
+public partial class DebugTool
 {
     /*
      * 日志工具 版本: V1.0.0，设计思路：
