@@ -2,6 +2,12 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * EventManager 版本: V1.0.0，设计思路：
+ * 1. 通过通知的形式，解耦合
+ * 2. 只实现添加、移除、通知三种API，逻辑简单，便于理解和后续修改
+ * 3. 事件传递参数使用C#原生EventArgs，特殊对象传递通过继承来进行定制，比params object[]这种通过封包解包的形式性能好，且更易理解
+ */
 public class EventManager : Singleton<EventManager>
 {
     public delegate void EventDelegate(EventArgs eventArgs = null);

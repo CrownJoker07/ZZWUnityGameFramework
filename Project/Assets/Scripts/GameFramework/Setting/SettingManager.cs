@@ -1,5 +1,10 @@
 using UnityEngine;
 
+/*
+ * SettingManager 版本: V1.0.0，设计思路：
+ * 1. 封装PlayerPrefs，将持久化逻辑统一一起，方便后续修改
+ * 2. 根据PlayerPrefs相关API实现对应API，其他API基于基础API进行定制实现
+ */
 public class SettingManager : Singleton<SettingManager>
 {
     public void Save()
