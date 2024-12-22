@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-public class StringConvertTool
+public class StringConvertUtility
 {
     public static string StringToBase64(string text)
     {
