@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
 public class EditorWindowTool : UnityEditor.EditorWindow
@@ -27,7 +26,7 @@ public class EditorWindowTool : UnityEditor.EditorWindow
 
         foreach (var editorWindowToolBase in _editorWindowToolBases)
         {
-            Object.DestroyImmediate(editorWindowToolBase);
+            DestroyImmediate(editorWindowToolBase);
         }
 
         _editorWindowToolBases.Clear();

@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 
 namespace RingToss.Editor.Postprocess {
     public class AudioPostprocessor : AssetPostprocessor {

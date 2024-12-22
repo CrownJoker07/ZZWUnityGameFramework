@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,7 +6,6 @@ using UnityEditor;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.U2D;
-using Object = UnityEngine.Object;
 
 public class AtlasTool
 {
@@ -39,12 +37,12 @@ public class AtlasTool
     public static void AutoCreateAtlas()
     {
         string spriteFullPath = GetFullPath(SpritePath);
-        
+
         if (!Directory.Exists(spriteFullPath))
         {
             return;
         }
-        
+
         // 先获取所有图片文件夹
         List<string> spriteDirectoryFullNames = GetAllDirectories(spriteFullPath);
 
@@ -64,8 +62,8 @@ public class AtlasTool
 
             spriteAtlas = CreateSpriteAtlas();
 
-            Object directoryObject =
-                UnityEditor.AssetDatabase.LoadAssetAtPath<Object>(GetAssetPath(spriteDirectoryFullName));
+            UnityEngine.Object directoryObject =
+                UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(GetAssetPath(spriteDirectoryFullName));
             spriteAtlas.Add(new[] { directoryObject });
 
             UnityEditor.AssetDatabase.CreateAsset(spriteAtlas, $"{AtlasPath}/Atlas_{atlasName}.spriteatlas");
@@ -164,7 +162,7 @@ public class AtlasTool
         // 配置各个平台设置
         foreach (var platformSetting in _platformSettings)
         {
-            atlas.SetPlatformSettings(platformSetting); 
+            atlas.SetPlatformSettings(platformSetting);
         }
 
         return atlas;
