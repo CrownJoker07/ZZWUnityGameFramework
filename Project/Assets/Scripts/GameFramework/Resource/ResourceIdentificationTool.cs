@@ -166,6 +166,24 @@ public partial class ResourceIdentificationTool
         UnityEditor.AssetDatabase.Refresh();
     }
 
+    public static bool CheckIsNeedInitResourceIdentificationInfo(string assetPath)
+    {
+        if (!assetPath.Contains("#"))
+        {
+            return false;
+        }
+        
+        foreach (var path in paths)
+        {
+            if (assetPath.Contains(path))
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     private static void InitXMLFile()
     {
         // 创建XML文档
