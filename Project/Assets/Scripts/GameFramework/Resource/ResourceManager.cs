@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 /*
  * ResourceManager 版本: V1.0.0，设计思路：
@@ -31,5 +30,10 @@ public class ResourceManager : MonoSingleton<ResourceManager>
         {
             failureAction?.Invoke();
         }
+    }
+
+    public void UnloadAsset(UnityEngine.Object asset)
+    {
+        
     }
 }
