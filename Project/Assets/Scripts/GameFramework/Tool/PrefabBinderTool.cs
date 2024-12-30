@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 /*
- * 自动绑定工具 版本: V1.0.2，设计思路：
+ * 自动绑定工具 版本: V1.0.3，设计思路：
  * 1. 目的为了减少机械的序列化引用对象，加快开发效率
  * 2. 可以手动一键绑定对象
  * 3. 添加对象时，添加_AB后缀可以自动添加绑定对象
@@ -15,6 +15,7 @@ using UnityEngine;
  * 8. 自动绑定工具只对自己非预制体对象有效，防止影响其他预制体
  * 9. 所有逻辑内聚一个脚本，方便迁移
  * 10. 属性命名简约化，防止与 Key 相同导致无法混淆 - v1.0.1
+ * 11. 分离各种代码模板逻辑按钮，使其更自由复制 - v1.0.3
  */
 public class PrefabBinderTool : MonoBehaviour
 {
@@ -45,6 +46,16 @@ public class PrefabBinderTool : MonoBehaviour
                     }
 
                     _componentNames = componentNames.ToArray();
+
+                    for (var index = 0; index < _componentTypes.Count; index++)
+                    {
+                        Type componentType = _componentTypes[index];
+
+                        if (componentType != component.GetType()) continue;
+                        
+                        componentTypeIndex = index;
+                        break;
+                    }
                 }
 
                 return _componentNames;
@@ -66,6 +77,11 @@ public class PrefabBinderTool : MonoBehaviour
         public void SetKey()
         {
             key = $"{GetName()}_{component.GetType().Name}";
+        }
+
+        public void Refresh()
+        {
+            _componentNames = null;
         }
 
         public static string GetAlphanumeric(string input)
@@ -189,8 +205,20 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
         GUILayout.Space(10);
 
         DrawAutoBindButton();
-
+        
+        DrawRefreshButton();
+        
         DrawAllCodeButton();
+        
+        GUILayout.BeginHorizontal("box");
+        {
+            DrawBindCodeButton();
+
+            DrawAwakeCodeButton();
+
+            DrawMethodCodeButton(); 
+        }
+        GUILayout.EndHorizontal();
     }
 
     private void DrawAutoBindArea()
@@ -220,6 +248,9 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                 {
                     _prefabBinderTool.AddBindInfo(((GameObject)temObject).transform);
                 }
+                
+                // 排序
+                _prefabBinderTool.bindInfos.Sort((a, b) => String.Compare(a.key, b.key, StringComparison.Ordinal));
 
                 serializedObject.ApplyModifiedProperties();
 
@@ -267,9 +298,9 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                         }
 
                         int oldComponentTypeIndex = bindInfo.componentTypeIndex;
+                        string[] componentTypesNames = bindInfo.componentTypesNames;
                         bindInfo.componentTypeIndex =
-                            UnityEditor.EditorGUILayout.Popup(bindInfo.componentTypeIndex,
-                                bindInfo.componentTypesNames);
+                            UnityEditor.EditorGUILayout.Popup(bindInfo.componentTypeIndex, componentTypesNames);
                         if (oldComponentTypeIndex != bindInfo.componentTypeIndex)
                         {
                             UnityEditor.Undo.RecordObject(_prefabBinderTool, "Change binding info");
@@ -278,12 +309,29 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                             bindInfo.SetKey();
                             _prefabBinderTool.CheckKeyIsCorrect();
                         }
+
+                        if (GUILayout.Button("Code"))
+                        {
+                            GUIUtility.systemCopyBuffer = bindInfo.GetFiledInfoString(); 
+                        }
                     }
                     GUILayout.EndHorizontal();
                 }
                 GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
+        }
+    }
+
+    private void DrawRefreshButton()
+    {
+        if (GUILayout.Button("Refresh"))
+        {
+            for (var index = 0; index < _prefabBinderTool.bindInfos.Count; index++)
+            {
+                PrefabBinderTool.BindInfo bindInfo = _prefabBinderTool.bindInfos[index];
+                bindInfo.Refresh();
+            }
         }
     }
 
@@ -295,61 +343,105 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
         }
     }
 
+    private void DrawBindCodeButton()
+    {
+        if (GUILayout.Button("Bind Code"))
+        {
+            GUIUtility.systemCopyBuffer = GetBindCodeString();
+        }
+    }
+
+    private string GetBindCodeString()
+    {
+        string temFiledInfoString = string.Empty;
+        foreach (var bindInfo in _prefabBinderTool.bindInfos)
+        {
+            temFiledInfoString += "\n";
+            temFiledInfoString += bindInfo.GetFiledInfoString();
+        }  
+        
+        return temFiledInfoString;
+    }
+
+    private void DrawAwakeCodeButton()
+    {
+        if (GUILayout.Button("Awake Code"))
+        {
+            GUIUtility.systemCopyBuffer = GetAwakeCodeString();
+        }
+    }
+
+    private string GetAwakeCodeString()
+    {
+        string temScript = "private void Awake()\n{###\n}";
+
+        string temAwakeCodeStrings = string.Empty;
+        for (var index = 0; index < _prefabBinderTool.bindInfos.Count; index++)
+        {
+            PrefabBinderTool.BindInfo bindInfo = _prefabBinderTool.bindInfos[index];
+            string awakeCodeString = bindInfo.GetAwakeCodeString();
+
+            if (!string.IsNullOrEmpty(awakeCodeString))
+            {
+                if (index != 0)
+                {
+                    temAwakeCodeStrings += "\n";
+                }
+
+                temAwakeCodeStrings += awakeCodeString;
+            }
+        }  
+        
+        if (!string.IsNullOrEmpty(temAwakeCodeStrings))
+        {
+            return temScript.Replace("###", temAwakeCodeStrings);
+        }
+        
+        return String.Empty;
+    }
+
+    private void DrawMethodCodeButton()
+    {
+        if (GUILayout.Button("Method Code"))
+        {
+            GUIUtility.systemCopyBuffer = GetMethodCodeString(); 
+        }
+    }
+
+    private string GetMethodCodeString()
+    {
+        string temMethodCodeString = string.Empty;
+        foreach (var bindInfo in _prefabBinderTool.bindInfos)
+        {
+            string methodCodeString = bindInfo.GetMethodCodeString();
+
+            if (!string.IsNullOrEmpty(methodCodeString))
+            {
+                temMethodCodeString += "\n\n";
+                temMethodCodeString += methodCodeString;
+            }
+        } 
+        
+        return temMethodCodeString;
+    }
+
     private void DrawAllCodeButton()
     {
         if (GUILayout.Button("All Code"))
         {
             string codeString = string.Empty;
 
-            string temFiledInfoString = "[SerializeField] private PrefabBinderTool prefabBinderTool;";
-            temFiledInfoString += "\n";
-            foreach (var bindInfo in _prefabBinderTool.bindInfos)
-            {
-                temFiledInfoString += "\n";
-                temFiledInfoString += bindInfo.GetFiledInfoString();
-            }
-
-            string temScript = "private void Awake()\n{\n###\n}";
-
-            string temAwakeCodeStrings = string.Empty;
-            for (var index = 0; index < _prefabBinderTool.bindInfos.Count; index++)
-            {
-                PrefabBinderTool.BindInfo bindInfo = _prefabBinderTool.bindInfos[index];
-                string awakeCodeString = bindInfo.GetAwakeCodeString();
-
-                if (!string.IsNullOrEmpty(awakeCodeString))
-                {
-                    if (index != 0)
-                    {
-                        temAwakeCodeStrings += "\n";
-                    }
-
-                    temAwakeCodeStrings += awakeCodeString;
-                }
-            }
-
-            string temMethodCodeString = string.Empty;
-            foreach (var bindInfo in _prefabBinderTool.bindInfos)
-            {
-                string methodCodeString = bindInfo.GetMethodCodeString();
-
-                if (!string.IsNullOrEmpty(methodCodeString))
-                {
-                    temMethodCodeString += "\n\n";
-                    temMethodCodeString += methodCodeString;
-                }
-            }
-
+            string temFiledInfoString = "[SerializeField] private PrefabBinderTool prefabBinderTool;\n";
+            
             codeString += temFiledInfoString;
+            
+            codeString += GetBindCodeString();
 
             codeString += "\n";
-
-            if (!string.IsNullOrEmpty(temAwakeCodeStrings))
-            {
-                codeString += "\n" + temScript.Replace("###", temAwakeCodeStrings);
-            }
-
-            codeString += temMethodCodeString;
+            
+            codeString += GetAwakeCodeString();
+            
+            codeString += GetMethodCodeString();
 
             GUIUtility.systemCopyBuffer = codeString;
         }
@@ -412,6 +504,7 @@ public static class PrefabBinderTool_Static
 
         if (transforms == null) return;
 
+        bool isChange = false;
         foreach (Transform transform in transforms)
         {
             if (!transform.name.Contains(SuffixTag)) continue;
@@ -419,17 +512,24 @@ public static class PrefabBinderTool_Static
             if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(transform) &&
                 !UnityEditor.PrefabUtility.IsAnyPrefabInstanceRoot(transform.gameObject)) continue;
 
-            prefabBinderTool.AddBindInfo(transform);
+            bool isSuccess = prefabBinderTool.AddBindInfo(transform, true);
+
+            isChange = isSuccess || isChange;
         }
 
         prefabBinderTool.bindInfos.Sort((a, b) => String.Compare(a.key, b.key, StringComparison.Ordinal));
+
+        if (isChange)
+        {
+            UnityEditor.EditorUtility.SetDirty(prefabBinderTool.gameObject);
+        }
     }
 
-    public static void AddBindInfo(this PrefabBinderTool prefabBinderTool, Component component)
+    public static bool AddBindInfo(this PrefabBinderTool prefabBinderTool, Component component, bool isAutoBind = false)
     {
-        if (prefabBinderTool.CheckIsExist(component))
+        if (prefabBinderTool.CheckIsExist(component, isAutoBind))
         {
-            return;
+            return false;
         }
 
         PrefabBinderTool.BindInfo bindInfo = new PrefabBinderTool.BindInfo()
@@ -441,13 +541,16 @@ public static class PrefabBinderTool_Static
 
         bindInfo.SetKey();
         prefabBinderTool.CheckKeyIsCorrect();
+        
+        return true;
     }
 
-    private static bool CheckIsExist(this PrefabBinderTool prefabBinderTool, Component component)
+    private static bool CheckIsExist(this PrefabBinderTool prefabBinderTool, Component component, bool isAutoBind = false)
     {
         foreach (var bindInfo in prefabBinderTool.bindInfos)
         {
-            if (bindInfo.component == component || bindInfo.component.transform == component)
+            if (bindInfo.component == component ||
+                (isAutoBind && bindInfo.component.transform == component))
             {
                 return true;
             }
@@ -485,6 +588,7 @@ public static class PrefabBinderTool_Static
         {
             foreach (var bindInfo in prefabBinderTool.bindInfos)
             {
+                if (bindInfo.component == null) continue;
                 if (bindInfo.component.gameObject != gameObject) continue;
 
                 Rect rect = new Rect(selectionRect)
