@@ -74,6 +74,11 @@ public class PrefabBinderTool : MonoBehaviour
             return name;
         }
 
+        private string GetFileInfoName()
+        {
+            return GetName() + component.GetType().Name;
+        }
+
         public void SetKey()
         {
             key = $"{GetName()}_{component.GetType().Name}";
@@ -97,7 +102,8 @@ public class PrefabBinderTool : MonoBehaviour
         {
             string fullTypeName = component.GetType().FullName;
 
-            string filedInfoString = $"private {fullTypeName} {GetName()} => prefabBinderTool.GetTarget<{fullTypeName}>(\"{key}\");";
+            string filedInfoString =
+                $"private {fullTypeName} {GetFileInfoName()} => prefabBinderTool.GetTarget<{fullTypeName}>(\"{key}\");";
 
             return filedInfoString;
         }
@@ -110,7 +116,7 @@ public class PrefabBinderTool : MonoBehaviour
             {
                 case UnityEngine.UI.Button button:
                 {
-                    awakeCodeString = $"    {GetName()}.onClick.AddListener(OnClick_{GetName()});";
+                    awakeCodeString = $"    {GetFileInfoName()}.onClick.AddListener(OnClick_{GetFileInfoName()});";
                     break;
                 }
             }
@@ -126,7 +132,7 @@ public class PrefabBinderTool : MonoBehaviour
             {
                 case UnityEngine.UI.Button button:
                 {
-                    methodCodeString = @$"private void OnClick_{GetName()}()" + "\n" + "{" + "\n" + "}";
+                    methodCodeString = @$"private void OnClick_{GetFileInfoName()}()" + "\n" + "{" + "\n" + "}";
                     break;
                 }
             }
@@ -208,8 +214,6 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
         
         DrawRefreshButton();
         
-        DrawAllCodeButton();
-        
         GUILayout.BeginHorizontal("box");
         {
             DrawBindCodeButton();
@@ -219,6 +223,8 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
             DrawMethodCodeButton(); 
         }
         GUILayout.EndHorizontal();
+        
+        DrawAllCodeButton();
     }
 
     private void DrawAutoBindArea()
@@ -373,22 +379,23 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
 
     private string GetAwakeCodeString()
     {
-        string temScript = "private void Awake()\n{###\n}";
+        string temScript = "private void Awake()\n{\n###\n}";
 
         string temAwakeCodeStrings = string.Empty;
-        for (var index = 0; index < _prefabBinderTool.bindInfos.Count; index++)
+        int count = 0;
+        foreach (PrefabBinderTool.BindInfo bindInfo in _prefabBinderTool.bindInfos)
         {
-            PrefabBinderTool.BindInfo bindInfo = _prefabBinderTool.bindInfos[index];
             string awakeCodeString = bindInfo.GetAwakeCodeString();
 
             if (!string.IsNullOrEmpty(awakeCodeString))
             {
-                if (index != 0)
+                if (count != 0)
                 {
                     temAwakeCodeStrings += "\n";
                 }
 
                 temAwakeCodeStrings += awakeCodeString;
+                count++;
             }
         }  
         
