@@ -45,7 +45,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
         }
 #endif
         
-        ResourceManager.instance.LoadAssetAsync<TextAsset>(XMLFilePath, LoadAssetSuccessCallback);
+        ResourceManager.Instance.LoadAssetAsync<TextAsset>(XMLFilePath, LoadAssetSuccessCallback);
     }
 
     private void LoadAssetSuccessCallback(UnityEngine.Object asset)
@@ -81,7 +81,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
         }
 #endif
         
-        ResourceManager.instance.UnloadAsset(asset);
+        ResourceManager.Instance.UnloadAsset(asset);
     }
 
     public string GetAssetPathById(int resourceIdentificationTypeId)
@@ -266,13 +266,13 @@ public partial class ResourceIdentificationTool
 
     public static int GetNotSameAssetIDByRange(int startIndex)
     {
-        instance.InitResourceIdentificationInfos(() =>
+        Instance.InitResourceIdentificationInfos(() =>
         {
 
         });
         
         int temAssetID = startIndex + 1;
-        foreach (var resourceIdentificationInfo in instance._resourceIdentificationInfoMaps)
+        foreach (var resourceIdentificationInfo in Instance._resourceIdentificationInfoMaps)
         {
             ResourceIdentificationInfo info = resourceIdentificationInfo.Value;
             int assetID = info.AssetID;

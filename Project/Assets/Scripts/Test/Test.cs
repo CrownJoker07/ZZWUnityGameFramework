@@ -12,9 +12,9 @@ public class Test : MonoBehaviour
     void Start()
     {
         MonoSingletonTestDontDestroyOnLoad monoSingletonTestDontDestroyOnLoad =
-            MonoSingletonTestDontDestroyOnLoad.instance; 
+            MonoSingletonTestDontDestroyOnLoad.Instance; 
         
-        MonoSingletonTestAwake monoSingletonTestAwake = MonoSingletonTestAwake.instance;
+        MonoSingletonTestAwake monoSingletonTestAwake = MonoSingletonTestAwake.Instance;
     }
 
     // Update is called once per frame
