@@ -33,7 +33,7 @@ public class AtlasTool
             },
         };
 
-    [UnityEditor.MenuItem("Tools/ResourceTool/Auto Create SpriteAtlas", false, 0)]
+    [UnityEditor.MenuItem("Tools/Sprites/Auto Create SpriteAtlas", false, 0)]
     public static void AutoCreateAtlas()
     {
         string spriteFullPath = GetFullPath(SpritePath);
