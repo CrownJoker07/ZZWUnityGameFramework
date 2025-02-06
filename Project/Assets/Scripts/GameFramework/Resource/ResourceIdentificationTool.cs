@@ -15,7 +15,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
     };
     
     private const string ResourceIdentificationTypeScriptPath =
-        "Assets/Scripts/Definition/ResourceIdentificationType.cs";
+        "Assets/Scripts/Definition/Enum/ResourceIdentificationType.cs";
 
     private const string XMLFilePath = "Assets/GameAsset/Configs/ResourcesIdentification.xml"; // XML文件路径
     
