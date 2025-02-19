@@ -1,0 +1,16 @@
+{
+    "name": "ZZWGameFramewrok.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1faf15262c3dd4b6e838c479d25c5e05"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
