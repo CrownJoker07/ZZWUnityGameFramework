@@ -1,0 +1,14 @@
+{
+  "name": "com.zzwgamemaker.zzwunitygameframework",
+  "version": "1.0.0",
+  "displayName": "ZZWUnityGameFramework",
+  "description": "高效率、简易游戏框架",
+  "unity": "2020.3",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "author": {
+    "name": "ZhuangZewei",
+    "email": "zzwgamemaker@qq.com"
+  }
+}
