@@ -8,14 +8,14 @@ using UnityEngine;
  * 2. 只实现添加、移除、通知三种API，逻辑简单，便于理解和后续修改
  * 3. 事件传递参数使用C#原生EventArgs，特殊对象传递通过继承来进行定制，比params object[]这种通过封包解包的形式性能好，且更易理解
  */
-public abstract class EventArgs
+public abstract class EventArgsBase
 {
     
 }
 
 public class EventManager : Singleton<EventManager>
 {
-    public delegate void EventDelegate(EventArgs eventArgs = null);
+    public delegate void EventDelegate(EventArgsBase eventArgs = null);
 
     private readonly Dictionary<int, List<EventDelegate>> _eventDelegateDictionary =
         new Dictionary<int, List<EventDelegate>>();
@@ -55,7 +55,7 @@ public class EventManager : Singleton<EventManager>
         eventDelegateList.Remove(eventDelegate);
     }
 
-    public void NotifyEvent(int eventID, EventArgs eventArgs = null)
+    public void NotifyEvent(int eventID, EventArgsBase eventArgs = null)
     {
         if (!_eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList)) return;
         
