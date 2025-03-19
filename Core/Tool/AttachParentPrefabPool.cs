@@ -43,18 +43,22 @@ public class AttachParentPrefabPool : MonoBehaviour
     private Dictionary<int, List<Component>> _objectPrefabPoolDictionary =
         new Dictionary<int, List<Component>>();
 
+    private Transform ParentTransform => this.transform;
+
     private void Awake()
     {
         for (var index = 0; index < prefabGameObjectList.Count; index++)
         {
             GameObject prefabGameObject = prefabGameObjectList[index];
             
-            prefabGameObject.transform.SetParent(this.transform);
+            prefabGameObject.transform.SetParent(ParentTransform);
             prefabGameObject.transform.localPosition = Vector3.zero;
 
             _objectPrefabList.Add(ObjectPrefabStruct.Create(index, prefabGameObject));
             _objectPrefabPoolDictionary[index] = new List<Component>();
         }
+
+        transform.localScale = Vector3.zero;
     }
 
     public Component Spawn(int index, Transform parent, Type type)
@@ -145,7 +149,7 @@ public class AttachParentPrefabPool : MonoBehaviour
     {
         if (_objectPrefabPoolDictionary.TryGetValue(index, out List<Component> objectPrefabs))
         {
-            monoBehaviour.transform.SetParent(this.transform);
+            monoBehaviour.transform.SetParent(ParentTransform);
             monoBehaviour.transform.localPosition = Vector3.zero;
 
             if (monoBehaviour is IObjectPrefab iObjectPrefab)
