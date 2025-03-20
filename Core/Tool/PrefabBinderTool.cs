@@ -84,7 +84,17 @@ public class PrefabBinderTool : MonoBehaviour
         {
             if (string.IsNullOrEmpty(fieldInfoName))
             {
-                fieldInfoName = GetName() + "_" + component.GetType().Name;
+                string transformName = GetName();
+                string typeName = component.GetType().Name;
+
+                if (transformName == typeName)
+                {
+                    fieldInfoName = transformName;
+                }
+                else
+                {
+                    fieldInfoName = transformName + "_" + typeName;
+                }
             }
 
             return fieldInfoName;
