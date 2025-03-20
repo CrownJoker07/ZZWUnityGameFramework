@@ -27,7 +27,7 @@ public class EventGroup
             eventDelegateList.Add(eventDelegate);
         }
             
-        EventManager.Instance.AddListener(eventID, eventDelegate);
+        EventManager.AddListener(eventID, eventDelegate);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class EventGroup
         {
             foreach (var eventDelegate in eventDelegateKeyValue.Value)
             {
-                EventManager.Instance.RemoveListener(eventDelegateKeyValue.Key, eventDelegate);
+                EventManager.RemoveListener(eventDelegateKeyValue.Key, eventDelegate);
             }
         }
         

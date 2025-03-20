@@ -20,12 +20,12 @@ public class EventManager : Singleton<EventManager>
     private readonly Dictionary<int, List<EventDelegate>> _eventDelegateDictionary =
         new Dictionary<int, List<EventDelegate>>();
     
-    public void AddListener(int eventID, EventDelegate eventDelegate)
+    public static void AddListener(int eventID, EventDelegate eventDelegate)
     {
-        if (!_eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList))
+        if (!Instance._eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList))
         {
             eventDelegateList = new List<EventDelegate>();
-            _eventDelegateDictionary.Add(eventID, eventDelegateList);
+            Instance._eventDelegateDictionary.Add(eventID, eventDelegateList);
         }
 
         if (eventDelegateList.Contains(eventDelegate))
@@ -38,9 +38,9 @@ public class EventManager : Singleton<EventManager>
         }
     }
 
-    public void RemoveListener(int eventID, EventDelegate eventDelegate)
+    public static void RemoveListener(int eventID, EventDelegate eventDelegate)
     {
-        if (!_eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList))
+        if (!Instance._eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList))
         {
             Debug.LogError("Event: " + eventID + " is not added");
             return;
@@ -55,9 +55,9 @@ public class EventManager : Singleton<EventManager>
         eventDelegateList.Remove(eventDelegate);
     }
 
-    public void NotifyEvent(int eventID, CustomEventArgs eventArgs = null)
+    public static void NotifyEvent(int eventID, CustomEventArgs eventArgs = null)
     {
-        if (!_eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList)) return;
+        if (!Instance._eventDelegateDictionary.TryGetValue(eventID, out List<EventDelegate> eventDelegateList)) return;
         
         foreach (var eventDelegate in eventDelegateList)
         {
