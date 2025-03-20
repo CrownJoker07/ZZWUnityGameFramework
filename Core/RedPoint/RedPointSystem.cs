@@ -91,6 +91,8 @@ public class RedPointSystem : Singleton<RedPointSystem>
             }
             else
             {
+                if(_redPointFunc == null) return;
+                
                 tempRedPointNum = _redPointFunc.Invoke();
             }
             
