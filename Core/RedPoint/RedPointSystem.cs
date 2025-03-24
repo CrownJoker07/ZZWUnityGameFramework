@@ -76,15 +76,17 @@ public class RedPointSystem : Singleton<RedPointSystem>
             
             int tempRedPointNum = 0;
 
-            if (_redPointFunc != null)
-            {
-                tempRedPointNum = _redPointFunc.Invoke();
-            }
-            else if (_childRedPointTreeNodeDictionary.Count > 0)
+            bool haveRedPointChild = false;
+            if (_childRedPointTreeNodeDictionary.Count > 0)
             {
                 foreach (var child in _childRedPointTreeNodeDictionary)
                 {
                     RedPointTreeNode tempRedPointTreeNode = child.Value;
+                    
+                    if (tempRedPointTreeNode._redPointFunc == null) continue;
+
+                    haveRedPointChild = true;
+                        
                     tempRedPointNum += tempRedPointTreeNode.RedPointNum;
 
                     if (tempRedPointNum > 0 && _noSpecificNum)
@@ -94,7 +96,10 @@ public class RedPointSystem : Singleton<RedPointSystem>
                 }
             }
             
-            _parentRedPointTreeNode.NotifyAllRedPointActions();
+            if (!haveRedPointChild && _redPointFunc != null)
+            {
+                tempRedPointNum = _redPointFunc.Invoke();
+            }
             
             _redPointNum = tempRedPointNum;
 
@@ -102,6 +107,8 @@ public class RedPointSystem : Singleton<RedPointSystem>
             {
                 redPointAction.Invoke(_redPointNum);
             }
+            
+            _parentRedPointTreeNode.NotifyAllRedPointActions();
         }
 
         private string GetPath()
