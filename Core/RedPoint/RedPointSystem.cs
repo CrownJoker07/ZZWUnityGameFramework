@@ -138,37 +138,38 @@ public class RedPointSystem : Singleton<RedPointSystem>
         Name = RootTreeNodeName,
     };
 
-    public static void AddListener(Action<int> redPointAction, Func<int> redPointFunc, bool noSpecificNum, params string[] paths)
+    public static void AddListener(Action<int> redPointAction, Func<int> redPointFunc, bool noSpecificNum, string path)
     {
         RedPointSystem redPointSystem = Instance;
 
-        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(paths);
+        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
         redPointTreeNode.AddRedPointAction(redPointAction, redPointFunc, noSpecificNum);
     }
 
-    public static void RemoveListener(Action<int> redPointAction, params string[] paths)
+    public static void RemoveListener(Action<int> redPointAction, string path)
     {
         RedPointSystem redPointSystem = Instance;
 
-        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(paths);
+        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
         redPointTreeNode.RemoveRedPointAction(redPointAction);
     }
 
-    public static void Notify(params string[] paths)
+    public static void Notify(string path)
     {
         RedPointSystem redPointSystem = Instance;
 
-        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(paths);
+        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
 
         redPointTreeNode.NotifyAllRedPointActions();
     }
 
-    private RedPointTreeNode GetOrAddRedPointTreeNode(params string[] paths)
+    private RedPointTreeNode GetOrAddRedPointTreeNode(string path)
     {
         RedPointTreeNode tempRedPointTreeNode = _rootRedPointTreeNode;
-        foreach (var path in paths)
+        string[] paths = path.Split('/');
+        foreach (var tempPath in paths)
         {
-            tempRedPointTreeNode = tempRedPointTreeNode.GetOrAddRedPointTreeNode(path);
+            tempRedPointTreeNode = tempRedPointTreeNode.GetOrAddRedPointTreeNode(tempPath);
         }
 
         return tempRedPointTreeNode;
