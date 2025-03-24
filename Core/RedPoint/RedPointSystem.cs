@@ -30,7 +30,7 @@ public class RedPointSystem : Singleton<RedPointSystem>
                 {
                     Name = path,
                     _parentRedPointTreeNode = this,
-                    _redPointNum = -1,
+                    _redPointNum = 0,
                 };
 
                 _childRedPointTreeNodeDictionary[path] = redPointTreeNode;
@@ -100,12 +100,15 @@ public class RedPointSystem : Singleton<RedPointSystem>
             {
                 tempRedPointNum = _redPointFunc.Invoke();
             }
-            
-            _redPointNum = tempRedPointNum;
 
-            foreach (var redPointAction in _redPointActions)
+            if (tempRedPointNum != _redPointNum)
             {
-                redPointAction.Invoke(_redPointNum);
+                _redPointNum = tempRedPointNum;
+
+                foreach (var redPointAction in _redPointActions)
+                {
+                    redPointAction.Invoke(_redPointNum);
+                }
             }
             
             _parentRedPointTreeNode.NotifyAllRedPointActions();
