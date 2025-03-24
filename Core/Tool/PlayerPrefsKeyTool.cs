@@ -48,6 +48,12 @@ public class PlayerPrefsKeyTool : Singleton<PlayerPrefsKeyTool>
             NullValueHandling = NullValueHandling.Ignore,
             DefaultValueHandling = DefaultValueHandling.Ignore,
         };
+        
+        if (!_keyList.Contains(KeyTag))
+        {
+            _keyList.Add(KeyTag);
+        }
+        
         // 将数据转换为 JSON 格式
         string json = JsonConvert.SerializeObject(_keyList, jsonSerializerSettings);
         
