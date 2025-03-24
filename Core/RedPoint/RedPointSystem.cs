@@ -138,7 +138,8 @@ public class RedPointSystem : Singleton<RedPointSystem>
         Name = RootTreeNodeName,
     };
 
-    public static void AddListener(Action<int> redPointAction, Func<int> redPointFunc, bool noSpecificNum, string path)
+    public static void AddListener(string path, Action<int> redPointAction, Func<int> redPointFunc,
+        bool noSpecificNum = false)
     {
         RedPointSystem redPointSystem = Instance;
 
@@ -146,7 +147,7 @@ public class RedPointSystem : Singleton<RedPointSystem>
         redPointTreeNode.AddRedPointAction(redPointAction, redPointFunc, noSpecificNum);
     }
 
-    public static void RemoveListener(Action<int> redPointAction, string path)
+    public static void RemoveListener(string path, Action<int> redPointAction)
     {
         RedPointSystem redPointSystem = Instance;
 
