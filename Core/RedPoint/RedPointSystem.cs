@@ -76,7 +76,11 @@ public class RedPointSystem : Singleton<RedPointSystem>
             
             int tempRedPointNum = 0;
 
-            if (_childRedPointTreeNodeDictionary.Count > 0)
+            if (_redPointFunc != null)
+            {
+                tempRedPointNum = _redPointFunc.Invoke();
+            }
+            else if (_childRedPointTreeNodeDictionary.Count > 0)
             {
                 foreach (var child in _childRedPointTreeNodeDictionary)
                 {
@@ -87,28 +91,17 @@ public class RedPointSystem : Singleton<RedPointSystem>
                     {
                         break;
                     }
-                } 
-            }
-            else
-            {
-                if(_redPointFunc == null) return;
-                
-                tempRedPointNum = _redPointFunc.Invoke();
+                }
             }
             
-            if (_redPointNum == tempRedPointNum)
-            {
-                return;
-            }
-
+            _parentRedPointTreeNode.NotifyAllRedPointActions();
+            
             _redPointNum = tempRedPointNum;
 
             foreach (var redPointAction in _redPointActions)
             {
                 redPointAction.Invoke(_redPointNum);
             }
-
-            _parentRedPointTreeNode.NotifyAllRedPointActions();
         }
 
         private string GetPath()
@@ -145,6 +138,15 @@ public class RedPointSystem : Singleton<RedPointSystem>
 
         RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
         redPointTreeNode.AddRedPointAction(redPointAction, redPointFunc, noSpecificNum);
+    }
+    
+    public static void AddListener(string path, Action<int> redPointAction, Func<bool> redPointFunc,
+        bool noSpecificNum = false)
+    {
+        RedPointSystem redPointSystem = Instance;
+
+        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
+        redPointTreeNode.AddRedPointAction(redPointAction, () => redPointFunc.Invoke() ? 1 : 0, noSpecificNum);
     }
 
     public static void RemoveListener(string path, Action<int> redPointAction)
