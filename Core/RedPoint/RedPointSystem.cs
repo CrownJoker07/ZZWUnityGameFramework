@@ -41,12 +41,8 @@ public class RedPointSystem : Singleton<RedPointSystem>
 
         public void AddRedPointAction(Action<int> redPointAction, Func<int> redPointFunc, bool noSpecificNum)
         {
-            // 只需设置一遍即可，其他相同节点调用的是同一种获取红点的方法
-            if (_redPointFunc == null)
-            {
-                _redPointFunc = redPointFunc;
-                _noSpecificNum = noSpecificNum;
-            }
+            _redPointFunc = redPointFunc;
+            _noSpecificNum = noSpecificNum;
 
             if (_redPointActions.Contains(redPointAction))
             {
@@ -54,9 +50,10 @@ public class RedPointSystem : Singleton<RedPointSystem>
             }
 
             _redPointActions.Add(redPointAction);
-            
+
+            _redPointNum = redPointFunc.Invoke();
             // 添加默认先刷新一遍
-            redPointAction?.Invoke(redPointFunc.Invoke());
+            redPointAction?.Invoke(_redPointNum);
         }
 
         public void RemoveRedPointAction(Action<int> redPointAction)
