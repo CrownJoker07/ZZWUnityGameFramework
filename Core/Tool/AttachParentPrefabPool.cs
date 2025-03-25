@@ -133,7 +133,7 @@ public class AttachParentPrefabPool : MonoBehaviour
         return null;
     }
 
-    private GameObject GetObjectPrefabGameObject(int index)
+    public GameObject GetObjectPrefabGameObject(int index)
     {
         foreach (var objectPrefabStruct in _objectPrefabList)
         {
