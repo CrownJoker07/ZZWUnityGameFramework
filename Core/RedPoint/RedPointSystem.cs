@@ -79,8 +79,9 @@ public class RedPointSystem : Singleton<RedPointSystem>
                 foreach (var child in _childRedPointTreeNodeDictionary)
                 {
                     RedPointTreeNode tempRedPointTreeNode = child.Value;
-                    
-                    if (tempRedPointTreeNode._redPointFunc == null) continue;
+
+                    if (tempRedPointTreeNode._redPointFunc == null ||
+                        tempRedPointTreeNode._redPointActions.Count == 0) continue;
 
                     haveRedPointChild = true;
                         
