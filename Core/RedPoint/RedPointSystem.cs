@@ -64,6 +64,11 @@ public class RedPointSystem : Singleton<RedPointSystem>
             }
 
             _redPointActions.Remove(redPointAction);
+
+            if (_redPointActions.Count == 0)
+            {
+                _redPointFunc = null;
+            }
         }
 
         public void NotifyAllRedPointActions()
