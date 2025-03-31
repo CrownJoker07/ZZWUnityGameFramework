@@ -1,136 +1,128 @@
-﻿//------------------------------------------------------------
-// File : IUniversalISelectTabGroup.cs
-// Email: mailto:zewei.zhuang@kingboat.io
-// Desc : 
-//------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace KBGame
+public class UniversalSelectTabGroup : MonoBehaviour
 {
-    public class UniversalSelectTabGroup : MonoBehaviour
+    protected List<UniversalTab> _universalTabs = new List<UniversalTab>();
+
+    public List<UniversalTab> GetAllUniversalTabs
     {
-        protected List<UniversalTab> _universalTabs = new List<UniversalTab>();
-        
-        public List<UniversalTab> GetAllUniversalTabs
+        get
         {
-            get
+            if (_isDynamic)
             {
-                if (_isDynamic)
-                {
-                    gameObject.GetComponentsInChildren(true, _universalTabs);
-                }
-                return _universalTabs;
+                gameObject.GetComponentsInChildren(true, _universalTabs);
             }
+
+            return _universalTabs;
+        }
+    }
+
+    private bool _isDynamic;
+
+    public void Init(bool isDynamic = false)
+    {
+        _isDynamic = isDynamic;
+        if (!isDynamic)
+        {
+            gameObject.GetComponentsInChildren(true, _universalTabs);
+        }
+    }
+
+    public void Spawn()
+    {
+        foreach (var universalTab in GetAllUniversalTabs)
+        {
+            universalTab.Spawn();
+        }
+    }
+
+    public void DeSpawn()
+    {
+        foreach (var universalTab in GetAllUniversalTabs)
+        {
+            universalTab.SetState(UniversalTab.State.UnSelect);
         }
 
-        private bool _isDynamic;
-
-        public void Init(bool isDynamic = false)
+        foreach (var universalTab in GetAllUniversalTabs)
         {
-            _isDynamic = isDynamic;
-            if (!isDynamic)
-            {
-                gameObject.GetComponentsInChildren(true, _universalTabs); 
-            }
+            universalTab.DeSpawn();
         }
+    }
 
-        public void Spawn()
+    public void SwitchTab(int tabType)
+    {
+        UniversalTab selectUniversalTab = null;
+        foreach (var universalTab in GetAllUniversalTabs)
         {
-            foreach (var universalTab in GetAllUniversalTabs)
-            {
-                universalTab.Spawn();
-            }
-        }
-        
-        public void DeSpawn()
-        {
-            foreach (var universalTab in GetAllUniversalTabs)
+            if (tabType != universalTab.TabType)
             {
                 universalTab.SetState(UniversalTab.State.UnSelect);
             }
-            
-            foreach (var universalTab in GetAllUniversalTabs)
+            else
             {
-                universalTab.DeSpawn();
+                selectUniversalTab = universalTab;
             }
         }
 
-        public void SwitchTab(int tabType)
+        if (selectUniversalTab == null) return;
+
+        selectUniversalTab.SetState(UniversalTab.State.Select);
+    }
+
+    public UniversalTab GetTabByTabType(int tabType)
+    {
+        foreach (var universalTab in GetAllUniversalTabs)
         {
-            UniversalTab selectUniversalTab = null;
-            foreach (var universalTab in GetAllUniversalTabs)
+            if (tabType == universalTab.TabType)
             {
-                if (tabType != universalTab.TabType)
-                {
-                    universalTab.SetState(UniversalTab.State.UnSelect);
-                }
-                else
-                {
-                    selectUniversalTab = universalTab;
-                }
+                return universalTab;
             }
-            
-            if(selectUniversalTab == null) return;
-            
-            selectUniversalTab.SetState(UniversalTab.State.Select);
         }
 
-        public UniversalTab GetTabByTabType(int tabType)
+        return null;
+    }
+
+    public UniversalTab GetCurrentSelectTab()
+    {
+        foreach (var universalTab in GetAllUniversalTabs)
         {
-            foreach (var universalTab in GetAllUniversalTabs)
+            if (universalTab.CurrentState == UniversalTab.State.Select)
             {
-                if (tabType == universalTab.TabType)
-                {
-                    return universalTab;
-                }
+                return universalTab;
             }
-
-            return null;
         }
 
-        public UniversalTab GetCurrentSelectTab()
+        return null;
+    }
+
+    public int GetMaxTabType()
+    {
+        int tabType = -1;
+        foreach (var universalTab in GetAllUniversalTabs)
         {
-            foreach (var universalTab in GetAllUniversalTabs)
+            if (universalTab.TabType > tabType)
             {
-                if (universalTab.CurrentState == UniversalTab.State.Select)
-                {
-                    return universalTab;
-                }
+                tabType = universalTab.TabType;
             }
-
-            return null; 
         }
 
-        public int GetMaxTabType()
+        return tabType;
+    }
+
+    public int GetMinTabType()
+    {
+        int tabType = Int32.MaxValue;
+        foreach (var universalTab in GetAllUniversalTabs)
         {
-            int tabType = -1;
-            foreach (var universalTab in GetAllUniversalTabs)
+            if (universalTab.TabType < tabType)
             {
-                if (universalTab.TabType > tabType)
-                {
-                    tabType = universalTab.TabType;
-                }
+                tabType = universalTab.TabType;
             }
-
-            return tabType;
         }
 
-        public int GetMinTabType()
-        {
-            int tabType = Int32.MaxValue;
-            foreach (var universalTab in GetAllUniversalTabs)
-            {
-                if (universalTab.TabType < tabType)
-                {
-                    tabType = universalTab.TabType;
-                }
-            }
-
-            return tabType; 
-        }
-    } 
+        return tabType;
+    }
 }
