@@ -37,6 +37,21 @@ public static partial class UIUtility
             space);
     }
 
+    public static void Grid<T>(this List<T> list, RectTransform parentRectTransform,
+        Vector2? space = null, Vector4? border = null) where T : MonoBehaviour
+    {
+        if (list.Count <= 0) return;
+
+        List<RectTransform> rectTransforms = new List<RectTransform>();
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            rectTransforms.Add(list[i].GetComponent<RectTransform>());
+        }
+
+        Grid(rectTransforms, parentRectTransform, space, border);
+    }
+
     // border:左上右下
     private static void Horizontal(List<RectTransform> rectTransforms, RectTransform parentRectTransform,
         TextAnchor textAnchor, float space, Vector4? border = null)
@@ -213,6 +228,63 @@ public static partial class UIUtility
             }
 
             rectTransform.anchoredPosition3D = new Vector3(x, y, 0);
+        }
+    }
+
+    // border:左上右下
+    private static void Grid(List<RectTransform> rectTransforms, RectTransform parentRectTransform,
+        Vector2? space = null, Vector4? border = null)
+    {
+        if (rectTransforms.Count == 0)
+        {
+            return;
+        }
+        
+        Vector2 spacing = space ?? Vector2.zero;
+        Vector4 borderValue = border ?? Vector4.zero;
+
+        float width = parentRectTransform.rect.width;
+        width -= borderValue.x + borderValue.z;
+        float height = parentRectTransform.rect.height;
+        height -= borderValue.y + borderValue.w;
+        
+        // 取第一个当做模板
+        Vector2 cellSize = rectTransforms[0].sizeDelta;
+
+        int column = Mathf.FloorToInt((width + spacing.x) / (cellSize.x + spacing.x));
+
+        column = Mathf.Max(1, column);
+        int row = Mathf.CeilToInt(rectTransforms.Count / (float)column);
+
+        float totalWidth = column * cellSize.x + (column - 1) * spacing.x;
+        float totalHeight = row * cellSize.y + (row - 1) * spacing.y;
+
+        float startX = -totalWidth / 2 + cellSize.x / 2;
+        float startY = totalHeight / 2 - cellSize.y / 2;
+
+        for (int i = 0; i < rectTransforms.Count; i++)
+        {
+            RectTransform rectTransform = rectTransforms[i];
+            Vector2 pivot = rectTransform.pivot;
+            int rowIndex = i / column;
+            int columnIndex = i % column;
+
+            float widthOfThisRow = Mathf.Min(column, rectTransforms.Count - rowIndex * column) * cellSize.x +
+                                   Mathf.Max(0, Mathf.Min(column - 1, rectTransforms.Count - rowIndex * column - 1)) *
+                                   spacing.x;
+            float startXOfThisRow = -widthOfThisRow / 2 + cellSize.x / 2;
+
+            float x = startXOfThisRow + columnIndex * (cellSize.x + spacing.x) - 0.5f * cellSize.x +
+                      cellSize.x * pivot.x;
+            x += borderValue.x;
+            
+            float y = startY - rowIndex * (cellSize.y + spacing.y) - 0.5f * cellSize.y + cellSize.y * pivot.y;
+            y -= borderValue.y;
+
+            rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            rectTransform.sizeDelta = cellSize;
+            rectTransform.anchoredPosition = new Vector2(x, y);
         }
     }
 
