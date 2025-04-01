@@ -38,7 +38,7 @@ public static partial class UIUtility
     }
 
     public static void Grid<T>(this List<T> list, RectTransform parentRectTransform,
-        Vector2? space = null, Vector4? border = null) where T : MonoBehaviour
+        Vector2? space = null, Vector4? border = null, Vector2Int? count = null) where T : MonoBehaviour
     {
         if (list.Count <= 0) return;
 
@@ -49,7 +49,7 @@ public static partial class UIUtility
             rectTransforms.Add(list[i].GetComponent<RectTransform>());
         }
 
-        Grid(rectTransforms, parentRectTransform, space, border);
+        Grid(rectTransforms, parentRectTransform, space, border, count);
     }
 
     // border:左上右下
@@ -233,7 +233,7 @@ public static partial class UIUtility
 
     // border:左上右下
     private static void Grid(List<RectTransform> rectTransforms, RectTransform parentRectTransform,
-        Vector2? space = null, Vector4? border = null)
+        Vector2? space = null, Vector4? border = null, Vector2Int? count = null)
     {
         if (rectTransforms.Count == 0)
         {
@@ -251,7 +251,9 @@ public static partial class UIUtility
         // 取第一个当做模板
         Vector2 cellSize = rectTransforms[0].sizeDelta;
 
-        int column = Mathf.FloorToInt((width + spacing.x) / (cellSize.x + spacing.x));
+        Vector2Int countVale = count ?? new Vector2Int(0, 0);
+
+        int column = countVale.x > 0 ? countVale.x : Mathf.FloorToInt((width + spacing.x) / (cellSize.x + spacing.x));
 
         column = Mathf.Max(1, column);
         int row = Mathf.CeilToInt(rectTransforms.Count / (float)column);
