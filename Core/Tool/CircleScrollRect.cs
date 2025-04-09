@@ -169,10 +169,15 @@ public class CircleScrollRect : ScrollRect
     }
 }
 
+public class CircleScrollData
+{
+    public Vector2 ContentLimitSizeDelta = Vector2.zero;
+}
+
 public static class CircleScrollRectUtility
 {
     // border的值分别为左上右下
-    public static void InitData<TCell, TNodeBase, TData>(this CircleScrollRect circleScrollRect,
+    public static CircleScrollData InitData<TCell, TNodeBase, TData>(this CircleScrollRect circleScrollRect,
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
         Action<TNodeBase, TData> initDataAction = null,
         float spaceX = 10f, float spaceY = 10f, int maxColumn = 0, int maxRow = 0, Vector4 border = new Vector4(),
@@ -181,6 +186,8 @@ public static class CircleScrollRectUtility
         where TCell : Component
         where TNodeBase : CirculateNodeBase, new()
     {
+        CircleScrollData circleScrollData = new CircleScrollData();
+        
         float height = 0;
         float width = 0;
         
@@ -256,14 +263,24 @@ public static class CircleScrollRectUtility
             {
                 case RectTransform.Axis.Horizontal:
                 {
-                    width = ((int)(index / maxRow) + 1) * (cellRect.width + spaceX) + leftBorder + rightBorder;
+                    width = ((int)(index / maxRow) + 1) * (cellRect.width + spaceX) - spaceX;
                     height = circleScrollRect.content.sizeDelta.y;
+
+                    circleScrollData.ContentLimitSizeDelta.x = width;
+                    circleScrollData.ContentLimitSizeDelta.y = cellRect.height;
+
+                    width += leftBorder + rightBorder;
                     break;
                 }
                 case RectTransform.Axis.Vertical:
                 {
                     width = circleScrollRect.content.sizeDelta.x;
-                    height = ((int)(index / maxColumn) + 1) * (cellRect.height + spaceY) + topBorder + bottomBorder;
+                    height = ((int)(index / maxColumn) + 1) * (cellRect.height + spaceY) - spaceY;
+
+                    circleScrollData.ContentLimitSizeDelta.x = cellRect.width;
+                    circleScrollData.ContentLimitSizeDelta.y = height;
+                    
+                    height += topBorder + bottomBorder;
                     break;
                 }
             }
@@ -292,5 +309,7 @@ public static class CircleScrollRectUtility
 
         circleScrollRect.InitData(circulateNodes,
             new Vector2(Mathf.Abs(width), Mathf.Abs(height)), cellRect.height + safeOffset);
+
+        return circleScrollData;
     }
 }
