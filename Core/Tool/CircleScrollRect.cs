@@ -177,7 +177,7 @@ public static class CircleScrollRectUtility
         Action<TNodeBase, TData> initDataAction = null,
         float spaceX = 10f, float spaceY = 10f, int maxColumn = 0, int maxRow = 0, Vector4 border = new Vector4(),
         float safeOffset = 0f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical,
-        List<Vector2> customAnchorPosition = null)
+        List<Vector2> customAnchorPosition = null, Vector2 customSizeDelta = new Vector2())
         where TCell : Component
         where TNodeBase : CirculateNodeBase, new()
     {
@@ -194,34 +194,33 @@ public static class CircleScrollRectUtility
         float topBorder = border.y;
         float bottomBorder = border.w;
         
+        float offsetX = 0;
+        switch (axis)
+        {
+            case RectTransform.Axis.Horizontal:
+            {
+                break;
+            }
+            case RectTransform.Axis.Vertical:
+            {
+                if (maxColumn == 0)
+                {
+                    maxColumn = (int)((rect.width + spaceX + leftBorder + rightBorder) /
+                                      (cellRect.width + spaceX + leftBorder + rightBorder));
+
+                    offsetX = (rect.width - ((cellRect.width + spaceX) * maxColumn - spaceX)) / 2f;
+                }
+
+                break;
+            }
+        }
+
+        if (maxColumn <= 0) maxColumn = 1;
+        if (maxRow <= 0) maxRow = 1;
+        
         if (customAnchorPosition == null)
         {
             customAnchorPosition = new List<Vector2>(dataList.Count);
-
-            float offsetX = 0;
-
-            switch (axis)
-            {
-                case RectTransform.Axis.Horizontal:
-                {
-                    break;
-                }
-                case RectTransform.Axis.Vertical:
-                {
-                    if (maxColumn == 0)
-                    {
-                        maxColumn = (int)((rect.width + spaceX + leftBorder + rightBorder) /
-                                          (cellRect.width + spaceX + leftBorder + rightBorder));
-
-                        offsetX = (rect.width - ((cellRect.width + spaceX) * maxColumn - spaceX)) / 2f;
-                    }
-
-                    break;
-                }
-            }
-
-            if (maxColumn <= 0) maxColumn = 1;
-            if (maxRow <= 0) maxRow = 1;
 
             int index = -1;
 
@@ -271,21 +270,8 @@ public static class CircleScrollRectUtility
         }
         else
         {
-            switch (axis)
-            {
-                case RectTransform.Axis.Horizontal:
-                {
-                    width = ((int)(dataList.Count / maxRow) + 1) * (cellRect.width + spaceX) + leftBorder + rightBorder;
-                    height = circleScrollRect.content.sizeDelta.y;
-                    break;
-                }
-                case RectTransform.Axis.Vertical:
-                {
-                    width = circleScrollRect.content.sizeDelta.x;
-                    height = ((int)(dataList.Count / maxColumn) + 1) * (cellRect.height + spaceY) + topBorder + bottomBorder;
-                    break;
-                }
-            } 
+            width = customSizeDelta.x;
+            height = customSizeDelta.y;
         }
         
         List<CirculateNodeBase> circulateNodes = new List<CirculateNodeBase>();
