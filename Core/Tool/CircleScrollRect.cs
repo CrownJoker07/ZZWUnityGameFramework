@@ -132,7 +132,7 @@ public class CircleScrollRect : ScrollRect
         base.OnBeginDrag(eventData);
 
         IsDraging = true;
-        
+
         BeginDragEvent?.Invoke();
     }
 
@@ -141,7 +141,7 @@ public class CircleScrollRect : ScrollRect
         base.OnEndDrag(eventData);
 
         IsDraging = false;
-        
+
         EndDragEvent?.Invoke();
     }
 
@@ -176,97 +176,132 @@ public static class CircleScrollRectUtility
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
         Action<TNodeBase, TData> initDataAction = null,
         float spaceX = 10f, float spaceY = 10f, int maxColumn = 0, int maxRow = 0, Vector4 border = new Vector4(),
-        float safeOffset = 0f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical)
+        float safeOffset = 0f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical,
+        List<Vector2> customAnchorPosition = null)
         where TCell : Component
         where TNodeBase : CirculateNodeBase, new()
     {
-        float leftBorder = border.x;
-        float rightBorder = border.z;
-        float topBorder = border.y;
-        float bottomBorder = border.w;
+        float height = 0;
+        float width = 0;
         
         Rect cellRect = attachParentPrefabPool.GetObjectPrefabComponent(indexID, typeof(TCell))
             .GetComponent<RectTransform>()
             .rect;
         Rect rect = circleScrollRect.viewport.rect;
-
-        float offsetX = 0;
-
-        switch (axis)
+        
+        float leftBorder = border.x;
+        float rightBorder = border.z;
+        float topBorder = border.y;
+        float bottomBorder = border.w;
+        
+        if (customAnchorPosition == null)
         {
-            case RectTransform.Axis.Horizontal:
-            {
-                break;
-            }
-            case RectTransform.Axis.Vertical:
-            {
-                if (maxColumn == 0)
-                {
-                    maxColumn = (int)((rect.width + spaceX + leftBorder + rightBorder) /
-                                      (cellRect.width + spaceX + leftBorder + rightBorder));
-            
-                    offsetX = (rect.width - ((cellRect.width + spaceX) * maxColumn - spaceX)) / 2f;
-                }
-                break;
-            }
-        }
+            customAnchorPosition = new List<Vector2>(dataList.Count);
 
-        if (maxColumn <= 0) maxColumn = 1;
-        if(maxRow <= 0) maxRow = 1;
+            float offsetX = 0;
 
-        int index = -1;
-        List<CirculateNodeBase> circulateNodes = new List<CirculateNodeBase>();
-
-        foreach (var data in dataList)
-        {
-            index++;
-
-            int currentColumn = 0;
-            int currentRow = 0;
             switch (axis)
             {
                 case RectTransform.Axis.Horizontal:
                 {
-                    currentColumn = index;
-                    currentRow = 0;
                     break;
                 }
                 case RectTransform.Axis.Vertical:
                 {
-                    currentColumn = index % maxColumn;
-                    currentRow = index / maxColumn;
+                    if (maxColumn == 0)
+                    {
+                        maxColumn = (int)((rect.width + spaceX + leftBorder + rightBorder) /
+                                          (cellRect.width + spaceX + leftBorder + rightBorder));
+
+                        offsetX = (rect.width - ((cellRect.width + spaceX) * maxColumn - spaceX)) / 2f;
+                    }
+
                     break;
                 }
             }
 
+            if (maxColumn <= 0) maxColumn = 1;
+            if (maxRow <= 0) maxRow = 1;
+
+            int index = -1;
+
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                index++;
+
+                int currentColumn = 0;
+                int currentRow = 0;
+                switch (axis)
+                {
+                    case RectTransform.Axis.Horizontal:
+                    {
+                        currentColumn = index;
+                        currentRow = 0;
+                        break;
+                    }
+                    case RectTransform.Axis.Vertical:
+                    {
+                        currentColumn = index % maxColumn;
+                        currentRow = index / maxColumn;
+                        break;
+                    }
+                }
+
+                float x = offsetX + currentColumn * (cellRect.width + spaceX);
+                float y = -currentRow * (cellRect.height + spaceY);
+
+                customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
+            }
+
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                {
+                    width = ((int)(index / maxRow) + 1) * (cellRect.width + spaceX) + leftBorder + rightBorder;
+                    height = circleScrollRect.content.sizeDelta.y;
+                    break;
+                }
+                case RectTransform.Axis.Vertical:
+                {
+                    width = circleScrollRect.content.sizeDelta.x;
+                    height = ((int)(index / maxColumn) + 1) * (cellRect.height + spaceY) + topBorder + bottomBorder;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                {
+                    width = ((int)(dataList.Count / maxRow) + 1) * (cellRect.width + spaceX) + leftBorder + rightBorder;
+                    height = circleScrollRect.content.sizeDelta.y;
+                    break;
+                }
+                case RectTransform.Axis.Vertical:
+                {
+                    width = circleScrollRect.content.sizeDelta.x;
+                    height = ((int)(dataList.Count / maxColumn) + 1) * (cellRect.height + spaceY) + topBorder + bottomBorder;
+                    break;
+                }
+            } 
+        }
+        
+        List<CirculateNodeBase> circulateNodes = new List<CirculateNodeBase>();
+
+        for (var index = 0; index < dataList.Count; index++)
+        {
+            var data = dataList[index];
             TNodeBase newNodeBase = new TNodeBase();
-            
+
             initDataAction?.Invoke(newNodeBase, data);
 
-            float x = offsetX + currentColumn * (cellRect.width + spaceX);
-            float y = -currentRow * (cellRect.height + spaceY);
-            
-            newNodeBase.Init(attachParentPrefabPool, indexID, x + leftBorder, y - topBorder, circleScrollRect.content);
+            Vector2 anchorPosition = customAnchorPosition[index];
+            newNodeBase.Init(attachParentPrefabPool, indexID, anchorPosition.x, anchorPosition.y,
+                circleScrollRect.content);
 
             circulateNodes.Add(newNodeBase);
-        }
-
-        float height = 0;
-        float width = 0;
-        switch (axis)
-        {
-            case RectTransform.Axis.Horizontal:
-            {
-                width = ((int)(index / maxRow) + 1) * (cellRect.width + spaceX) + leftBorder + rightBorder;
-                height = circleScrollRect.content.sizeDelta.y;
-                break;
-            }
-            case RectTransform.Axis.Vertical:
-            {
-                width = circleScrollRect.content.sizeDelta.x;
-                height = ((int)(index / maxColumn) + 1) * (cellRect.height + spaceY) + topBorder + bottomBorder;
-                break;
-            }
         }
 
         circleScrollRect.InitData(circulateNodes,
