@@ -35,4 +35,16 @@ public class ScreenTool
         
         return screenDiagonalInches;
     }
+    
+    public static bool IsInScreenByWorldPosition(Camera camera, Vector3 worldPosition, float safeOffset = 0.1f)
+    {
+        Vector3 viewportPoint = camera.WorldToViewportPoint(worldPosition);
+            
+        // 检查视口坐标的 x 和 y 是否在 [0, 1] 范围内
+        bool isInView = viewportPoint.x >= 0 - safeOffset && viewportPoint.x <= 1 + safeOffset &&
+                        viewportPoint.y >= 0 - safeOffset && viewportPoint.y <= 1 + safeOffset &&
+                        viewportPoint.z > 0; // z > 0 表示点在相机前方
+            
+        return isInView;
+    }
 }
