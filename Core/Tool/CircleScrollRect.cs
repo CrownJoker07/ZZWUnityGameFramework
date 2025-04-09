@@ -172,6 +172,7 @@ public class CircleScrollRect : ScrollRect
 public class CircleScrollData
 {
     public Vector2 ContentLimitSizeDelta = Vector2.zero;
+    public float OffsetX = 0f;
 }
 
 public static class CircleScrollRectUtility
@@ -206,6 +207,7 @@ public static class CircleScrollRectUtility
         {
             case RectTransform.Axis.Horizontal:
             {
+                maxColumn = int.MaxValue;
                 break;
             }
             case RectTransform.Axis.Vertical:
@@ -216,11 +218,14 @@ public static class CircleScrollRectUtility
                                       (cellRect.width + spaceX + leftBorder + rightBorder));
 
                     offsetX = (rect.width - ((cellRect.width + spaceX) * maxColumn - spaceX)) / 2f;
+                    circleScrollData.OffsetX = offsetX;
                 }
 
                 break;
             }
         }
+
+        int totalCount = dataList.Count;
 
         if (maxColumn <= 0) maxColumn = 1;
         if (maxRow <= 0) maxRow = 1;
@@ -235,23 +240,8 @@ public static class CircleScrollRectUtility
             {
                 index++;
 
-                int currentColumn = 0;
-                int currentRow = 0;
-                switch (axis)
-                {
-                    case RectTransform.Axis.Horizontal:
-                    {
-                        currentColumn = index;
-                        currentRow = 0;
-                        break;
-                    }
-                    case RectTransform.Axis.Vertical:
-                    {
-                        currentColumn = index % maxColumn;
-                        currentRow = index / maxColumn;
-                        break;
-                    }
-                }
+                int currentColumn = index % maxColumn;
+                int currentRow = index / maxColumn;
 
                 float x = offsetX + currentColumn * (cellRect.width + spaceX);
                 float y = -currentRow * (cellRect.height + spaceY);
@@ -259,15 +249,17 @@ public static class CircleScrollRectUtility
                 customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
             }
 
+            width = (Mathf.CeilToInt(totalCount / (float)maxRow)) * (cellRect.width + spaceX) - spaceX;
+            height = (Mathf.CeilToInt(totalCount / (float)maxColumn)) * (cellRect.height + spaceY) - spaceY;
+
+            circleScrollData.ContentLimitSizeDelta.x = width;
+            circleScrollData.ContentLimitSizeDelta.y = height;
+            
             switch (axis)
             {
                 case RectTransform.Axis.Horizontal:
                 {
-                    width = ((int)(index / maxRow) + 1) * (cellRect.width + spaceX) - spaceX;
                     height = circleScrollRect.content.sizeDelta.y;
-
-                    circleScrollData.ContentLimitSizeDelta.x = width;
-                    circleScrollData.ContentLimitSizeDelta.y = cellRect.height;
 
                     width += leftBorder + rightBorder;
                     break;
@@ -275,10 +267,6 @@ public static class CircleScrollRectUtility
                 case RectTransform.Axis.Vertical:
                 {
                     width = circleScrollRect.content.sizeDelta.x;
-                    height = ((int)(index / maxColumn) + 1) * (cellRect.height + spaceY) - spaceY;
-
-                    circleScrollData.ContentLimitSizeDelta.x = cellRect.width;
-                    circleScrollData.ContentLimitSizeDelta.y = height;
                     
                     height += topBorder + bottomBorder;
                     break;
