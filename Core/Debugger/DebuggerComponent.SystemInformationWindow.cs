@@ -34,9 +34,9 @@ namespace ZZWUnityGameFramework.Debugger
                     DrawItem("Battery Status", SystemInfo.batteryStatus.ToString());
                     DrawItem("Battery Level", GetBatteryLevelString(SystemInfo.batteryLevel));
 #endif
-#if UNITY_5_4_OR_NEWER
-                    DrawItem("Supports Audio", SystemInfo.supportsAudio.ToString());
-#endif
+// #if UNITY_5_4_OR_NEWER
+//                     DrawItem("Supports Audio", SystemInfo.supportsAudio.ToString());
+// #endif
                     DrawItem("Supports Location Service", SystemInfo.supportsLocationService.ToString());
                     DrawItem("Supports Accelerometer", SystemInfo.supportsAccelerometer.ToString());
                     DrawItem("Supports Gyroscope", SystemInfo.supportsGyroscope.ToString());
