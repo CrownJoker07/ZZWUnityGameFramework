@@ -20,17 +20,17 @@ namespace ZZWUnityGameFramework.Debugger
         /// <summary>
         /// 默认调试器漂浮框大小。
         /// </summary>
-        internal static readonly Rect DefaultIconRect = new Rect(10f, 10f, 60f, 60f);
+        internal static Rect DefaultIconRect => new Rect(10f, 10f, 60f / DefaultWindowScale, 60f / DefaultWindowScale);
 
         /// <summary>
         /// 默认调试器窗口大小。
         /// </summary>
-        internal static readonly Rect DefaultWindowRect = new Rect(10f, 10f, 640f, 480f);
+        internal static Rect DefaultWindowRect => new Rect(10f, 10f, 640f, 480f);
 
         /// <summary>
         /// 默认调试器窗口缩放比例。
         /// </summary>
-        internal static readonly float DefaultWindowScale = 1f;
+        internal const float DefaultWindowScale = 2f;
 
         private static readonly TextEditor s_TextEditor = new TextEditor();
         private IDebuggerManager m_DebuggerManager = null;
@@ -81,20 +81,20 @@ namespace ZZWUnityGameFramework.Debugger
         private SettingsWindow m_SettingsWindow = new SettingsWindow();
 
         private FpsCounter m_FpsCounter = null;
-
+        
         /// <summary>
         /// 获取或设置调试器窗口是否激活。
         /// </summary>
-        public bool ActiveWindow
+        public static bool ActiveWindow
         {
             get
             {
-                return m_DebuggerManager.ActiveWindow;
+                return Instance.m_DebuggerManager.ActiveWindow;
             }
             set
             {
-                m_DebuggerManager.ActiveWindow = value;
-                enabled = value;
+                Instance.m_DebuggerManager.ActiveWindow = value;
+                Instance.enabled = value;
             }
         }
 
@@ -242,7 +242,7 @@ namespace ZZWUnityGameFramework.Debugger
             Matrix4x4 cachedMatrix = GUI.matrix;
 
             GUI.skin = m_Skin;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(m_WindowScale, m_WindowScale, 1f));
+            GUI.matrix = Matrix4x4.Scale(new Vector3(m_WindowScale, m_WindowScale, m_WindowScale));
 
             if (m_ShowFullWindow)
             {
@@ -250,7 +250,7 @@ namespace ZZWUnityGameFramework.Debugger
             }
             else
             {
-                m_IconRect = GUILayout.Window(0, m_IconRect, DrawDebuggerWindowIcon, "<b>DEBUGGER</b>");
+                m_IconRect = GUILayout.Window(0, m_IconRect, DrawDebuggerWindowIcon, "<b>GM</b>");
             }
 
             GUI.matrix = cachedMatrix;
@@ -403,8 +403,10 @@ namespace ZZWUnityGameFramework.Debugger
                 color = m_ConsoleWindow.GetLogStringColor(LogType.Log);
             }
 
-            string title = string.Format("<color=#{0}{1}{2}{3}><b>FPS: {4}</b></color>", color.r.ToString("x2"), color.g.ToString("x2"), color.b.ToString("x2"), color.a.ToString("x2"), m_FpsCounter.CurrentFps.ToString("F2"));
-            if (GUILayout.Button(title, GUILayout.Width(100f), GUILayout.Height(40f)))
+            string title = string.Format("<color=#{0}{1}{2}{3}><b>{4}</b></color>", color.r.ToString("x2"),
+                color.g.ToString("x2"), color.b.ToString("x2"), color.a.ToString("x2"),
+                m_FpsCounter.CurrentFps.ToString("F2"));
+            if (GUILayout.Button(title, GUILayout.Width(100f / m_WindowScale), GUILayout.Height(40f / m_WindowScale)))
             {
                 m_ShowFullWindow = true;
             }

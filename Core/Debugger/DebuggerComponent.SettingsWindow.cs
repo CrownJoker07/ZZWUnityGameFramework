@@ -30,14 +30,24 @@ namespace ZZWUnityGameFramework.Debugger
                     return;
                 }
 
-                m_LastIconX = PlayerPrefs.GetFloat("Debugger.Icon.X", DefaultIconRect.x);
-                m_LastIconY = PlayerPrefs.GetFloat("Debugger.Icon.Y", DefaultIconRect.y);
-                m_LastWindowX = PlayerPrefs.GetFloat("Debugger.Window.X", DefaultWindowRect.x);
-                m_LastWindowY = PlayerPrefs.GetFloat("Debugger.Window.Y", DefaultWindowRect.y);
-                m_LastWindowWidth = PlayerPrefs.GetFloat("Debugger.Window.Width", DefaultWindowRect.width);
-                m_LastWindowHeight = PlayerPrefs.GetFloat("Debugger.Window.Height", DefaultWindowRect.height);
-                m_DebuggerComponent.WindowScale = m_LastWindowScale = PlayerPrefs.GetFloat("Debugger.Window.Scale", DefaultWindowScale);
+                // m_LastIconX = PlayerPrefs.GetFloat("Debugger.Icon.X", DefaultIconRect.x);
+                // m_LastIconY = PlayerPrefs.GetFloat("Debugger.Icon.Y", DefaultIconRect.y);
+                // m_LastWindowX = PlayerPrefs.GetFloat("Debugger.Window.X", DefaultWindowRect.x);
+                // m_LastWindowY = PlayerPrefs.GetFloat("Debugger.Window.Y", DefaultWindowRect.y);
+                // m_LastWindowWidth = PlayerPrefs.GetFloat("Debugger.Window.Width", DefaultWindowRect.width);
+                // m_LastWindowHeight = PlayerPrefs.GetFloat("Debugger.Window.Height", DefaultWindowRect.height);
+                // m_DebuggerComponent.WindowScale = m_LastWindowScale = PlayerPrefs.GetFloat("Debugger.Window.Scale", DefaultWindowScale);
+
+                m_DebuggerComponent.WindowScale = m_LastWindowScale = DefaultWindowScale;
+
+                m_LastIconX = DefaultIconRect.x;
+                m_LastIconY = DefaultIconRect.y;
                 m_DebuggerComponent.IconRect = new Rect(m_LastIconX, m_LastIconY, DefaultIconRect.width, DefaultIconRect.height);
+                
+                m_LastWindowX = DefaultWindowRect.x;
+                m_LastWindowY = DefaultWindowRect.y;
+                m_LastWindowWidth = DefaultWindowRect.width;
+                m_LastWindowHeight = DefaultWindowRect.height;
                 m_DebuggerComponent.WindowRect = new Rect(m_LastWindowX, m_LastWindowY, m_LastWindowWidth, m_LastWindowHeight);
             }
 
@@ -46,43 +56,43 @@ namespace ZZWUnityGameFramework.Debugger
                 if (m_LastIconX != m_DebuggerComponent.IconRect.x)
                 {
                     m_LastIconX = m_DebuggerComponent.IconRect.x;
-                    PlayerPrefs.SetFloat("Debugger.Icon.X", m_DebuggerComponent.IconRect.x);
+                    // PlayerPrefs.SetFloat("Debugger.Icon.X", m_DebuggerComponent.IconRect.x);
                 }
 
                 if (m_LastIconY != m_DebuggerComponent.IconRect.y)
                 {
                     m_LastIconY = m_DebuggerComponent.IconRect.y;
-                    PlayerPrefs.SetFloat("Debugger.Icon.Y", m_DebuggerComponent.IconRect.y);
+                    // PlayerPrefs.SetFloat("Debugger.Icon.Y", m_DebuggerComponent.IconRect.y);
                 }
 
                 if (m_LastWindowX != m_DebuggerComponent.WindowRect.x)
                 {
                     m_LastWindowX = m_DebuggerComponent.WindowRect.x;
-                    PlayerPrefs.SetFloat("Debugger.Window.X", m_DebuggerComponent.WindowRect.x);
+                    // PlayerPrefs.SetFloat("Debugger.Window.X", m_DebuggerComponent.WindowRect.x);
                 }
 
                 if (m_LastWindowY != m_DebuggerComponent.WindowRect.y)
                 {
                     m_LastWindowY = m_DebuggerComponent.WindowRect.y;
-                    PlayerPrefs.SetFloat("Debugger.Window.Y", m_DebuggerComponent.WindowRect.y);
+                    // PlayerPrefs.SetFloat("Debugger.Window.Y", m_DebuggerComponent.WindowRect.y);
                 }
 
                 if (m_LastWindowWidth != m_DebuggerComponent.WindowRect.width)
                 {
                     m_LastWindowWidth = m_DebuggerComponent.WindowRect.width;
-                    PlayerPrefs.SetFloat("Debugger.Window.Width", m_DebuggerComponent.WindowRect.width);
+                    // PlayerPrefs.SetFloat("Debugger.Window.Width", m_DebuggerComponent.WindowRect.width);
                 }
 
                 if (m_LastWindowHeight != m_DebuggerComponent.WindowRect.height)
                 {
                     m_LastWindowHeight = m_DebuggerComponent.WindowRect.height;
-                    PlayerPrefs.SetFloat("Debugger.Window.Height", m_DebuggerComponent.WindowRect.height);
+                    // PlayerPrefs.SetFloat("Debugger.Window.Height", m_DebuggerComponent.WindowRect.height);
                 }
 
                 if (m_LastWindowScale != m_DebuggerComponent.WindowScale)
                 {
                     m_LastWindowScale = m_DebuggerComponent.WindowScale;
-                    PlayerPrefs.SetFloat("Debugger.Window.Scale", m_DebuggerComponent.WindowScale);
+                    // PlayerPrefs.SetFloat("Debugger.Window.Scale", m_DebuggerComponent.WindowScale);
                 }
             }
 
