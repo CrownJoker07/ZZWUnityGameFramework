@@ -72,7 +72,6 @@ namespace ZZWUnityGameFramework.Debugger
         private RuntimeMemoryInformationWindow<Font> m_RuntimeMemoryFontInformationWindow = new RuntimeMemoryInformationWindow<Font>();
         private RuntimeMemoryInformationWindow<TextAsset> m_RuntimeMemoryTextAssetInformationWindow = new RuntimeMemoryInformationWindow<TextAsset>();
         private RuntimeMemoryInformationWindow<ScriptableObject> m_RuntimeMemoryScriptableObjectInformationWindow = new RuntimeMemoryInformationWindow<ScriptableObject>();
-        private SettingsWindow m_SettingsWindow = new SettingsWindow();
 
         private FpsCounter m_FpsCounter = null;
         
@@ -198,7 +197,6 @@ namespace ZZWUnityGameFramework.Debugger
             RegisterDebuggerWindow("Profiler/Memory/Font", m_RuntimeMemoryFontInformationWindow);
             RegisterDebuggerWindow("Profiler/Memory/TextAsset", m_RuntimeMemoryTextAssetInformationWindow);
             RegisterDebuggerWindow("Profiler/Memory/ScriptableObject", m_RuntimeMemoryScriptableObjectInformationWindow);
-            RegisterDebuggerWindow("Other/Settings", m_SettingsWindow);
 
             switch (m_ActiveWindow)
             {
