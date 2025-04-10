@@ -5,6 +5,7 @@ using UnityEditor;
 
 public class MeshTool
 {
+#if UNITY_EDITOR
     [MenuItem("Assets/Remove Collider from Prefabs")]
     public static void RemoveCollider()
     {
@@ -37,4 +38,5 @@ public class MeshTool
         // 刷新资源数据库
         AssetDatabase.Refresh();
     }
+#endif
 }
