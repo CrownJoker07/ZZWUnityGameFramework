@@ -23,11 +23,6 @@ namespace ZZWUnityGameFramework.Debugger
         internal static Rect DefaultIconRect => new Rect(10f, 10f, 60f / DefaultWindowScale, 60f / DefaultWindowScale);
 
         /// <summary>
-        /// 默认调试器窗口大小。
-        /// </summary>
-        internal static Rect DefaultWindowRect => new Rect(10f, 10f, 640f, 480f);
-
-        /// <summary>
         /// 默认调试器窗口缩放比例。
         /// </summary>
         internal const float DefaultWindowScale = 2f;
@@ -36,8 +31,7 @@ namespace ZZWUnityGameFramework.Debugger
         private IDebuggerManager m_DebuggerManager = null;
         private Rect m_DragRect = new Rect(0f, 0f, float.MaxValue, 25f);
         private Rect m_IconRect = DefaultIconRect;
-        private Rect m_WindowRect = DefaultWindowRect;
-        private float m_WindowScale = DefaultWindowScale;
+        private Rect m_WindowRect = new Rect(0, 0, Screen.width / DefaultWindowScale, Screen.height / DefaultWindowScale);
 
         [SerializeField]
         private GUISkin m_Skin = null;
@@ -143,20 +137,20 @@ namespace ZZWUnityGameFramework.Debugger
             }
         }
 
-        /// <summary>
-        /// 获取或设置调试器窗口缩放比例。
-        /// </summary>
-        public float WindowScale
-        {
-            get
-            {
-                return m_WindowScale;
-            }
-            set
-            {
-                m_WindowScale = value;
-            }
-        }
+        // /// <summary>
+        // /// 获取或设置调试器窗口缩放比例。
+        // /// </summary>
+        // public float WindowScale
+        // {
+        //     get
+        //     {
+        //         return m_WindowScale;
+        //     }
+        //     set
+        //     {
+        //         m_WindowScale = value;
+        //     }
+        // }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -242,11 +236,11 @@ namespace ZZWUnityGameFramework.Debugger
             Matrix4x4 cachedMatrix = GUI.matrix;
 
             GUI.skin = m_Skin;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(m_WindowScale, m_WindowScale, m_WindowScale));
+            GUI.matrix = Matrix4x4.Scale(new Vector3(DefaultWindowScale, DefaultWindowScale, DefaultWindowScale));
 
             if (m_ShowFullWindow)
             {
-                m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>GAME FRAMEWORK DEBUGGER</b>");
+                m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>DEBUGGER</b>");
             }
             else
             {
@@ -298,15 +292,15 @@ namespace ZZWUnityGameFramework.Debugger
             return m_DebuggerManager.SelectDebuggerWindow(path);
         }
 
-        /// <summary>
-        /// 还原调试器窗口布局。
-        /// </summary>
-        public void ResetLayout()
-        {
-            IconRect = DefaultIconRect;
-            WindowRect = DefaultWindowRect;
-            WindowScale = DefaultWindowScale;
-        }
+        // /// <summary>
+        // /// 还原调试器窗口布局。
+        // /// </summary>
+        // public void ResetLayout()
+        // {
+        //     IconRect = DefaultIconRect;
+        //     WindowRect = DefaultWindowRect;
+        //     WindowScale = DefaultWindowScale;
+        // }
 
         /// <summary>
         /// 获取记录的所有日志。
@@ -329,7 +323,7 @@ namespace ZZWUnityGameFramework.Debugger
 
         private void DrawWindow(int windowId)
         {
-            GUI.DragWindow(m_DragRect);
+            // GUI.DragWindow(m_DragRect);
             DrawDebuggerWindowGroup(m_DebuggerManager.DebuggerWindowRoot);
         }
 
@@ -352,7 +346,8 @@ namespace ZZWUnityGameFramework.Debugger
                 names.Add("<b>Close</b>");
             }
 
-            int toolbarIndex = GUILayout.Toolbar(debuggerWindowGroup.SelectedIndex, names.ToArray(), GUILayout.Height(30f), GUILayout.MaxWidth(Screen.width));
+            int toolbarIndex = GUILayout.Toolbar(debuggerWindowGroup.SelectedIndex, names.ToArray(),
+                GUILayout.MaxWidth(Screen.width / DefaultWindowScale - 30), GUILayout.Height(30f / DefaultWindowScale));
             if (toolbarIndex >= debuggerWindowGroup.DebuggerWindowCount)
             {
                 m_ShowFullWindow = false;
@@ -406,7 +401,7 @@ namespace ZZWUnityGameFramework.Debugger
             string title = string.Format("<color=#{0}{1}{2}{3}><b>{4}</b></color>", color.r.ToString("x2"),
                 color.g.ToString("x2"), color.b.ToString("x2"), color.a.ToString("x2"),
                 m_FpsCounter.CurrentFps.ToString("F2"));
-            if (GUILayout.Button(title, GUILayout.Width(100f / m_WindowScale), GUILayout.Height(40f / m_WindowScale)))
+            if (GUILayout.Button(title, GUILayout.Width(100f / DefaultWindowScale), GUILayout.Height(40f / DefaultWindowScale)))
             {
                 m_ShowFullWindow = true;
             }

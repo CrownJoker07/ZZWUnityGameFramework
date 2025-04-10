@@ -20,7 +20,7 @@ namespace ZZWUnityGameFramework.Debugger
             private float m_LastWindowY = 0f;
             private float m_LastWindowWidth = 0f;
             private float m_LastWindowHeight = 0f;
-            private float m_LastWindowScale = 0f;
+            // private float m_LastWindowScale = 0f;
 
             public override void Initialize(params object[] args)
             {
@@ -38,17 +38,17 @@ namespace ZZWUnityGameFramework.Debugger
                 // m_LastWindowHeight = PlayerPrefs.GetFloat("Debugger.Window.Height", DefaultWindowRect.height);
                 // m_DebuggerComponent.WindowScale = m_LastWindowScale = PlayerPrefs.GetFloat("Debugger.Window.Scale", DefaultWindowScale);
 
-                m_DebuggerComponent.WindowScale = m_LastWindowScale = DefaultWindowScale;
+                // m_DebuggerComponent.WindowScale = m_LastWindowScale = DefaultWindowScale;
 
                 m_LastIconX = DefaultIconRect.x;
                 m_LastIconY = DefaultIconRect.y;
                 m_DebuggerComponent.IconRect = new Rect(m_LastIconX, m_LastIconY, DefaultIconRect.width, DefaultIconRect.height);
                 
-                m_LastWindowX = DefaultWindowRect.x;
-                m_LastWindowY = DefaultWindowRect.y;
-                m_LastWindowWidth = DefaultWindowRect.width;
-                m_LastWindowHeight = DefaultWindowRect.height;
-                m_DebuggerComponent.WindowRect = new Rect(m_LastWindowX, m_LastWindowY, m_LastWindowWidth, m_LastWindowHeight);
+                // m_LastWindowX = DefaultWindowRect.x;
+                // m_LastWindowY = DefaultWindowRect.y;
+                // m_LastWindowWidth = DefaultWindowRect.width;
+                // m_LastWindowHeight = DefaultWindowRect.height;
+                // m_DebuggerComponent.WindowRect = new Rect(m_LastWindowX, m_LastWindowY, m_LastWindowWidth, m_LastWindowHeight);
             }
 
             public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
@@ -89,11 +89,11 @@ namespace ZZWUnityGameFramework.Debugger
                     // PlayerPrefs.SetFloat("Debugger.Window.Height", m_DebuggerComponent.WindowRect.height);
                 }
 
-                if (m_LastWindowScale != m_DebuggerComponent.WindowScale)
-                {
-                    m_LastWindowScale = m_DebuggerComponent.WindowScale;
-                    // PlayerPrefs.SetFloat("Debugger.Window.Scale", m_DebuggerComponent.WindowScale);
-                }
+                // if (m_LastWindowScale != m_DebuggerComponent.WindowScale)
+                // {
+                //     m_LastWindowScale = m_DebuggerComponent.WindowScale;
+                //     // PlayerPrefs.SetFloat("Debugger.Window.Scale", m_DebuggerComponent.WindowScale);
+                // }
             }
 
             protected override void OnDrawScrollableWindow()
@@ -150,68 +150,68 @@ namespace ZZWUnityGameFramework.Debugger
                     }
                     GUILayout.EndHorizontal();
 
-                    GUILayout.BeginHorizontal();
-                    {
-                        float scale = m_DebuggerComponent.WindowScale;
-                        GUILayout.Label("Scale:", GUILayout.Width(60f));
-                        if (GUILayout.RepeatButton("-", GUILayout.Width(30f)))
-                        {
-                            scale -= 0.01f;
-                        }
-                        scale = GUILayout.HorizontalSlider(scale, 0.5f, 4f);
-                        if (GUILayout.RepeatButton("+", GUILayout.Width(30f)))
-                        {
-                            scale += 0.01f;
-                        }
-                        scale = Mathf.Clamp(scale, 0.5f, 4f);
-                        if (scale != m_DebuggerComponent.WindowScale)
-                        {
-                            m_DebuggerComponent.WindowScale = scale;
-                        }
-                    }
-                    GUILayout.EndHorizontal();
+                    // GUILayout.BeginHorizontal();
+                    // {
+                    //     float scale = m_DebuggerComponent.WindowScale;
+                    //     GUILayout.Label("Scale:", GUILayout.Width(60f));
+                    //     if (GUILayout.RepeatButton("-", GUILayout.Width(30f)))
+                    //     {
+                    //         scale -= 0.01f;
+                    //     }
+                    //     scale = GUILayout.HorizontalSlider(scale, 0.5f, 4f);
+                    //     if (GUILayout.RepeatButton("+", GUILayout.Width(30f)))
+                    //     {
+                    //         scale += 0.01f;
+                    //     }
+                    //     scale = Mathf.Clamp(scale, 0.5f, 4f);
+                    //     if (scale != m_DebuggerComponent.WindowScale)
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = scale;
+                    //     }
+                    // }
+                    // GUILayout.EndHorizontal();
 
-                    GUILayout.BeginHorizontal();
-                    {
-                        if (GUILayout.Button("0.5x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 0.5f;
-                        }
-                        if (GUILayout.Button("1.0x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 1f;
-                        }
-                        if (GUILayout.Button("1.5x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 1.5f;
-                        }
-                        if (GUILayout.Button("2.0x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 2f;
-                        }
-                        if (GUILayout.Button("2.5x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 2.5f;
-                        }
-                        if (GUILayout.Button("3.0x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 3f;
-                        }
-                        if (GUILayout.Button("3.5x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 3.5f;
-                        }
-                        if (GUILayout.Button("4.0x", GUILayout.Height(60f)))
-                        {
-                            m_DebuggerComponent.WindowScale = 4f;
-                        }
-                    }
-                    GUILayout.EndHorizontal();
+                    // GUILayout.BeginHorizontal();
+                    // {
+                    //     if (GUILayout.Button("0.5x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 0.5f;
+                    //     }
+                    //     if (GUILayout.Button("1.0x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 1f;
+                    //     }
+                    //     if (GUILayout.Button("1.5x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 1.5f;
+                    //     }
+                    //     if (GUILayout.Button("2.0x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 2f;
+                    //     }
+                    //     if (GUILayout.Button("2.5x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 2.5f;
+                    //     }
+                    //     if (GUILayout.Button("3.0x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 3f;
+                    //     }
+                    //     if (GUILayout.Button("3.5x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 3.5f;
+                    //     }
+                    //     if (GUILayout.Button("4.0x", GUILayout.Height(60f)))
+                    //     {
+                    //         m_DebuggerComponent.WindowScale = 4f;
+                    //     }
+                    // }
+                    // GUILayout.EndHorizontal();
 
-                    if (GUILayout.Button("Reset Layout", GUILayout.Height(30f)))
-                    {
-                        m_DebuggerComponent.ResetLayout();
-                    }
+                    // if (GUILayout.Button("Reset Layout", GUILayout.Height(30f)))
+                    // {
+                    //     m_DebuggerComponent.ResetLayout();
+                    // }
                 }
                 GUILayout.EndVertical();
             }

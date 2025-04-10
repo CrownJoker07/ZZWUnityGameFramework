@@ -276,16 +276,16 @@ namespace ZZWUnityGameFramework.Debugger
 
                 GUILayout.BeginHorizontal();
                 {
-                    if (GUILayout.Button("Clear All", GUILayout.Width(100f)))
+                    if (GUILayout.Button("Clear", GUILayout.Width(100f / DefaultWindowScale)))
                     {
                         Clear();
                     }
-                    m_LockScroll = GUILayout.Toggle(m_LockScroll, "Lock Scroll", GUILayout.Width(90f));
+                    m_LockScroll = GUILayout.Toggle(m_LockScroll, "Lock", GUILayout.Width(90f / DefaultWindowScale));
                     GUILayout.FlexibleSpace();
-                    m_InfoFilter = GUILayout.Toggle(m_InfoFilter, string.Format("Info ({0})", m_InfoCount.ToString()), GUILayout.Width(90f));
-                    m_WarningFilter = GUILayout.Toggle(m_WarningFilter, string.Format("Warning ({0})", m_WarningCount.ToString()), GUILayout.Width(90f));
-                    m_ErrorFilter = GUILayout.Toggle(m_ErrorFilter, string.Format("Error ({0})", m_ErrorCount.ToString()), GUILayout.Width(90f));
-                    m_FatalFilter = GUILayout.Toggle(m_FatalFilter, string.Format("Fatal ({0})", m_FatalCount.ToString()), GUILayout.Width(90f));
+                    m_InfoFilter = GUILayout.Toggle(m_InfoFilter, string.Format("I ({0})", m_InfoCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_WarningFilter = GUILayout.Toggle(m_WarningFilter, string.Format("W ({0})", m_WarningCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_ErrorFilter = GUILayout.Toggle(m_ErrorFilter, string.Format("E ({0})", m_ErrorCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_FatalFilter = GUILayout.Toggle(m_FatalFilter, string.Format("F ({0})", m_FatalCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
                 }
                 GUILayout.EndHorizontal();
 
@@ -352,7 +352,7 @@ namespace ZZWUnityGameFramework.Debugger
 
                 GUILayout.BeginVertical("box");
                 {
-                    m_StackScrollPosition = GUILayout.BeginScrollView(m_StackScrollPosition, GUILayout.Height(100f));
+                    m_StackScrollPosition = GUILayout.BeginScrollView(m_StackScrollPosition, GUILayout.Height(100f / DefaultWindowScale));
                     {
                         if (m_SelectedNode != null)
                         {
