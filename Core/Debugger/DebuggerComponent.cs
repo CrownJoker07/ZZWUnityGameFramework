@@ -7,6 +7,7 @@
 
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ZZWUnityGameFramework.Debugger
 {
@@ -72,6 +73,7 @@ namespace ZZWUnityGameFramework.Debugger
         private RuntimeMemoryInformationWindow<Font> m_RuntimeMemoryFontInformationWindow = new RuntimeMemoryInformationWindow<Font>();
         private RuntimeMemoryInformationWindow<TextAsset> m_RuntimeMemoryTextAssetInformationWindow = new RuntimeMemoryInformationWindow<TextAsset>();
         private RuntimeMemoryInformationWindow<ScriptableObject> m_RuntimeMemoryScriptableObjectInformationWindow = new RuntimeMemoryInformationWindow<ScriptableObject>();
+        private DebugWindow m_DebugWindow = new DebugWindow();
 
         private FpsCounter m_FpsCounter = null;
         
@@ -169,6 +171,8 @@ namespace ZZWUnityGameFramework.Debugger
 
         private void Start()
         {
+            RegisterDebuggerWindow("Debug", m_DebugWindow);
+
             RegisterDebuggerWindow("Console", m_ConsoleWindow);
             RegisterDebuggerWindow("Information/System", m_SystemInformationWindow);
             RegisterDebuggerWindow("Information/Environment", m_EnvironmentInformationWindow);
@@ -345,7 +349,7 @@ namespace ZZWUnityGameFramework.Debugger
             }
 
             int toolbarIndex = GUILayout.Toolbar(debuggerWindowGroup.SelectedIndex, names.ToArray(),
-                GUILayout.MaxWidth(Screen.width / DefaultWindowScale - 30), GUILayout.Height(30f / DefaultWindowScale));
+                GUILayout.MaxWidth(Screen.width / DefaultWindowScale - 30), GUILayout.Height(20f));
             if (toolbarIndex >= debuggerWindowGroup.DebuggerWindowCount)
             {
                 m_ShowFullWindow = false;
