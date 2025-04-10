@@ -17,7 +17,7 @@ namespace UniFramework.WebRequest
 		/// </summary>
 		/// <param name="post">POST的文本内容</param>
 		/// <param name="timeout">超时：从请求开始计时</param>
-		public void SendRequest(string post, int timeout = 0)
+		public void SendRequest(string post, int timeout = 0, Dictionary<string, string> headers = null)
 		{
 			// Check error
 			if (string.IsNullOrEmpty(post))
@@ -26,6 +26,7 @@ namespace UniFramework.WebRequest
 			if (_webRequest == null)
 			{
 				_webRequest = UnityWebRequest.Post(URL, post);
+				SetRequestHeader(headers);
 				SendRequestInternal(timeout);
 			}
 		}

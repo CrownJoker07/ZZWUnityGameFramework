@@ -148,6 +148,14 @@ namespace UniFramework.WebRequest
             URL = url;
         }
 
+        public void SetRequestHeader(Dictionary<string, string> headers)
+        {
+            foreach (var header in headers)
+            {
+                _webRequest.SetRequestHeader(header.Key, header.Value);
+            }
+        }
+
         /// <summary>
         /// 释放下载器
         /// </summary>

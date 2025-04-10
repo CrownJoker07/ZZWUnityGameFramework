@@ -15,11 +15,12 @@ namespace UniFramework.WebRequest
 		/// 发送GET请求
 		/// </summary>
 		/// <param name="timeout">超时：从请求开始计时</param>
-		public void SendRequest(int timeout = 0)
+		public void SendRequest(int timeout = 0, Dictionary<string, string> headers = null)
 		{
 			if (_webRequest == null)
 			{
 				_webRequest = new UnityWebRequest(URL, UnityWebRequest.kHttpVerbGET);
+				SetRequestHeader(headers);
 				DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
 				_webRequest.downloadHandler = handler;
 				_webRequest.disposeDownloadHandlerOnDispose = true;
