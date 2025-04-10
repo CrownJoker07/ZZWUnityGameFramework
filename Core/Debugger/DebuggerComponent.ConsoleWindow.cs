@@ -216,11 +216,17 @@ namespace ZZWUnityGameFramework.Debugger
             public void Initialize(params object[] args)
             {
                 Application.logMessageReceived += OnLogMessageReceived;
-                m_LockScroll = m_LastLockScroll = PlayerPrefsExtension.GetBool("Debugger.Console.LockScroll", true);
-                m_InfoFilter = m_LastInfoFilter = PlayerPrefsExtension.GetBool("Debugger.Console.InfoFilter", true);
-                m_WarningFilter = m_LastWarningFilter = PlayerPrefsExtension.GetBool("Debugger.Console.WarningFilter", true);
-                m_ErrorFilter = m_LastErrorFilter = PlayerPrefsExtension.GetBool("Debugger.Console.ErrorFilter", true);
-                m_FatalFilter = m_LastFatalFilter = PlayerPrefsExtension.GetBool("Debugger.Console.FatalFilter", true);
+                // m_LockScroll = m_LastLockScroll = PlayerPrefsExtension.GetBool("Debugger.Console.LockScroll", true);
+                // m_InfoFilter = m_LastInfoFilter = PlayerPrefsExtension.GetBool("Debugger.Console.InfoFilter", true);
+                // m_WarningFilter = m_LastWarningFilter = PlayerPrefsExtension.GetBool("Debugger.Console.WarningFilter", true);
+                // m_ErrorFilter = m_LastErrorFilter = PlayerPrefsExtension.GetBool("Debugger.Console.ErrorFilter", true);
+                // m_FatalFilter = m_LastFatalFilter = PlayerPrefsExtension.GetBool("Debugger.Console.FatalFilter", true);
+
+                m_LockScroll = m_LastLockScroll = true;
+                m_InfoFilter = m_LastInfoFilter = true;
+                m_WarningFilter = m_LastWarningFilter =true;
+                m_ErrorFilter = m_LastErrorFilter = true;
+                m_FatalFilter = m_LastFatalFilter = true;
             }
 
             public void Shutdown()
@@ -242,31 +248,31 @@ namespace ZZWUnityGameFramework.Debugger
                 if (m_LastLockScroll != m_LockScroll)
                 {
                     m_LastLockScroll = m_LockScroll;
-                    PlayerPrefsExtension.SetBool("Debugger.Console.LockScroll", m_LockScroll);
+                    // PlayerPrefsExtension.SetBool("Debugger.Console.LockScroll", m_LockScroll);
                 }
 
                 if (m_LastInfoFilter != m_InfoFilter)
                 {
                     m_LastInfoFilter = m_InfoFilter;
-                    PlayerPrefsExtension.SetBool("Debugger.Console.InfoFilter", m_InfoFilter);
+                    // PlayerPrefsExtension.SetBool("Debugger.Console.InfoFilter", m_InfoFilter);
                 }
 
                 if (m_LastWarningFilter != m_WarningFilter)
                 {
                     m_LastWarningFilter = m_WarningFilter;
-                    PlayerPrefsExtension.SetBool("Debugger.Console.WarningFilter", m_WarningFilter);
+                    // PlayerPrefsExtension.SetBool("Debugger.Console.WarningFilter", m_WarningFilter);
                 }
 
                 if (m_LastErrorFilter != m_ErrorFilter)
                 {
                     m_LastErrorFilter = m_ErrorFilter;
-                    PlayerPrefsExtension.SetBool("Debugger.Console.ErrorFilter", m_ErrorFilter);
+                    // PlayerPrefsExtension.SetBool("Debugger.Console.ErrorFilter", m_ErrorFilter);
                 }
 
                 if (m_LastFatalFilter != m_FatalFilter)
                 {
                     m_LastFatalFilter = m_FatalFilter;
-                    PlayerPrefsExtension.SetBool("Debugger.Console.FatalFilter", m_FatalFilter);
+                    // PlayerPrefsExtension.SetBool("Debugger.Console.FatalFilter", m_FatalFilter);
                 }
             }
 
@@ -282,10 +288,10 @@ namespace ZZWUnityGameFramework.Debugger
                     }
                     m_LockScroll = GUILayout.Toggle(m_LockScroll, "Lock", GUILayout.Width(90f / DefaultWindowScale));
                     GUILayout.FlexibleSpace();
-                    m_InfoFilter = GUILayout.Toggle(m_InfoFilter, string.Format("I ({0})", m_InfoCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
-                    m_WarningFilter = GUILayout.Toggle(m_WarningFilter, string.Format("W ({0})", m_WarningCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
-                    m_ErrorFilter = GUILayout.Toggle(m_ErrorFilter, string.Format("E ({0})", m_ErrorCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
-                    m_FatalFilter = GUILayout.Toggle(m_FatalFilter, string.Format("F ({0})", m_FatalCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_InfoFilter = GUILayout.Toggle(m_InfoFilter, string.Format("I({0})", m_InfoCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_WarningFilter = GUILayout.Toggle(m_WarningFilter, string.Format("W({0})", m_WarningCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_ErrorFilter = GUILayout.Toggle(m_ErrorFilter, string.Format("E({0})", m_ErrorCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
+                    m_FatalFilter = GUILayout.Toggle(m_FatalFilter, string.Format("F({0})", m_FatalCount.ToString()), GUILayout.Width(90f / DefaultWindowScale));
                 }
                 GUILayout.EndHorizontal();
 
@@ -350,22 +356,25 @@ namespace ZZWUnityGameFramework.Debugger
                 }
                 GUILayout.EndVertical();
 
-                GUILayout.BeginVertical("box");
+                if (m_SelectedNode != null)
                 {
-                    m_StackScrollPosition = GUILayout.BeginScrollView(m_StackScrollPosition, GUILayout.Height(100f / DefaultWindowScale));
+                    GUILayout.BeginVertical("box");
                     {
-                        if (m_SelectedNode != null)
+                        m_StackScrollPosition = GUILayout.BeginScrollView(m_StackScrollPosition, GUILayout.Height(800f / DefaultWindowScale));
                         {
-                            Color32 color = GetLogStringColor(m_SelectedNode.LogType);
-                            if (GUILayout.Button(string.Format("<color=#{0}{1}{2}{3}><b>{4}</b></color>{6}{6}{5}", color.r.ToString("x2"), color.g.ToString("x2"), color.b.ToString("x2"), color.a.ToString("x2"), m_SelectedNode.LogMessage, m_SelectedNode.StackTrack, Environment.NewLine), "label"))
+                            if (m_SelectedNode != null)
                             {
-                                CopyToClipboard(string.Format("{0}{2}{2}{1}", m_SelectedNode.LogMessage, m_SelectedNode.StackTrack, Environment.NewLine));
+                                Color32 color = GetLogStringColor(m_SelectedNode.LogType);
+                                if (GUILayout.Button(string.Format("<color=#{0}{1}{2}{3}><b>{4}</b></color>{6}{6}{5}", color.r.ToString("x2"), color.g.ToString("x2"), color.b.ToString("x2"), color.a.ToString("x2"), m_SelectedNode.LogMessage, m_SelectedNode.StackTrack, Environment.NewLine), "label"))
+                                {
+                                    CopyToClipboard(string.Format("{0}{2}{2}{1}", m_SelectedNode.LogMessage, m_SelectedNode.StackTrack, Environment.NewLine));
+                                }
                             }
                         }
+                        GUILayout.EndScrollView();
                     }
-                    GUILayout.EndScrollView();
+                    GUILayout.EndVertical(); 
                 }
-                GUILayout.EndVertical();
             }
 
             private void Clear()
