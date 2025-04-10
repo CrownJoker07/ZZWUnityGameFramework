@@ -43,7 +43,7 @@ namespace UniFramework.WebRequest
 		/// <summary>
 		/// 获取下载的文本数据
 		/// </summary>
-		public string GetText()
+		public string GetResponse()
 		{
 			if (_webRequest != null && IsDone())
 				return _webRequest.downloadHandler.text;

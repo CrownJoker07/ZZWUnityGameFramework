@@ -1,7 +1,9 @@
 {
     "name": "ZZWGameFramewrok",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:c613bd96cd1ec48f88a078486d45eb33"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
