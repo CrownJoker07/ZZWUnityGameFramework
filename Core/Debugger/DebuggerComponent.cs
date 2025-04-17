@@ -96,15 +96,15 @@ namespace ZZWUnityGameFramework.Debugger
         /// <summary>
         /// 获取或设置是否显示完整调试器界面。
         /// </summary>
-        public bool ShowFullWindow
+        public static bool ShowFullWindow
         {
             get
             {
-                return m_ShowFullWindow;
+                return Instance.m_ShowFullWindow;
             }
             set
             {
-                m_ShowFullWindow = value;
+                Instance.m_ShowFullWindow = value;
             }
         }
 
