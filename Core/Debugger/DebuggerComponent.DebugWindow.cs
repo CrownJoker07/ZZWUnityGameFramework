@@ -34,9 +34,21 @@ namespace ZZWUnityGameFramework.Debugger
             private const int columns = 4; // 每行列数
             private Vector2 m_ScrollPosition = Vector2.zero;
             private string _textContent = String.Empty;
+            
+            // 在类顶部添加样式定义
 
             public void Initialize(params object[] args)
             {
+
+            }
+            
+            // 辅助方法创建纯色纹理
+            private Texture2D CreateColorTexture(Color color)
+            {
+                Texture2D tex = new Texture2D(1, 1);
+                tex.SetPixel(0, 0, color);
+                tex.Apply();
+                return tex;
             }
 
             public void Shutdown()
@@ -68,11 +80,20 @@ namespace ZZWUnityGameFramework.Debugger
             
             private void OnDrawScrollableWindow()
             {
+                GUIStyle normalButtonStyle = new GUIStyle(GUI.skin.button);
+
+                GUIStyle activeButtonStyle = new GUIStyle(GUI.skin.button)
+                {
+                    normal = { background = CreateColorTexture(new Color(0.2f, 0.8f, 0.2f)) }, // 绿色背景
+                    hover = { background = CreateColorTexture(new Color(0.2f, 0.8f, 0.2f)) },
+                    active = { textColor = Color.white }
+                };
+                
                 GUILayout.Label("<b>System Information</b>");
                 GUILayout.BeginVertical("box");
                 {
                     // 计算每个按钮宽度
-                    float buttonWidth = Screen.width / DefaultWindowScale / columns - 15;
+                    float buttonWidth = Screen.width / DefaultWindowScale / columns - 14;
 
                     int index = 0;
 
@@ -100,7 +121,22 @@ namespace ZZWUnityGameFramework.Debugger
                                 }
 
                                 index++;
-                                if (GUILayout.Button(commandData.Name, GUILayout.Width(buttonWidth), GUILayout.Height(30f)))
+                                string buttonName = string.Empty;
+                                if (commandData.Info != null)
+                                {
+                                    buttonName += $"<color=#70a1ff>{commandData.Info.Invoke()}</color>";
+                                    buttonName += "\n";
+                                }
+                                buttonName += commandData.Name;
+
+                                GUIStyle currentStyle = normalButtonStyle;
+                                if (commandData.State != null)
+                                {
+                                    bool state = commandData.State.Invoke();
+                                    currentStyle = state ? activeButtonStyle : normalButtonStyle;
+                                }
+                                
+                                if (GUILayout.Button(buttonName, currentStyle, GUILayout.Width(buttonWidth), GUILayout.Height(40f)))
                                 {
                                     commandData.Action?.Invoke(_textContent);
                                 }
