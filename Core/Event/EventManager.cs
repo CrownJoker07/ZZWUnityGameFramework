@@ -67,7 +67,7 @@ public class EventManager : Singleton<EventManager>
             }
             catch (Exception e)
             {
-                Debug.LogError($"Event: {eventID} have exception, some eventDelegate error : {e.Message}");
+                Debug.LogError($"Event: {eventID} have exception, some eventDelegate error : {e.Message}\n{e.StackTrace}");
             }
         }
     }
