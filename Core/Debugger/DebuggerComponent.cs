@@ -159,6 +159,8 @@ namespace ZZWUnityGameFramework.Debugger
         protected override void Awake()
         {
             base.Awake();
+            
+            m_WindowRect = new Rect(0, 0, Screen.width / DefaultWindowScale, Screen.height / DefaultWindowScale);
 
             m_DebuggerManager = new DebuggerManager();
             if (m_DebuggerManager == null)
