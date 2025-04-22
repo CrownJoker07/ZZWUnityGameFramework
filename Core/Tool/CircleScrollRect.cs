@@ -168,6 +168,13 @@ public class CircleScrollRect : ScrollRect
     {
         return _circulateNodeBases;
     }
+
+    protected override void LateUpdate()
+    {
+        if(transform.lossyScale == Vector3.zero) return;
+        
+        base.LateUpdate();
+    }
 }
 
 public class CircleScrollData
