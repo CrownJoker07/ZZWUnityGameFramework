@@ -107,7 +107,8 @@ public class CircleScrollRect : ScrollRect
     {
         _circulateNodeBases = circulateNodeBases;
         _offset = offset;
-        content.sizeDelta = contentSizeDelta;
+        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, contentSizeDelta.x);
+        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentSizeDelta.y);
 
         onValueChanged.AddListener(ValueChange);
         RefreshNodes();
@@ -249,29 +250,14 @@ public static class CircleScrollRectUtility
                 customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
             }
 
-            width = (Mathf.CeilToInt(totalCount / (float)maxRow)) * (cellRect.width + spaceX) - spaceX;
+            width = maxColumn * (cellRect.width + spaceX) - spaceX;
             height = (Mathf.CeilToInt(totalCount / (float)maxColumn)) * (cellRect.height + spaceY) - spaceY;
 
             circleScrollData.ContentLimitSizeDelta.x = width;
             circleScrollData.ContentLimitSizeDelta.y = height;
             
-            switch (axis)
-            {
-                case RectTransform.Axis.Horizontal:
-                {
-                    height = circleScrollRect.content.sizeDelta.y;
-
-                    width += leftBorder + rightBorder;
-                    break;
-                }
-                case RectTransform.Axis.Vertical:
-                {
-                    width = circleScrollRect.content.sizeDelta.x;
-                    
-                    height += topBorder + bottomBorder;
-                    break;
-                }
-            }
+            width += leftBorder + rightBorder;
+            height += topBorder + bottomBorder;
         }
         else
         {
