@@ -208,7 +208,7 @@ public static class CircleScrollRectUtility
         {
             case RectTransform.Axis.Horizontal:
             {
-                maxColumn = int.MaxValue;
+                maxColumn = dataList.Count;
                 break;
             }
             case RectTransform.Axis.Vertical:
