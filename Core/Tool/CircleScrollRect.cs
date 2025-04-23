@@ -190,8 +190,7 @@ public static class CircleScrollRectUtility
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
         Action<TNodeBase, TData> initDataAction = null,
         float spaceX = 10f, float spaceY = 10f, int maxColumn = 0, int maxRow = 0, Vector4 border = new Vector4(),
-        float safeOffset = 0f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical,
-        List<Vector2> customAnchorPosition = null, Vector2 customSizeDelta = new Vector2())
+        float safeOffset = 0f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical)
         where TCell : Component
         where TNodeBase : CirculateNodeBase, new()
     {
@@ -238,56 +237,46 @@ public static class CircleScrollRectUtility
         if (maxColumn <= 0) maxColumn = 1;
         if (maxRow <= 0) maxRow = 1;
         
-        if (customAnchorPosition == null)
+        // 计算节点位置
+        List<Vector2> customAnchorPosition = new List<Vector2>(dataList.Count);
+
+        for (int i = 0; i < dataList.Count; i++)
         {
-            customAnchorPosition = new List<Vector2>(dataList.Count);
+            int currentColumn = i % maxColumn;
+            int currentRow = i / maxColumn;
 
-            int index = -1;
+            float x = offsetX + currentColumn * (cellRect.width + spaceX);
+            float y = -currentRow * (cellRect.height + spaceY);
 
-            for (int i = 0; i < dataList.Count; i++)
-            {
-                index++;
-
-                int currentColumn = index % maxColumn;
-                int currentRow = index / maxColumn;
-
-                float x = offsetX + currentColumn * (cellRect.width + spaceX);
-                float y = -currentRow * (cellRect.height + spaceY);
-
-                customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
-            }
-
-            width = maxColumn * (cellRect.width + spaceX) - spaceX;
-            height = (Mathf.CeilToInt(totalCount / (float)maxColumn)) * (cellRect.height + spaceY) - spaceY;
-
-            circleScrollData.ContentLimitSizeDelta.x = width;
-            circleScrollData.ContentLimitSizeDelta.y = height;
-            
-            width += leftBorder + rightBorder;
-            height += topBorder + bottomBorder;
-        }
-        else
-        {
-            width = customSizeDelta.x;
-            height = customSizeDelta.y;
+            customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
         }
         
+        // 生成节点
         List<CirculateNodeBase> circulateNodes = new List<CirculateNodeBase>();
 
-        for (var index = 0; index < dataList.Count; index++)
+        for (var i = 0; i < dataList.Count; i++)
         {
-            var data = dataList[index];
+            var data = dataList[i];
             TNodeBase newNodeBase = new TNodeBase();
 
             initDataAction?.Invoke(newNodeBase, data);
 
-            Vector2 anchorPosition = customAnchorPosition[index];
+            Vector2 anchorPosition = customAnchorPosition[i];
             newNodeBase.Init(attachParentPrefabPool, indexID, anchorPosition.x, anchorPosition.y,
                 circleScrollRect.content);
 
             circulateNodes.Add(newNodeBase);
         }
 
+        width = maxColumn * (cellRect.width + spaceX) - spaceX;
+        height = (Mathf.CeilToInt(totalCount / (float)maxColumn)) * (cellRect.height + spaceY) - spaceY;
+
+        circleScrollData.ContentLimitSizeDelta.x = width;
+        circleScrollData.ContentLimitSizeDelta.y = height;
+            
+        width += leftBorder + rightBorder;
+        height += topBorder + bottomBorder;
+        
         circleScrollRect.InitData(circulateNodes,
             new Vector2(Mathf.Abs(width), Mathf.Abs(height)), cellRect.height + safeOffset);
 
