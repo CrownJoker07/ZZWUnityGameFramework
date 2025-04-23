@@ -160,8 +160,6 @@ namespace ZZWUnityGameFramework.Debugger
         {
             base.Awake();
             
-            m_WindowRect = new Rect(0, 0, Screen.width / DefaultWindowScale, Screen.height / DefaultWindowScale);
-
             m_DebuggerManager = new DebuggerManager();
             if (m_DebuggerManager == null)
             {
@@ -244,6 +242,7 @@ namespace ZZWUnityGameFramework.Debugger
 
             if (m_ShowFullWindow)
             {
+                m_WindowRect = new Rect(0, 0, Screen.width / DefaultWindowScale, Screen.height / DefaultWindowScale);
                 m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>DEBUGGER</b>");
             }
             else
