@@ -32,7 +32,7 @@ namespace ZZWUnityGameFramework.Debugger
         private IDebuggerManager m_DebuggerManager = null;
         private Rect m_DragRect = new Rect(0f, 0f, float.MaxValue, 25f);
         private Rect m_IconRect = DefaultIconRect;
-        private Rect m_WindowRect = new Rect(0, 0, Screen.width / DefaultWindowScale, Screen.height / DefaultWindowScale);
+        private Rect m_WindowRect;
 
         [SerializeField]
         private GUISkin m_Skin = null;
@@ -244,7 +244,9 @@ namespace ZZWUnityGameFramework.Debugger
 
             if (m_ShowFullWindow)
             {
-                m_WindowRect = new Rect(0, 0, Screen.width / DefaultWindowScale, Screen.height / DefaultWindowScale);
+                m_WindowRect = new Rect(Screen.safeArea.xMin / DefaultWindowScale,
+                    -(Screen.safeArea.height - Screen.safeArea.yMax) / DefaultWindowScale,
+                    Screen.safeArea.width / DefaultWindowScale, Screen.safeArea.height / DefaultWindowScale);
                 m_WindowRect = GUILayout.Window(0, m_WindowRect, DrawWindow, "<b>DEBUGGER</b>");
             }
             else
