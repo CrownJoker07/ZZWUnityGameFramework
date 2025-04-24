@@ -29,7 +29,7 @@ namespace ZZWUnityGameFramework.Debugger
             Instance.CommandDatas = commandDatas;
         }
         
-        private sealed class DebugWindow : IDebuggerWindow
+        private sealed class DebugCommandWindow : IDebuggerWindow
         {
             private const int columns = 4; // 每行列数
             private Vector2 m_ScrollPosition = Vector2.zero;
