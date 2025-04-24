@@ -268,7 +268,9 @@ public static class CircleScrollRectUtility
             circulateNodes.Add(newNodeBase);
         }
 
-        width = maxColumn * (cellRect.width + spaceX) - spaceX;
+        int tempColumn = totalCount > maxColumn ? maxColumn : totalCount;
+        
+        width = tempColumn * (cellRect.width + spaceX) - spaceX;
         height = (Mathf.CeilToInt(totalCount / (float)maxColumn)) * (cellRect.height + spaceY) - spaceY;
 
         circleScrollData.ContentLimitSizeDelta.x = width;
