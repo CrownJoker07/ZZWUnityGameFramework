@@ -5,6 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -77,6 +78,9 @@ namespace ZZWUnityGameFramework.Debugger
         private DebugInfoWindow _mDebugInfoWindow = new DebugInfoWindow();
 
         private FpsCounter m_FpsCounter = null;
+
+        private Action _showFullWindowAction;
+        private Action _hideFullWindowAction;
         
         /// <summary>
         /// 获取或设置调试器窗口是否激活。
@@ -105,6 +109,14 @@ namespace ZZWUnityGameFramework.Debugger
             }
             set
             {
+                if (value)
+                {
+                    Instance._showFullWindowAction?.Invoke();
+                }
+                else
+                {
+                    Instance._hideFullWindowAction?.Invoke();
+                }
                 Instance.m_ShowFullWindow = value;
             }
         }
@@ -153,6 +165,12 @@ namespace ZZWUnityGameFramework.Debugger
         //         m_WindowScale = value;
         //     }
         // }
+        
+        public static void SetFullWindowAction(Action showFullWindowAction, Action hideFullWindowAction)
+        {
+            Instance._showFullWindowAction = showFullWindowAction;
+            Instance._hideFullWindowAction = hideFullWindowAction;
+        }
 
         /// <summary>
         /// 游戏框架组件初始化。
@@ -242,7 +260,7 @@ namespace ZZWUnityGameFramework.Debugger
             GUI.skin = m_Skin;
             GUI.matrix = Matrix4x4.Scale(new Vector3(DefaultWindowScale, DefaultWindowScale, DefaultWindowScale));
 
-            if (m_ShowFullWindow)
+            if (ShowFullWindow)
             {
                 m_WindowRect = new Rect(Screen.safeArea.xMin / DefaultWindowScale,
                     -(Screen.safeArea.height - Screen.safeArea.yMax) / DefaultWindowScale,
@@ -357,7 +375,7 @@ namespace ZZWUnityGameFramework.Debugger
                 GUILayout.MaxWidth(Screen.width / DefaultWindowScale - 30), GUILayout.Height(20f));
             if (toolbarIndex >= debuggerWindowGroup.DebuggerWindowCount)
             {
-                m_ShowFullWindow = false;
+                ShowFullWindow = false;
                 return;
             }
 
@@ -410,7 +428,7 @@ namespace ZZWUnityGameFramework.Debugger
                 m_FpsCounter.CurrentFps.ToString("F2"));
             if (GUILayout.Button(title, GUILayout.Width(100f / DefaultWindowScale), GUILayout.Height(40f / DefaultWindowScale)))
             {
-                m_ShowFullWindow = true;
+                ShowFullWindow = true;
             }
         }
 
