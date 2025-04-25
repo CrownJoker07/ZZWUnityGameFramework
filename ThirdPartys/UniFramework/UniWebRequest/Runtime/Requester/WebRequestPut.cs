@@ -20,8 +20,8 @@ namespace UniFramework.WebRequest
 		public void SendRequest(string put, int timeout = 0, Dictionary<string, string> headers = null)
 		{
 			// Check error
-			if (string.IsNullOrEmpty(put))
-				throw new Exception($"Web put content is null or empty : {URL}");
+			// if (string.IsNullOrEmpty(put))
+			// 	throw new Exception($"Web put content is null or empty : {URL}");
 
 			if (_webRequest == null)
 			{
