@@ -198,10 +198,10 @@ public static class CircleScrollRectUtility
         
         float height = 0;
         float width = 0;
-        
-        Rect cellRect = attachParentPrefabPool.GetObjectPrefabComponent(indexID, typeof(TCell))
-            .GetComponent<RectTransform>()
-            .rect;
+
+        RectTransform cellRectTransform = attachParentPrefabPool.GetObjectPrefabComponent(indexID, typeof(TCell))
+            .GetComponent<RectTransform>();
+        Rect cellRect = cellRectTransform.rect;
         Rect rect = circleScrollRect.viewport.rect;
         
         float leftBorder = border.x;
@@ -245,8 +245,8 @@ public static class CircleScrollRectUtility
             int currentColumn = i % maxColumn;
             int currentRow = i / maxColumn;
 
-            float x = offsetX + currentColumn * (cellRect.width + spaceX);
-            float y = -currentRow * (cellRect.height + spaceY);
+            float x = offsetX + currentColumn * (cellRect.width + spaceX) + cellRect.width * (cellRectTransform.pivot.x - cellRectTransform.anchorMin.x);
+            float y = -currentRow * (cellRect.height + spaceY) -(cellRect.height * (cellRectTransform.pivot.y - cellRectTransform.anchorMin.y));
 
             customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
         }
