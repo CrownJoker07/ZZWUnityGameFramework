@@ -246,7 +246,7 @@ public static class CircleScrollRectUtility
             int currentRow = i / maxColumn;
 
             float x = offsetX + currentColumn * (cellRect.width + spaceX) + cellRect.width * (cellRectTransform.pivot.x - cellRectTransform.anchorMin.x);
-            float y = -currentRow * (cellRect.height + spaceY) -(cellRect.height * (cellRectTransform.pivot.y - cellRectTransform.anchorMin.y));
+            float y = -currentRow * (cellRect.height + spaceY) + (cellRect.height * (cellRectTransform.pivot.y - cellRectTransform.anchorMin.y));
 
             customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
         }
