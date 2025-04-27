@@ -30,6 +30,8 @@ public static class WebRequestUtility
                 break;
             }
         }
+        
+        webRequestBase.Dispose();
     }
 
     public static WebRequestBase Get<T>(string url, Action<T> successAction = null, Action failAction = null,
