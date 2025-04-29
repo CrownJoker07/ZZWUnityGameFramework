@@ -73,7 +73,6 @@ public partial class ResourceIdentificationTool
 
     private static ResourceIdentificationToolSetting Setting =>
         ResourceIdentificationToolSetting.LoadSettingData<ResourceIdentificationToolSetting>();
-    public static ResourceIdentificationToolSetting Setting_Public => Setting;
 
     private const string ResourceIdentificationTypeScriptTemplate =
         @"public enum ResourceIdentificationType
@@ -223,11 +222,16 @@ public partial class ResourceIdentificationTool
         return assetPath;
     }
 
-    public static int GetNotSameAssetIDByRange(int startIndex)
+    public static void InitInEditor()
     {
         TextAsset textAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(Setting.XMLFilePath);
         
-        Instance.InitResourceIdentificationInfos(textAsset);
+        Instance.InitResourceIdentificationInfos(textAsset); 
+    }
+
+    public static int GetNotSameAssetIDByRange(int startIndex)
+    {
+        InitInEditor();
 
         int temAssetID = startIndex + 1;
         foreach (var resourceIdentificationInfo in Instance._resourceIdentificationInfoMaps)
