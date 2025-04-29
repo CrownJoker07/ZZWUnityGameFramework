@@ -73,6 +73,7 @@ public partial class ResourceIdentificationTool
 
     private static ResourceIdentificationToolSetting Setting =>
         ResourceIdentificationToolSetting.LoadSettingData<ResourceIdentificationToolSetting>();
+    public static ResourceIdentificationToolSetting Setting_Public => Setting;
 
     private const string ResourceIdentificationTypeScriptTemplate =
         @"public enum ResourceIdentificationType
