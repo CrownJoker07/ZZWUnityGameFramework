@@ -23,8 +23,6 @@ using System.Reflection;
  */
 public class PrefabBinderTool : MonoBehaviour
 {
-    public const string SuffixTag = "_AB";
-
     [Serializable]
     public class BindInfo
     {
@@ -74,7 +72,7 @@ public class PrefabBinderTool : MonoBehaviour
         private string GetName()
         {
             string name = component.name;
-            name = name.Replace(SuffixTag, "");
+            // name = name.Replace(SuffixTag, "");
             name = GetAlphanumeric(name);
 
             return name;
@@ -420,41 +418,41 @@ public static class PrefabBinderTool_Static
                 }
             }
 
-            prefabBinderTool.AutoBindTool();
+            // prefabBinderTool.AutoBindTool();
             
             prefabBinderTool.AutoBindComponent();
         }
     }
 
-    public static void AutoBindTool(this PrefabBinderTool prefabBinderTool)
-    {
-        Transform[] transforms = prefabBinderTool.GetComponentsInChildren<Transform>();
-
-        if (transforms == null) return;
-
-        bool isChange = false;
-        foreach (Transform transform in transforms)
-        {
-            if (!transform.name.Contains(PrefabBinderTool.SuffixTag)) continue;
-
-            // 预制体内部的节点不进行自动绑定
-            if (UnityEditor.PrefabUtility.IsPartOfAnyPrefab(transform) &&
-                !UnityEditor.PrefabUtility.IsAnyPrefabInstanceRoot(transform.gameObject)) continue;
-            if (transform.parent != null &&
-                transform.parent.GetComponentInParent<PrefabBinderTool>() != prefabBinderTool) continue;
-
-            bool isSuccess = prefabBinderTool.AddBindInfo(transform, true);
-
-            isChange = isSuccess || isChange;
-        }
-
-        if (isChange)
-        {
-            prefabBinderTool.CreateCode();
-
-            UnityEditor.EditorUtility.SetDirty(prefabBinderTool.gameObject);
-        }
-    }
+    // public static void AutoBindTool(this PrefabBinderTool prefabBinderTool)
+    // {
+    //     Transform[] transforms = prefabBinderTool.GetComponentsInChildren<Transform>();
+    //
+    //     if (transforms == null) return;
+    //
+    //     bool isChange = false;
+    //     foreach (Transform transform in transforms)
+    //     {
+    //         if (!transform.name.Contains(PrefabBinderTool.SuffixTag)) continue;
+    //
+    //         // 预制体内部的节点不进行自动绑定
+    //         if (UnityEditor.PrefabUtility.IsPartOfAnyPrefab(transform) &&
+    //             !UnityEditor.PrefabUtility.IsAnyPrefabInstanceRoot(transform.gameObject)) continue;
+    //         if (transform.parent != null &&
+    //             transform.parent.GetComponentInParent<PrefabBinderTool>() != prefabBinderTool) continue;
+    //
+    //         bool isSuccess = prefabBinderTool.AddBindInfo(transform, true);
+    //
+    //         isChange = isSuccess || isChange;
+    //     }
+    //
+    //     if (isChange)
+    //     {
+    //         prefabBinderTool.CreateCode();
+    //
+    //         UnityEditor.EditorUtility.SetDirty(prefabBinderTool.gameObject);
+    //     }
+    // }
 
     public static bool AddBindInfo(this PrefabBinderTool prefabBinderTool, Component component, bool isAutoBind = false)
     {
