@@ -41,13 +41,13 @@ public abstract class UniversalTab : MonoBehaviour
         return component;
     }
 
-    public virtual void Init(UniversalSelectTabGroup albumSelectTabGroup, int temTabType,
-        IUniversalISelectTabPanel albumSelectTabPanel, Action<int> selectAction = null,
+    public virtual void Init(UniversalSelectTabGroup universalSelectTabGroup, int temTabType,
+        IUniversalISelectTabPanel universalISelectTabPanel, Action<int> selectAction = null,
         Action<int> unSelectAction = null)
     {
-        _universalSelectTabGroup = albumSelectTabGroup;
+        _universalSelectTabGroup = universalSelectTabGroup;
         _tabType = temTabType;
-        _universalISelectTabPanel = albumSelectTabPanel;
+        _universalISelectTabPanel = universalISelectTabPanel;
         _currentState = State.None;
 
         _selectAction = selectAction;
