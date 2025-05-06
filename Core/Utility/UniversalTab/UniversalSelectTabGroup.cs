@@ -98,6 +98,15 @@ public class UniversalSelectTabGroup : MonoBehaviour
         return null;
     }
 
+    public int GetCurrentTabType()
+    {
+        UniversalTab universalTab = GetCurrentSelectTab();
+
+        if (universalTab) return universalTab.TabType;
+
+        return -1;
+    }
+
     public int GetMaxTabType()
     {
         int tabType = -1;
