@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BoundsTool
 {
-    public static Bounds GetBounds(Transform root, Transform child)
+    public static Bounds GetRectTransformBounds(Transform root, Transform child)
     {
         if (child is RectTransform)
         {
