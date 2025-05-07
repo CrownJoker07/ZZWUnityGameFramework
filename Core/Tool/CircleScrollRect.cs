@@ -186,6 +186,25 @@ public class CircleScrollData
 public static class CircleScrollRectUtility
 {
     // border的值分别为左上右下
+    public static int GetMaxColumn(this CircleScrollRect circleScrollRect,
+        AttachParentPrefabPool attachParentPrefabPool, float spaceX = 10f, Vector4 border = new Vector4(),
+        int indexID = 0)
+    {
+        float leftBorder = border.x;
+        float rightBorder = border.z;
+        
+        RectTransform cellRectTransform = attachParentPrefabPool.GetObjectPrefabGameObject(indexID)
+            .GetComponent<RectTransform>();
+        Rect cellRect = cellRectTransform.rect;
+        Rect rect = circleScrollRect.viewport.rect;
+        
+        int maxColumn = (int)((rect.width + spaceX + leftBorder + rightBorder) /
+                              (cellRect.width + spaceX + leftBorder + rightBorder)); 
+        
+        return maxColumn;
+    }
+    
+    // border的值分别为左上右下
     public static CircleScrollData InitData<TCell, TNodeBase, TData>(this CircleScrollRect circleScrollRect,
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
         Action<TNodeBase, TData> initDataAction = null,
