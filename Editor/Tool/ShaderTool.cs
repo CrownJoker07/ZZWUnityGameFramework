@@ -36,7 +36,6 @@ public class ShaderTool
     
     public static void ResetEditorShader(UnityEngine.Object unityEngineObject, string assetName)
     {
-#if UNITY_EDITOR
         CheckAndCreateIShaderTool();
         
         UnityEngine.Object tempObject = UnityEditor.AssetDatabase.LoadAssetAtPath(assetName, unityEngineObject.GetType());
@@ -46,7 +45,6 @@ public class ShaderTool
         List<Material> materials = GetAllMaterial(unityEngineObject);
 
         UseEditorShader(editorMaterials, materials);
-#endif
     }
 
     private static List<Material> GetAllMaterial(UnityEngine.Object tempObject)
