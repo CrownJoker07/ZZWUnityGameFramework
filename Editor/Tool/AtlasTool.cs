@@ -36,6 +36,13 @@ public class AtlasTool
     [UnityEditor.MenuItem("Tools/Sprites/Auto Create SpriteAtlas", false, 0)]
     public static void AutoCreateAtlas()
     {
+        string atlasFullPath = GetFullPath(AtlasPath);
+        
+        if (!Directory.Exists(atlasFullPath))
+        {
+            Directory.CreateDirectory(atlasFullPath);
+        }
+        
         string spriteFullPath = GetFullPath(SpritePath);
 
         if (!Directory.Exists(spriteFullPath))
