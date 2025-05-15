@@ -91,14 +91,20 @@ public abstract class UniversalTab : MonoBehaviour
     protected virtual void SelectEvent()
     {
         _selectAction?.Invoke(_tabType);
-        _button.enabled = false;
+        if (_button)
+        {
+            _button.enabled = false;
+        }
         _universalISelectTabPanel?.Select(_tabType);
     }
 
     protected virtual void UnSelectEvent()
     {
         _unSelectAction?.Invoke(_tabType);
-        _button.enabled = true;
+        if (_button)
+        {
+            _button.enabled = true;
+        }
         _universalISelectTabPanel?.UnSelect(_tabType);
     }
 }
