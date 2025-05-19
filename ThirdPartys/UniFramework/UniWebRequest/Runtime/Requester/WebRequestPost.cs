@@ -25,7 +25,7 @@ namespace UniFramework.WebRequest
 
 			if (_webRequest == null)
 			{
-				_webRequest = UnityWebRequest.Post(URL, post);
+				_webRequest = UnityWebRequest.PostWwwForm(URL, post);
 				SetRequestHeader(headers);
 				SendRequestInternal(timeout);
 			}
