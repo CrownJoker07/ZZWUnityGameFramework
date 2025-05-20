@@ -98,8 +98,9 @@ public class RedPointSystem : Singleton<RedPointSystem>
                     }
                 }
             }
-            
-            if (!haveRedPointChild && _redPointFunc != null)
+
+            // 没有子节点或者红点数量为零时，父级自己重新计算一遍
+            if ((!haveRedPointChild || tempRedPointNum == 0) && _redPointFunc != null)
             {
                 tempRedPointNum = _redPointFunc.Invoke();
             }
