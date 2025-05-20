@@ -13,7 +13,7 @@ public class UniversalSelectTabGroup : MonoBehaviour
         {
             if (_isDynamic)
             {
-                gameObject.GetComponentsInChildren(true, _universalTabs);
+                gameObject.GetComponentsInChildren(false, _universalTabs);
             }
 
             return _universalTabs;
@@ -27,7 +27,7 @@ public class UniversalSelectTabGroup : MonoBehaviour
         _isDynamic = isDynamic;
         if (!isDynamic)
         {
-            gameObject.GetComponentsInChildren(true, _universalTabs);
+            gameObject.GetComponentsInChildren(false, _universalTabs);
         }
     }
 
