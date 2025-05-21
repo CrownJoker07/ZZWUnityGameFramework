@@ -131,8 +131,11 @@ public partial class ResourceIdentificationTool
         InitXMLFile();
         InitResourceIdentificationType();
 
-        UnityEditor.AssetDatabase.SaveAssets();
-        UnityEditor.AssetDatabase.Refresh();
+        UnityEditor.EditorApplication.delayCall += () =>
+        {
+            UnityEditor.AssetDatabase.SaveAssets();
+            UnityEditor.AssetDatabase.Refresh();
+        };
     }
 
     private static void InitXMLFile()
