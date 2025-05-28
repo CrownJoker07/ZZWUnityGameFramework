@@ -23,4 +23,20 @@ public class StringConvertUtility
         string decodedString = Encoding.UTF8.GetString(decodedBytes);
         return decodedString;
     }
+    
+    public static string BytesToBase64(byte[] bytes)
+    {
+        // 将字节数组转换为Base64编码的字符串
+        string base64String = Convert.ToBase64String(bytes);
+
+        return base64String;
+    }
+    
+    public static byte[] Base64ToBytes(string base64)
+    {
+        // 将Base64编码的字符串转换回字节数组
+        byte[] decodedBytes = Convert.FromBase64String(base64);
+
+        return decodedBytes;
+    }
 } 
