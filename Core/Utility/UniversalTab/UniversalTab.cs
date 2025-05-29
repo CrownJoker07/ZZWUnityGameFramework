@@ -30,7 +30,7 @@ public abstract class UniversalTab : MonoBehaviour
         _button.onClick.AddListener(Click_Button);
     }
 
-    public static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
+    private static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
     {
         T component = gameObject.GetComponent<T>();
         if (component == null)
@@ -62,7 +62,7 @@ public abstract class UniversalTab : MonoBehaviour
     {
     }
 
-    public virtual void Click_Button()
+    protected virtual void Click_Button()
     {
         _universalSelectTabGroup.SwitchTab(_tabType);
     }
