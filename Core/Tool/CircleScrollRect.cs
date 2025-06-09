@@ -209,7 +209,7 @@ public static class CircleScrollRectUtility
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
         Action<TNodeBase, TData> initDataAction = null,
         float spaceX = 10f, float spaceY = 10f, int maxColumn = 0, int maxRow = 0, Vector4 border = new Vector4(),
-        float safeOffset = 0f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical)
+        float safeOffset = 100f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical)
         where TCell : Component
         where TNodeBase : CirculateNodeBase, new()
     {
