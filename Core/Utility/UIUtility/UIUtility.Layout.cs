@@ -57,8 +57,8 @@ public static partial class UIUtility
        for (var index = 0; index < rectTransforms.Count; index++)
        {
            var rectTransform = rectTransforms[index];
-           rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-           rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+           rectTransform.anchorMin = new Vector2(0f, 1f);
+           rectTransform.anchorMax = new Vector2(0f, 1f);
            rectTransform.anchoredPosition = result[index];
        }
     }
@@ -270,24 +270,18 @@ public static partial class UIUtility
         float totalWidth = column * cellSize.x + (column - 1) * spacing.x;
         float totalHeight = row * cellSize.y + (row - 1) * spacing.y;
 
-        float startX = -totalWidth / 2 + cellSize.x / 2;
-        float startY = totalHeight / 2 - cellSize.y / 2;
+        float startX = (width - totalWidth) / 2f;
+        float startY = 0;
 
         for (int i = 0; i < totalCount; i++)
         {
             int rowIndex = i / column;
             int columnIndex = i % column;
 
-            float widthOfThisRow = Mathf.Min(column, totalCount - rowIndex * column) * cellSize.x +
-                                   Mathf.Max(0, Mathf.Min(column - 1, totalCount - rowIndex * column - 1)) *
-                                   spacing.x;
-            float startXOfThisRow = -widthOfThisRow / 2 + cellSize.x / 2;
-
-            float x = startXOfThisRow + columnIndex * (cellSize.x + spacing.x) - 0.5f * cellSize.x +
-                      cellSize.x * pivot.x;
+            float x = startX + columnIndex * (cellSize.x + spacing.x) + cellSize.x * pivot.x;
             x += borderValue.x;
-            
-            float y = startY - rowIndex * (cellSize.y + spacing.y) - 0.5f * cellSize.y + cellSize.y * pivot.y;
+
+            float y = startY - rowIndex * (cellSize.y + spacing.y) - cellSize.y * pivot.y;
             y -= borderValue.y;
 
             result.Add(new Vector2(x, y));
