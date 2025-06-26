@@ -60,7 +60,7 @@ public class RedPointSystem : Singleton<RedPointSystem>
         {
             if (!_redPointActions.Contains(redPointAction))
             {
-                Debug.LogError($"重复删除红点行为, 路径为:{GetPath()}");
+                // Debug.LogError($"重复删除红点行为, 路径为:{GetPath()}");
             }
 
             _redPointActions.Remove(redPointAction);
