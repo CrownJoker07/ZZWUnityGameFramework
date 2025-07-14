@@ -22,7 +22,7 @@ public static partial class UIUtility
             space, border);
     }
 
-    public static void Vertical<T>(this List<T> list, TextAnchor textAnchor, float space) where T : MonoBehaviour
+    public static void Vertical<T>(this List<T> list, TextAnchor textAnchor, float space = 10f) where T : MonoBehaviour
     {
         if (list.Count <= 0) return;
 
