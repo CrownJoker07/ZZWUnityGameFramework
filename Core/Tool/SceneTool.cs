@@ -4,22 +4,38 @@ using UnityEngine.SceneManagement;
 
 public class SceneTool
 {
+    public static Scene? GetScene(string sceneName)
+    {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+
+            if (scene.name != sceneName) continue;
+            if (!scene.isLoaded) continue;
+
+            return scene;
+        }
+
+        return null;
+    }
+
     public static Transform GetSceneTransformRoot(string sceneName, string name)
     {
         List<GameObject> allRoots = new List<GameObject>();
-        for (int i = 0; i < SceneManager.sceneCount; i++) {
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
             Scene scene = SceneManager.GetSceneAt(i);
-            
-            if(scene.name != sceneName) continue;
+
+            if (scene.name != sceneName) continue;
             if (!scene.isLoaded) continue;
-            
+
             allRoots.AddRange(scene.GetRootGameObjects());
         }
 
         foreach (var root in allRoots)
         {
             if (root.name != name) continue;
-            
+
             return root.transform;
         }
 
