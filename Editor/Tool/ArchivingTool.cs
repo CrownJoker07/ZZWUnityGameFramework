@@ -31,9 +31,9 @@ public class ArchivingTool : EditorWindow
 
         foreach (FileInfo info in directory.GetFiles(pattern))
         {
-            fileList.Add(info); 
+            fileList.Add(info);
         }
-        
+
         foreach (DirectoryInfo info in directory.GetDirectories())
         {
             GetFiles(info, pattern, ref fileList);
@@ -59,7 +59,7 @@ public class ArchivingTool : EditorWindow
                 UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(ArchivingPath);
                 AssetDatabase.OpenAsset(obj);
             }
-            
+
             if (GUILayout.Button("跳转真机存档位置"))
             {
                 UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(RealArchivingPath);
@@ -69,7 +69,7 @@ public class ArchivingTool : EditorWindow
             if (GUILayout.Button("清空本地数据"))
             {
                 PlayerPrefsUtility.DeleteAllData();
-            } 
+            }
         }
         EditorGUILayout.EndHorizontal();
 
@@ -89,8 +89,6 @@ public class ArchivingTool : EditorWindow
                     EditorGUILayout.TextArea(
                         fileInfo.Name.Substring(0, fileInfo.Name.Length - fileInfo.Extension.Length),
                         GUILayout.Height(30));
-                    EditorGUILayout.LabelField($"{fileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture)}",
-                        GUILayout.Height(30), GUILayout.Width(125));
 
                     if (GUILayout.Button("Load", GUILayout.Height(30), GUILayout.Width(40)))
                     {
@@ -101,6 +99,9 @@ public class ArchivingTool : EditorWindow
                             UnityEditor.EditorApplication.isPlaying = true;
                         }
                     }
+
+                    EditorGUILayout.LabelField($"{fileInfo.LastWriteTime.ToString(CultureInfo.InvariantCulture)}",
+                        GUILayout.Height(30), GUILayout.Width(125));
                 }
                 EditorGUILayout.EndHorizontal();
             }
@@ -123,7 +124,7 @@ public class ArchivingTool : EditorWindow
             {
                 if (!string.IsNullOrEmpty(_archivingName))
                 {
-                    _screeningTag = _archivingName; 
+                    _screeningTag = _archivingName;
                 }
             }
 
@@ -133,8 +134,8 @@ public class ArchivingTool : EditorWindow
                 {
                     PlayerPrefsUtility.LoadDataJson_Base64(GUIUtility.systemCopyBuffer);
                 }
-            } 
-            
+            }
+
             if (GUILayout.Button("Save", GUILayout.Height(30)))
             {
                 if (!string.IsNullOrEmpty(_archivingName))
@@ -149,10 +150,10 @@ public class ArchivingTool : EditorWindow
     private void LoadArchiving(FileInfo fileInfo)
     {
         TextAsset textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(GetAssetPath(fileInfo.FullName));
-        
+
         PlayerPrefsUtility.LoadDataJson(textAsset.text);
     }
-    
+
     private static string GetAssetPath(string fullPath)
     {
         int index = fullPath.IndexOf("Assets", StringComparison.Ordinal);
@@ -162,12 +163,12 @@ public class ArchivingTool : EditorWindow
     private void SaveArchiving()
     {
         string dataJson = PlayerPrefsUtility.GetDataJson();
-        
+
         File.WriteAllText($"{ArchivingPath}/{_archivingName}.json", dataJson,
             Encoding.UTF8);
 
         AssetDatabase.Refresh();
-        
+
         RefreshUI();
     }
 
