@@ -419,7 +419,7 @@ public static class PrefabBinderTool_Static
             }
 
             // prefabBinderTool.AutoBindTool();
-            
+
             prefabBinderTool.AutoBindComponent();
         }
     }
@@ -590,9 +590,10 @@ public static class PrefabBinderTool_Static
         }
 
         string temString = String.Empty;
-        for (int i = 0; i < indentCount; i++)
+        int tabCount = indentCount / 4;
+        for (int i = 0; i < tabCount; i++)
         {
-            temString += " ";
+            temString += '\t';
         }
 
         return temString;
@@ -642,7 +643,7 @@ public static class PrefabBinderTool_Static
         string scriptPath = UnityEditor.AssetDatabase.GetAssetPath(script);
         return scriptPath;
     }
-    
+
     public static void AutoBindComponent(this PrefabBinderTool prefabBinderTool)
     {
         // 获取类型
@@ -655,10 +656,10 @@ public static class PrefabBinderTool_Static
                 BindingFlags.NonPublic |
                 BindingFlags.Instance |
                 BindingFlags.DeclaredOnly);
-            
-            if(fieldInfo == null) continue;
-            
-            if((Component)fieldInfo.GetValue(prefabBinderTool.targetComponent) == bindInfo.component) continue;
+
+            if (fieldInfo == null) continue;
+
+            if ((Component)fieldInfo.GetValue(prefabBinderTool.targetComponent) == bindInfo.component) continue;
 
             fieldInfo.SetValue(prefabBinderTool.targetComponent, bindInfo.component);
             isChange = true;
