@@ -85,7 +85,7 @@ public class PrefabBinderTool : MonoBehaviour
                 string transformName = GetName();
                 string typeName = component.GetType().Name;
 
-                if (transformName == typeName)
+                if (transformName == typeName || transformName.Contains(typeName))
                 {
                     fieldInfoName = transformName;
                 }
