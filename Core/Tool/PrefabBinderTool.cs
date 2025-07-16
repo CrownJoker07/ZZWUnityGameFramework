@@ -244,7 +244,7 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
         {
             case EventType.DragUpdated:
             {
-                //改变鼠标的外表  
+                //改变鼠标的外表
                 UnityEditor.DragAndDrop.visualMode = UnityEditor.DragAndDropVisualMode.Copy;
                 break;
             }
@@ -590,10 +590,10 @@ public static class PrefabBinderTool_Static
         }
 
         string temString = String.Empty;
-        int tabCount = indentCount / 4;
-        for (int i = 0; i < tabCount; i++)
+
+        for (int i = 0; i < indentCount; i++)
         {
-            temString += '\t';
+            temString += ' ';
         }
 
         return temString;
