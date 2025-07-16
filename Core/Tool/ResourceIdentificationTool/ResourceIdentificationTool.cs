@@ -40,7 +40,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
 
                 _resourceIdentificationInfoMaps[resourceIdentificationInfo.AssetID] = resourceIdentificationInfo;
             }
-        } 
+        }
     }
 
     public string GetAssetPathById(int resourceIdentificationTypeId)
@@ -50,7 +50,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
             Debug.LogError($"工具没有初始化");
             return String.Empty;
         }
-        
+
         if (_resourceIdentificationInfoMaps.TryGetValue((int)resourceIdentificationTypeId,
                 out ResourceIdentificationInfo resourceIdentificationInfo))
         {
@@ -228,8 +228,8 @@ public partial class ResourceIdentificationTool
     public static void InitInEditor()
     {
         TextAsset textAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(Setting.XMLFilePath);
-        
-        Instance.InitResourceIdentificationInfos(textAsset); 
+
+        Instance.InitResourceIdentificationInfos(textAsset);
     }
 
     public static int GetNotSameAssetIDByRange(int startIndex)
