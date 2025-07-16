@@ -524,7 +524,7 @@ public static class PrefabBinderTool_Static
             }
         }
 
-        string whiteSpaces = GetWhiteSpaces(classDeclarationLine) + "\t";
+        string whiteSpaces = GetWhiteSpaces(classDeclarationLine) + "    ";
 
         string autoBindTag = "// AutoBindFieldInfo";
 
