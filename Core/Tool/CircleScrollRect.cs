@@ -1,7 +1,7 @@
 ﻿//------------------------------------------------------------
 // File : CircleScrollRect.cs
 // Email: mailto:zewei.zhuang@kingboat.io
-// Desc : 
+// Desc :
 //------------------------------------------------------------
 
 using System;
@@ -65,6 +65,12 @@ public abstract class CirculateNodeBase
 
         _attachParentPrefabPool.DeSpawn(_indexID, (MonoBehaviour)ObjectPrefab);
         ObjectPrefab = null;
+
+        CustomDeSpawnNode();
+    }
+
+    protected virtual void CustomDeSpawnNode()
+    {
     }
 
     public virtual void CheckBorder(float topBorder, float bottomBorder, float leftBorder, float rightBorder)
@@ -171,8 +177,8 @@ public class CircleScrollRect : ScrollRect
 
     protected override void LateUpdate()
     {
-        if(transform.lossyScale == Vector3.zero) return;
-        
+        if (transform.lossyScale == Vector3.zero) return;
+
         base.LateUpdate();
     }
 }
@@ -192,18 +198,18 @@ public static class CircleScrollRectUtility
     {
         float leftBorder = border.x;
         float rightBorder = border.z;
-        
+
         RectTransform cellRectTransform = attachParentPrefabPool.GetObjectPrefabGameObject(indexID)
             .GetComponent<RectTransform>();
         Rect cellRect = cellRectTransform.rect;
         Rect rect = circleScrollRect.viewport.rect;
-        
+
         int maxColumn = (int)((rect.width + spaceX + leftBorder + rightBorder) /
-                              (cellRect.width + spaceX + leftBorder + rightBorder)); 
-        
+                              (cellRect.width + spaceX + leftBorder + rightBorder));
+
         return maxColumn;
     }
-    
+
     // border的值分别为左上右下
     public static CircleScrollData InitData<TCell, TNodeBase, TData>(this CircleScrollRect circleScrollRect,
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
@@ -214,7 +220,7 @@ public static class CircleScrollRectUtility
         where TNodeBase : CirculateNodeBase, new()
     {
         CircleScrollData circleScrollData = new CircleScrollData();
-        
+
         float height = 0;
         float width = 0;
 
@@ -222,12 +228,12 @@ public static class CircleScrollRectUtility
             .GetComponent<RectTransform>();
         Rect cellRect = cellRectTransform.rect;
         Rect rect = circleScrollRect.viewport.rect;
-        
+
         float leftBorder = border.x;
         float rightBorder = border.z;
         float topBorder = border.y;
         float bottomBorder = border.w;
-        
+
         float offsetX = 0;
         switch (axis)
         {
@@ -255,7 +261,7 @@ public static class CircleScrollRectUtility
 
         if (maxColumn <= 0) maxColumn = 1;
         if (maxRow <= 0) maxRow = 1;
-        
+
         // 计算节点位置
         List<Vector2> customAnchorPosition = new List<Vector2>(dataList.Count);
 
@@ -269,7 +275,7 @@ public static class CircleScrollRectUtility
 
             customAnchorPosition.Add(new Vector2(x + leftBorder, y - topBorder));
         }
-        
+
         // 生成节点
         List<CirculateNodeBase> circulateNodes = new List<CirculateNodeBase>();
 
@@ -288,16 +294,16 @@ public static class CircleScrollRectUtility
         }
 
         int tempColumn = totalCount > maxColumn ? maxColumn : totalCount;
-        
+
         width = tempColumn * (cellRect.width + spaceX) - spaceX;
         height = (Mathf.CeilToInt(totalCount / (float)maxColumn)) * (cellRect.height + spaceY) - spaceY;
 
         circleScrollData.ContentLimitSizeDelta.x = width;
         circleScrollData.ContentLimitSizeDelta.y = height;
-            
+
         width += leftBorder + rightBorder;
         height += topBorder + bottomBorder;
-        
+
         circleScrollRect.InitData(circulateNodes,
             new Vector2(Mathf.Abs(width), Mathf.Abs(height)), cellRect.height + safeOffset);
 
