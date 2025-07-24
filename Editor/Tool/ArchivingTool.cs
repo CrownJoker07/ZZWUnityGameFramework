@@ -24,6 +24,15 @@ public class ArchivingTool : EditorWindow
     private string _archivingName = String.Empty;
     private string _screeningTag = String.Empty;
     private static List<FileInfo> _fileInfoList = new List<FileInfo>();
+    private string _yearInput = String.Empty;
+    private string _monthInput = String.Empty;
+    private string _dayInput = String.Empty;
+    private string _hourInput = String.Empty;
+    private string _minuteInput = String.Empty;
+    private string _secondInput = String.Empty;
+    private bool _isRefresh;
+    public static event Action<DateTime> OnJumpTimeAction;
+    public static Func<DateTime> GetNowTimeFunc;
 
     private static void GetFiles(DirectoryInfo directory, string pattern, ref List<FileInfo> fileList)
     {
@@ -69,6 +78,100 @@ public class ArchivingTool : EditorWindow
             if (GUILayout.Button("清空本地数据"))
             {
                 PlayerPrefsUtility.DeleteAllData();
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        {
+            float height = 20;
+            float width = 20;
+            float labelWidth = 17;
+
+            _isRefresh = GUILayout.Toggle(_isRefresh, "刷新", GUILayout.Height(height));
+            if (_isRefresh)
+            {
+                DateTime dateTime = GetNowTimeFunc?.Invoke() ?? DateTime.Now;
+
+                _yearInput = dateTime.Year.ToString();
+                _monthInput = dateTime.Month.ToString();
+                _dayInput = dateTime.Day.ToString();
+                _hourInput = dateTime.Hour.ToString();
+                _minuteInput = dateTime.Minute.ToString();
+                _secondInput = dateTime.Second.ToString();
+            }
+
+            // 年输入框
+            EditorGUILayout.LabelField("年:", GUILayout.Width(labelWidth), GUILayout.Height(height));
+            _yearInput = EditorGUILayout.TextField(_yearInput, GUILayout.Width(40), GUILayout.Height(height));
+
+            // 月输入框
+            EditorGUILayout.LabelField("月:", GUILayout.Width(labelWidth), GUILayout.Height(height));
+            _monthInput = EditorGUILayout.TextField(_monthInput, GUILayout.Width(width), GUILayout.Height(height));
+
+            // 日输入框
+            EditorGUILayout.LabelField("日:", GUILayout.Width(labelWidth), GUILayout.Height(height));
+            _dayInput = EditorGUILayout.TextField(_dayInput, GUILayout.Width(width), GUILayout.Height(height));
+
+            // 时输入框
+            EditorGUILayout.LabelField("时:", GUILayout.Width(labelWidth), GUILayout.Height(height));
+            _hourInput = EditorGUILayout.TextField(_hourInput, GUILayout.Width(width), GUILayout.Height(height));
+
+            // 分输入框
+            EditorGUILayout.LabelField("分:", GUILayout.Width(labelWidth), GUILayout.Height(height));
+            _minuteInput = EditorGUILayout.TextField(_minuteInput, GUILayout.Width(width), GUILayout.Height(height));
+
+            // 秒输入框
+            EditorGUILayout.LabelField("秒:", GUILayout.Width(labelWidth), GUILayout.Height(height));
+            _secondInput = EditorGUILayout.TextField(_secondInput, GUILayout.Width(width), GUILayout.Height(height));
+
+            if (GUILayout.Button("跳转", GUILayout.Height(height)))
+            {
+                int year = int.Parse(_yearInput);
+                int month = int.Parse(_monthInput);
+                int day = int.Parse(_dayInput);
+                int hour = int.Parse(_hourInput);
+                int minute = int.Parse(_minuteInput);
+                int second = int.Parse(_secondInput);
+
+                DateTime targetTime = new DateTime(year, month, day, hour, minute, second);
+
+                OnJumpTimeAction?.Invoke(targetTime);
+            }
+            if (GUILayout.Button("重置", GUILayout.Height(height)))
+            {
+                DateTime nowTime = DateTime.Now;
+
+                _yearInput = nowTime.Year.ToString();
+                _monthInput = nowTime.Month.ToString();
+                _dayInput = nowTime.Day.ToString();
+                _hourInput = nowTime.Hour.ToString();
+                _minuteInput = nowTime.Minute.ToString();
+                _secondInput = nowTime.Second.ToString();
+
+                OnJumpTimeAction?.Invoke(nowTime);
+            }
+
+            if (GUILayout.Button("跨天", GUILayout.Height(height)))
+            {
+                int year = int.Parse(_yearInput);
+                int month = int.Parse(_monthInput);
+                int day = int.Parse(_dayInput);
+                int hour = 0;
+                int minute = 0;
+                int second = 0;
+
+                DateTime dateTime = new DateTime(year, month, day, hour, minute, second);
+                dateTime = dateTime.AddDays(1);
+
+                _yearInput = dateTime.Year.ToString();
+                _monthInput = dateTime.Month.ToString();
+                _dayInput = dateTime.Day.ToString();
+                _hourInput = dateTime.Hour.ToString();
+                _minuteInput = dateTime.Minute.ToString();
+                _secondInput = dateTime.Second.ToString();
+
+                OnJumpTimeAction?.Invoke(dateTime);
             }
         }
         EditorGUILayout.EndHorizontal();
