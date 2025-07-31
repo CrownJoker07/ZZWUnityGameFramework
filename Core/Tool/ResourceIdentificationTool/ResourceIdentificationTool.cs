@@ -22,20 +22,17 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
 
     public void InitResourceIdentificationInfos(TextAsset textAsset)
     {
-        XmlDocument xmlDoc = new XmlDocument();
-        xmlDoc.LoadXml(textAsset.text);
-
-        // 读取XML文件中的数据
-        XmlNodeList selectNodes = xmlDoc.SelectNodes("//Resource"); // 替换为你的XML文件中的节点路径
-
-        if (selectNodes != null)
+        using (MemoryStream ms = new MemoryStream(textAsset.bytes))
+        using (BinaryReader reader = new BinaryReader(ms))
         {
-            foreach (XmlNode node in selectNodes)
+            // 读取资源数量
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
             {
                 ResourceIdentificationInfo resourceIdentificationInfo = new ResourceIdentificationInfo()
                 {
-                    AssetID = int.Parse(node.Attributes["AssetID"].Value),
-                    AssetPath = node.Attributes["AssetPath"].Value,
+                    AssetID = reader.ReadInt32(),
+                    AssetPath = reader.ReadString(),
                 };
 
                 _resourceIdentificationInfoMaps[resourceIdentificationInfo.AssetID] = resourceIdentificationInfo;
@@ -54,7 +51,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
         if (_resourceIdentificationInfoMaps.TryGetValue((int)resourceIdentificationTypeId,
                 out ResourceIdentificationInfo resourceIdentificationInfo))
         {
-            return resourceIdentificationInfo.AssetPath;
+            return $"Assets/{resourceIdentificationInfo.AssetPath}";
         }
         else
         {
@@ -118,7 +115,7 @@ public partial class ResourceIdentificationTool
             ResourceIdentificationInfo resourceIdentificationInfo = new ResourceIdentificationInfo()
             {
                 AssetID = assetID,
-                AssetPath = assetPath,
+                AssetPath = assetPath.Replace("Assets/", ""),
             };
 
             _resourceIdentificationInfoMaps_Static[resourceIdentificationInfo.AssetID] = resourceIdentificationInfo;
@@ -128,7 +125,7 @@ public partial class ResourceIdentificationTool
         _resourceIdentificationInfoMaps_Static =
             _resourceIdentificationInfoMaps_Static.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
-        InitXMLFile();
+        InitFile();
         InitResourceIdentificationType();
 
         UnityEditor.EditorApplication.delayCall += () =>
@@ -138,28 +135,24 @@ public partial class ResourceIdentificationTool
         };
     }
 
-    private static void InitXMLFile()
+    private static void InitFile()
     {
-        // 创建XML文档
-        XmlDocument xmlDoc = new XmlDocument();
-
-        XmlElement rootElement = xmlDoc.CreateElement("ResourcesIdentification");
-        xmlDoc.AppendChild(rootElement);
-
-        foreach (var resourceIdentificationInfoMap in _resourceIdentificationInfoMaps_Static)
+        // 打开文件流以写入二进制数据
+        using (FileStream fileStream = new FileStream(Setting.FilePath, FileMode.Create))
+        using (BinaryWriter writer = new BinaryWriter(fileStream))
         {
-            ResourceIdentificationInfo resourceIdentificationInfo = resourceIdentificationInfoMap.Value;
-            // 创建XML元素并设置属性
-            XmlElement resourceElement = xmlDoc.CreateElement("Resource");
-            resourceElement.SetAttribute("AssetID", resourceIdentificationInfo.AssetID.ToString());
-            resourceElement.SetAttribute("AssetPath", resourceIdentificationInfo.AssetPath);
+            // 写入资源数量
+            writer.Write(_resourceIdentificationInfoMaps_Static.Count);
 
-            // 将资源元素添加到根元素
-            rootElement.AppendChild(resourceElement);
+            foreach (var resourceIdentificationInfoMap in _resourceIdentificationInfoMaps_Static)
+            {
+                ResourceIdentificationInfo resourceIdentificationInfo = resourceIdentificationInfoMap.Value;
+                // 写入AssetID
+                writer.Write(resourceIdentificationInfo.AssetID);
+                // 写入AssetPath
+                writer.Write(resourceIdentificationInfo.AssetPath);
+            }
         }
-
-        // 保存XML文档到文件
-        xmlDoc.Save(Setting.XMLFilePath);
     }
 
     private static void InitResourceIdentificationType()
@@ -227,7 +220,7 @@ public partial class ResourceIdentificationTool
 
     public static void InitInEditor()
     {
-        TextAsset textAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(Setting.XMLFilePath);
+        TextAsset textAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(Setting.FilePath);
 
         Instance.InitResourceIdentificationInfos(textAsset);
     }

@@ -5,15 +5,15 @@ using UnityEngine;
     menuName = "ResourceIdentificationTool/Create Setting")]
 public class ResourceIdentificationToolSetting : ScriptableObject
 {
-    public string XMLFilePath = "Assets/GameAsset/Configs/ResourcesIdentification.xml";
+    public string FilePath = "Assets/GameAsset/Configs/ResourcesIdentification.bytes";
     public string ResourceIdentificationTypeScriptPath =
         "Assets/Scripts/Definition/Enum/ResourceIdentificationType.cs";
-    
+
     public List<string> CheckPaths = new List<string>()
     {
         "Assets/GameAsset",
     };
-    
+
 #if UNITY_EDITOR
     /// <summary>
     /// 加载相关的配置文件
