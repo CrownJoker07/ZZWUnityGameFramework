@@ -16,13 +16,12 @@ public class GlobalTexturePostprocessorSetting : ScriptableObject
 
         public bool isReadable;
         public bool mipmapEnabled;
-        public bool alphaIsTransparency = true;
 
         public int maxTextureSize = -1;
-
+        
         // 各平台配置
         public List<TextureImporterPlatformSettings> platformSettings =
-            new List<TextureImporterPlatformSettings>();
+            new List<TextureImporterPlatformSettings>();  
     }
 
     public List<TextureImporterSettings> textureImporterSettings = new List<TextureImporterSettings>()
@@ -74,9 +73,9 @@ public class GlobalTexturePostprocessorSetting : ScriptableObject
             }
         }
     };
+    
 
-
-
+    
 #if UNITY_EDITOR
     /// <summary>
     /// 加载相关的配置文件

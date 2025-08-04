@@ -40,7 +40,7 @@ public class TexturePostprocessor : AssetPostprocessor
 
         return SizeList[SizeList.Count - 1];
     }
-
+    
     private static string? ExtractValueByKey(string key, string input)
     {
         // 转义键中的特殊字符（如正则符号）
@@ -53,8 +53,8 @@ public class TexturePostprocessor : AssetPostprocessor
 
     private void OnPreprocessTexture()
     {
-        if (assetPath.Contains(IgnoreTag)) return;
-
+        if(assetPath.Contains(IgnoreTag)) return;
+        
         GlobalTexturePostprocessorSetting globalTexturePostprocessorSetting =
             GlobalTexturePostprocessorSetting.LoadSettingData<GlobalTexturePostprocessorSetting>();
 
@@ -74,24 +74,17 @@ public class TexturePostprocessor : AssetPostprocessor
                 }
             }
         }
-
-        if (textureImporterSetting == null) return;
-
+        
+        if(textureImporterSetting == null) return;
+        
         TextureImporter textureImport = (TextureImporter)assetImporter;
 
         textureImport.mipmapEnabled = textureImporterSetting.mipmapEnabled;
         textureImport.isReadable = textureImporterSetting.isReadable;
         textureImport.textureType = textureImporterSetting.textureType;
 
-        if (textureImporterSetting.alphaIsTransparency)
-        {
-            bool haveAlpha = textureImport.DoesSourceTextureHaveAlpha();
-            textureImport.alphaIsTransparency = haveAlpha;
-        }
-        else
-        {
-            textureImport.alphaIsTransparency = false;
-        }
+        bool haveAlpha = textureImport.DoesSourceTextureHaveAlpha();
+        textureImport.alphaIsTransparency = haveAlpha;
 
         object[] args = new object[2] { 0, 0 };
         MethodInfo methodInfo = typeof(TextureImporter).GetMethod("GetWidthAndHeight",
@@ -125,7 +118,7 @@ public class TexturePostprocessor : AssetPostprocessor
             TextureImporterPlatformSettings settings = new TextureImporterPlatformSettings();
             platformSetting.CopyTo(settings);
             settings.maxTextureSize = adapterSize;
-
+            
             textureImport.SetPlatformTextureSettings(settings);
         }
 
