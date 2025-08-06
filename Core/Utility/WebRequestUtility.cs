@@ -55,10 +55,10 @@ public static class WebRequestUtility
     }
 
     public static WebRequestBase Post<T>(string url, object requestBody, Action<T> successAction = null,
-        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null)
+        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPost webRequestPost = new WebRequestPost(url);
-        webRequestPost.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers);
+        webRequestPost.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers, retryCount);
         webRequestPost.Completed += webRequestBase =>
         {
             CompletedEvent(webRequestBase, webRequestPost.GetResponse(), successAction, failAction);

@@ -17,36 +17,40 @@ namespace UniFramework.WebRequest
         /// </summary>
         /// <param name="post">POST的文本内容</param>
         /// <param name="timeout">超时：从请求开始计时</param>
-        public void SendRequest(string post, int timeout = 0, Dictionary<string, string> headers = null)
+        /// <param name="retryCount">重试次数</param>
+        public void SendRequest(string post, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
         {
-            // Check error
-            // if (string.IsNullOrEmpty(post))
-            // 	throw new Exception($"Web post content is null or empty : {URL}");
-
             if (_webRequest == null)
             {
-                _webRequest = UnityWebRequest.Post(URL, post, "application/json");
-                SetRequestHeader(headers);
-                SendRequestInternal(timeout);
+                DoSendRequestWithRetry(post, timeout, headers, retryCount);
             }
         }
 
-        /// <summary>
-        /// 发送POST请求
-        /// </summary>
-        /// <param name="form">POST的表单数据</param>
-        /// <param name="timeout">超时：从请求开始计时</param>
-        public void SendRequest(WWWForm form, int timeout = 0)
+        private void DoSendRequestWithRetry(string post, int timeout, Dictionary<string, string> headers, int remainingRetryCount)
         {
-            // Check error
-            if (form == null)
-                throw new Exception($"Web post content is null or empty : {URL}");
+            _webRequest = UnityWebRequest.Post(URL, post, "application/json");
+            SetRequestHeader(headers);
+            DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
+            _webRequest.downloadHandler = handler;
+            _webRequest.disposeDownloadHandlerOnDispose = true;
+            _webRequest.timeout = timeout;
+            _operation = _webRequest.SendWebRequest();
 
-            if (_webRequest == null)
+            _operation.completed += (op) =>
             {
-                _webRequest = UnityWebRequest.Post(URL, form);
-                SendRequestInternal(timeout);
-            }
+                if (_webRequest.result != UnityWebRequest.Result.Success && remainingRetryCount > 0)
+                {
+                    // 释放旧的请求
+                    _webRequest.Dispose();
+                    _webRequest = null;
+                    // 重试
+                    DoSendRequestWithRetry(post, timeout, headers, remainingRetryCount - 1);
+                }
+                else
+                {
+                    CompleteInternal(op);
+                }
+            };
         }
 
         /// <summary>
@@ -58,16 +62,6 @@ namespace UniFramework.WebRequest
                 return _webRequest.downloadHandler.text;
             else
                 return null;
-        }
-
-        private void SendRequestInternal(int timeout)
-        {
-            DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
-            _webRequest.downloadHandler = handler;
-            _webRequest.disposeDownloadHandlerOnDispose = true;
-            _webRequest.timeout = timeout;
-            _operation = _webRequest.SendWebRequest();
-            _operation.completed += CompleteInternal;
         }
     }
 }
