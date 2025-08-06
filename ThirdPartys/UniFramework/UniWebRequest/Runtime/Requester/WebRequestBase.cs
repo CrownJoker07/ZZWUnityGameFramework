@@ -150,6 +150,7 @@ namespace UniFramework.WebRequest
 
         public void SetRequestHeader(Dictionary<string, string> headers)
         {
+            headers.Clear();
             foreach (var header in headers)
             {
                 _webRequest.SetRequestHeader(header.Key, header.Value);
