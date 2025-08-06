@@ -15,6 +15,8 @@ namespace UniFramework.WebRequest
         protected UnityWebRequest _webRequest;
         protected UnityWebRequestAsyncOperation _operation;
         protected System.Action<WebRequestBase> _callback;
+        protected Action _retryAction;
+        public Action RetryAction => _retryAction;
 
         /// <summary>
         /// 请求URL地址
@@ -157,6 +159,17 @@ namespace UniFramework.WebRequest
         }
 
         /// <summary>
+        /// 获取响应的文本数据
+        /// </summary>
+        public string GetResponse()
+        {
+            if (_webRequest != null && IsDone())
+                return _webRequest.downloadHandler.text;
+            else
+                return null;
+        }
+
+        /// <summary>
         /// 释放下载器
         /// </summary>
         public void Dispose()
@@ -167,6 +180,7 @@ namespace UniFramework.WebRequest
                 _webRequest = null;
                 _operation = null;
                 _callback = null;
+                _retryAction = null;
             }
         }
 

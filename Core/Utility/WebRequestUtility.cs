@@ -37,45 +37,36 @@ public static class WebRequestUtility
                 break;
             }
         }
-
-        webRequestBase.Dispose();
     }
 
-    public static WebRequestBase Get<T>(string url, Action<T> successAction = null, Action failAction = null,
-        int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static WebRequestBase Get<T>(string url, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestGet webRequestGet = new WebRequestGet(url);
         webRequestGet.SendRequest(timeout, headers, retryCount);
-        webRequestGet.Completed += webRequestBase =>
-        {
-            CompletedEvent(webRequestBase, webRequestGet.GetResponse(), successAction, failAction);
-        };
 
         return webRequestGet;
     }
 
-    public static WebRequestBase Post<T>(string url, object requestBody, Action<T> successAction = null,
-        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static void AddCompleted<T>(this WebRequestBase webRequestBase, Action<T> successAction = null, Action failAction = null)
+    {
+        webRequestBase.Completed += webRequestBase =>
+        {
+            CompletedEvent(webRequestBase, webRequestBase.GetResponse(), successAction, failAction);
+        };
+    }
+
+    public static WebRequestBase Post<T>(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPost webRequestPost = new WebRequestPost(url);
         webRequestPost.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers, retryCount);
-        webRequestPost.Completed += webRequestBase =>
-        {
-            CompletedEvent(webRequestBase, webRequestPost.GetResponse(), successAction, failAction);
-        };
 
         return webRequestPost;
     }
 
-    public static WebRequestBase Put<T>(string url, object requestBody, Action<T> successAction = null,
-        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static WebRequestBase Put<T>(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPut webRequestPut = new WebRequestPut(url);
         webRequestPut.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers, retryCount);
-        webRequestPut.Completed += webRequestBase =>
-        {
-            CompletedEvent(webRequestBase, webRequestPut.GetResponse(), successAction, failAction);
-        };
 
         return webRequestPut;
     }

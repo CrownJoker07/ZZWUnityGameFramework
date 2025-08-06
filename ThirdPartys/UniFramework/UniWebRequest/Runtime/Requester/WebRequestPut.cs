@@ -23,6 +23,11 @@ namespace UniFramework.WebRequest
             if (_webRequest == null)
             {
                 DoSendRequestWithRetry(put, timeout, headers, retryCount);
+                int tempRetryCount = retryCount;
+                _retryAction = () =>
+                {
+                    DoSendRequestWithRetry(put, timeout, headers, tempRetryCount);
+                };
             }
         }
 
@@ -51,17 +56,6 @@ namespace UniFramework.WebRequest
                     CompleteInternal(op);
                 }
             };
-        }
-
-        /// <summary>
-        /// 获取响应的文本数据
-        /// </summary>
-        public string GetResponse()
-        {
-            if (_webRequest != null && IsDone())
-                return _webRequest.downloadHandler.text;
-            else
-                return null;
         }
     }
 }
