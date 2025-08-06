@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UniFramework.WebRequest;
 using UnityEngine;
 
-public class WebRequestCustomData
-{
-}
-
 public static class WebRequestUtility
 {
     private static void CompletedEvent<T>(WebRequestBase webRequestBase, string response,
@@ -14,6 +10,10 @@ public static class WebRequestUtility
     {
         switch (webRequestBase.Status)
         {
+            case EReqeustStatus.InProgress:
+            {
+                break;
+            }
             case EReqeustStatus.Succeed:
             {
                 T bodyData = JsonUtility.FromJson<T>(response);
@@ -29,13 +29,20 @@ public static class WebRequestUtility
                 failAction?.Invoke();
                 break;
             }
+            default:
+            {
+                Debug.LogError(
+                    $"URL:{webRequestBase.URL}\nResponse:{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}");
+                failAction?.Invoke();
+                break;
+            }
         }
-        
+
         webRequestBase.Dispose();
     }
 
     public static WebRequestBase Get<T>(string url, Action<T> successAction = null, Action failAction = null,
-        int timeout = 0, Dictionary<string, string> headers = null, WebRequestCustomData webRequestCustomData = null)
+        int timeout = 0, Dictionary<string, string> headers = null)
     {
         WebRequestGet webRequestGet = new WebRequestGet(url);
         webRequestGet.SendRequest(timeout, headers);
@@ -48,8 +55,7 @@ public static class WebRequestUtility
     }
 
     public static WebRequestBase Post<T>(string url, object requestBody, Action<T> successAction = null,
-        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null,
-        WebRequestCustomData webRequestCustomData = null)
+        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null)
     {
         WebRequestPost webRequestPost = new WebRequestPost(url);
         webRequestPost.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers);
@@ -62,8 +68,7 @@ public static class WebRequestUtility
     }
 
     public static WebRequestBase Put<T>(string url, object requestBody, Action<T> successAction = null,
-        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null,
-        WebRequestCustomData webRequestCustomData = null)
+        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null)
     {
         WebRequestPut webRequestPut = new WebRequestPut(url);
         webRequestPut.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers);
