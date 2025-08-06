@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UniFramework.WebRequest;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public static class WebRequestUtility
 {
@@ -16,7 +17,7 @@ public static class WebRequestUtility
             }
             case EReqeustStatus.Succeed:
             {
-                T bodyData = JsonUtility.FromJson<T>(response);
+                T bodyData = JsonConvert.DeserializeObject<T>(response);
                 successAction?.Invoke(bodyData);
                 break;
             }
@@ -58,7 +59,7 @@ public static class WebRequestUtility
     public static WebRequestBase Post<T>(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPost webRequestPost = new WebRequestPost(url);
-        webRequestPost.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers, retryCount);
+        webRequestPost.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
 
         return webRequestPost;
     }
@@ -66,7 +67,7 @@ public static class WebRequestUtility
     public static WebRequestBase Put<T>(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPut webRequestPut = new WebRequestPut(url);
-        webRequestPut.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers, retryCount);
+        webRequestPut.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
 
         return webRequestPut;
     }
