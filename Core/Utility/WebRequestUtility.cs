@@ -68,10 +68,10 @@ public static class WebRequestUtility
     }
 
     public static WebRequestBase Put<T>(string url, object requestBody, Action<T> successAction = null,
-        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null)
+        Action failAction = null, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPut webRequestPut = new WebRequestPut(url);
-        webRequestPut.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers);
+        webRequestPut.SendRequest(JsonUtility.ToJson(requestBody), timeout, headers, retryCount);
         webRequestPut.Completed += webRequestBase =>
         {
             CompletedEvent(webRequestBase, webRequestPut.GetResponse(), successAction, failAction);
