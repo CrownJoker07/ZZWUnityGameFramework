@@ -42,10 +42,10 @@ public static class WebRequestUtility
     }
 
     public static WebRequestBase Get<T>(string url, Action<T> successAction = null, Action failAction = null,
-        int timeout = 0, Dictionary<string, string> headers = null)
+        int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestGet webRequestGet = new WebRequestGet(url);
-        webRequestGet.SendRequest(timeout, headers);
+        webRequestGet.SendRequest(timeout, headers, retryCount);
         webRequestGet.Completed += webRequestBase =>
         {
             CompletedEvent(webRequestBase, webRequestGet.GetResponse(), successAction, failAction);
