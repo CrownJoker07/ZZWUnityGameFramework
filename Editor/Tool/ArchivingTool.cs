@@ -91,39 +91,42 @@ public class ArchivingTool : EditorWindow
             _isRefresh = GUILayout.Toggle(_isRefresh, "刷新", GUILayout.Height(height));
             if (_isRefresh)
             {
-                DateTime dateTime = GetNowTimeFunc?.Invoke() ?? DateTime.Now;
+                if (GetNowTimeFunc != null)
+                {
+                    DateTime dateTime = GetNowTimeFunc?.Invoke() ?? DateTime.Now;
 
-                _yearInput = dateTime.Year.ToString();
-                _monthInput = dateTime.Month.ToString();
-                _dayInput = dateTime.Day.ToString();
-                _hourInput = dateTime.Hour.ToString();
-                _minuteInput = dateTime.Minute.ToString();
-                _secondInput = dateTime.Second.ToString();
+                    _yearInput = dateTime.Year.ToString();
+                    _monthInput = dateTime.Month.ToString();
+                    _dayInput = dateTime.Day.ToString();
+                    _hourInput = dateTime.Hour.ToString();
+                    _minuteInput = dateTime.Minute.ToString();
+                    _secondInput = dateTime.Second.ToString();
+                }
             }
 
             // 年输入框
-            EditorGUILayout.LabelField("年:", GUILayout.Width(labelWidth), GUILayout.Height(height));
             _yearInput = EditorGUILayout.TextField(_yearInput, GUILayout.Width(40), GUILayout.Height(height));
+            EditorGUILayout.LabelField("年", GUILayout.Width(labelWidth), GUILayout.Height(height));
 
             // 月输入框
-            EditorGUILayout.LabelField("月:", GUILayout.Width(labelWidth), GUILayout.Height(height));
             _monthInput = EditorGUILayout.TextField(_monthInput, GUILayout.Width(width), GUILayout.Height(height));
+            EditorGUILayout.LabelField("月", GUILayout.Width(labelWidth), GUILayout.Height(height));
 
             // 日输入框
-            EditorGUILayout.LabelField("日:", GUILayout.Width(labelWidth), GUILayout.Height(height));
             _dayInput = EditorGUILayout.TextField(_dayInput, GUILayout.Width(width), GUILayout.Height(height));
+            EditorGUILayout.LabelField("日", GUILayout.Width(labelWidth), GUILayout.Height(height));
 
             // 时输入框
-            EditorGUILayout.LabelField("时:", GUILayout.Width(labelWidth), GUILayout.Height(height));
             _hourInput = EditorGUILayout.TextField(_hourInput, GUILayout.Width(width), GUILayout.Height(height));
+            EditorGUILayout.LabelField("时", GUILayout.Width(labelWidth), GUILayout.Height(height));
 
             // 分输入框
-            EditorGUILayout.LabelField("分:", GUILayout.Width(labelWidth), GUILayout.Height(height));
             _minuteInput = EditorGUILayout.TextField(_minuteInput, GUILayout.Width(width), GUILayout.Height(height));
+            EditorGUILayout.LabelField("分", GUILayout.Width(labelWidth), GUILayout.Height(height));
 
             // 秒输入框
-            EditorGUILayout.LabelField("秒:", GUILayout.Width(labelWidth), GUILayout.Height(height));
             _secondInput = EditorGUILayout.TextField(_secondInput, GUILayout.Width(width), GUILayout.Height(height));
+            EditorGUILayout.LabelField("秒", GUILayout.Width(labelWidth), GUILayout.Height(height));
 
             if (GUILayout.Button("跳转", GUILayout.Height(height)))
             {
