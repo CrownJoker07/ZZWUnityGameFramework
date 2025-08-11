@@ -202,7 +202,7 @@ namespace UniFramework.WebRequest
 
         bool IEnumerator.MoveNext()
         {
-            return !IsDone();
+            return _operation != null && !_operation.isDone;
         }
         void IEnumerator.Reset()
         {
