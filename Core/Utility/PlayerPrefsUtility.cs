@@ -12,7 +12,7 @@ public static class PlayerPrefsUtility
         public string type;
         public string content;
     }
-    
+
     private static Dictionary<string, PlayerPrefsData> GetAllData()
     {
         Dictionary<string, PlayerPrefsData> playerPrefsData = new Dictionary<string, PlayerPrefsData>();
@@ -24,31 +24,40 @@ public static class PlayerPrefsUtility
         foreach (string key in keys)
         {
             if (!PlayerPrefs.HasKey(key)) continue;
-            
+
             // 根据键的类型获取对应的数据
-            if (PlayerPrefs.GetInt(key, int.MinValue) != int.MinValue)
+            int intValue = PlayerPrefs.GetInt(key, int.MinValue);
+            if (intValue != int.MinValue)
             {
                 playerPrefsData[key] = new PlayerPrefsData()
                 {
                     type = "Int",
-                    content = PlayerPrefs.GetInt(key).ToString(),
+                    content = intValue.ToString(),
                 };
+                continue;
             }
-            else if (Math.Abs(PlayerPrefs.GetFloat(key, float.MinValue) - float.MinValue) > 0.0001f)
+
+            float floatValue = PlayerPrefs.GetFloat(key, float.MinValue);
+            if (Math.Abs(floatValue - float.MinValue) > 0.0001f)
             {
                 playerPrefsData[key] = new PlayerPrefsData()
                 {
                     type = "Float",
-                    content = PlayerPrefs.GetFloat(key).ToString(CultureInfo.InvariantCulture),
+                    content = floatValue.ToString(CultureInfo.InvariantCulture),
                 };
+                continue;
             }
-            else if (!string.IsNullOrEmpty(PlayerPrefs.GetString(key)))
+
+            string stringValue = PlayerPrefs.GetString(key);
+            if (!string.IsNullOrEmpty(stringValue))
             {
                 playerPrefsData[key] = new PlayerPrefsData()
                 {
                     type = "String",
-                    content = PlayerPrefs.GetString(key),
+                    content = stringValue,
                 };
+
+                continue;
             }
         }
 
@@ -105,7 +114,7 @@ public static class PlayerPrefsUtility
                 {
                     if (float.TryParse(content, out float resultFloat))
                     {
-                        PlayerPrefs.SetFloat(key, resultFloat); 
+                        PlayerPrefs.SetFloat(key, resultFloat);
                     }
                     break;
                 }
@@ -116,7 +125,7 @@ public static class PlayerPrefsUtility
                 }
             }
         }
-        
+
         PlayerPrefs.Save();
     }
 
