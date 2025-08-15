@@ -44,7 +44,11 @@ public abstract class CirculateNodeBase
         ObjectPrefab =
             _attachParentPrefabPool.Spawn(_indexID, _parentTransform, typeof(IObjectPrefab)) as IObjectPrefab;
 
-        if (ObjectPrefab == null) return;
+        if (ObjectPrefab == null)
+        {
+            Debug.LogError("ObjectPrefab == null");
+            return;
+        }
 
         if (ObjectPrefab is Component component)
         {
