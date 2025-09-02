@@ -141,6 +141,7 @@ public class ArchivingTool : EditorWindow
 
                 OnJumpTimeAction?.Invoke(targetTime);
             }
+
             if (GUILayout.Button("重置", GUILayout.Height(height)))
             {
                 DateTime nowTime = DateTime.Now;
@@ -175,6 +176,31 @@ public class ArchivingTool : EditorWindow
                 _secondInput = dateTime.Second.ToString();
 
                 OnJumpTimeAction?.Invoke(dateTime);
+            }
+        }
+        EditorGUILayout.EndHorizontal();
+
+
+        EditorGUILayout.BeginHorizontal();
+        {
+            float height = 20;
+            float width = 20;
+
+            // 年输入框
+            EditorGUILayout.LabelField("服务器开启时间：", GUILayout.Width(100), GUILayout.Height(height));
+            EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", EditorGUILayout.LongField(long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"))).ToString());
+
+            if (GUILayout.Button("+1D", GUILayout.Height(height)))
+            {
+                long serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
+                serverOpenTimeTimeStampMillis += 24 * 60 * 60 * 1000;
+                EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
+            }
+            if (GUILayout.Button("-1D", GUILayout.Height(height)))
+            {
+                long serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
+                serverOpenTimeTimeStampMillis -= 24 * 60 * 60 * 1000;
+                EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
             }
         }
         EditorGUILayout.EndHorizontal();
