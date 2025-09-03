@@ -188,17 +188,24 @@ public class ArchivingTool : EditorWindow
 
             // 年输入框
             EditorGUILayout.LabelField("服务器开启时间：", GUILayout.Width(100), GUILayout.Height(height));
-            EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", EditorGUILayout.LongField(long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"))).ToString());
+            long serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
+            if (serverOpenTimeTimeStampMillis == 0)
+            {
+                serverOpenTimeTimeStampMillis = 1754006400000;
+            }
+
+            EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", EditorGUILayout.LongField(serverOpenTimeTimeStampMillis).ToString());
 
             if (GUILayout.Button("+1D", GUILayout.Height(height)))
             {
-                long serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
+                serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
                 serverOpenTimeTimeStampMillis += 24 * 60 * 60 * 1000;
                 EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
             }
+
             if (GUILayout.Button("-1D", GUILayout.Height(height)))
             {
-                long serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
+                serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
                 serverOpenTimeTimeStampMillis -= 24 * 60 * 60 * 1000;
                 EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
             }
