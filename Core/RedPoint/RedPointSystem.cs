@@ -6,6 +6,8 @@ public class RedPointSystem : Singleton<RedPointSystem>
 {
     private const string RootTreeNodeName = "Root";
 
+    private readonly Dictionary<string, int> _callFrameDic = new Dictionary<string, int>();
+
     public class RedPointTreeNode
     {
         public string Name;
@@ -74,8 +76,8 @@ public class RedPointSystem : Singleton<RedPointSystem>
         public void NotifyAllRedPointActions()
         {
             // 根节点不刷新
-            if(Name == RootTreeNodeName) return;
-            
+            if (Name == RootTreeNodeName) return;
+
             int tempRedPointNum = 0;
 
             bool haveRedPointChild = false;
@@ -89,7 +91,7 @@ public class RedPointSystem : Singleton<RedPointSystem>
                         tempRedPointTreeNode._redPointActions.Count == 0) continue;
 
                     haveRedPointChild = true;
-                        
+
                     tempRedPointNum += tempRedPointTreeNode.RedPointNum;
 
                     if (tempRedPointNum > 0 && _noSpecificNum)
@@ -114,7 +116,7 @@ public class RedPointSystem : Singleton<RedPointSystem>
                     redPointAction.Invoke(_redPointNum);
                 }
             }
-            
+
             _parentRedPointTreeNode.NotifyAllRedPointActions();
         }
 
@@ -153,7 +155,7 @@ public class RedPointSystem : Singleton<RedPointSystem>
         RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
         redPointTreeNode.AddRedPointAction(redPointAction, redPointFunc, noSpecificNum);
     }
-    
+
     public static void AddListener(string path, Action<int> redPointAction, Func<bool> redPointFunc,
         bool noSpecificNum = false)
     {
@@ -174,6 +176,16 @@ public class RedPointSystem : Singleton<RedPointSystem>
     public static void Notify(string path)
     {
         RedPointSystem redPointSystem = Instance;
+
+        if (redPointSystem._callFrameDic.TryGetValue(path, out int lastCallFrame))
+        {
+            if (Time.frameCount - lastCallFrame < 1)
+            {
+                return;
+            }
+        }
+
+        redPointSystem._callFrameDic[path] = Time.frameCount;
 
         RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
 
