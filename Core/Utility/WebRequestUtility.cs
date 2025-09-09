@@ -40,7 +40,7 @@ public static class WebRequestUtility
         }
     }
 
-    public static WebRequestBase Get<T>(string url, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static WebRequestBase Get(string url, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestGet webRequestGet = new WebRequestGet(url);
         webRequestGet.SendRequest(timeout, headers, retryCount);
@@ -56,7 +56,7 @@ public static class WebRequestUtility
         };
     }
 
-    public static WebRequestBase Post<T>(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static WebRequestBase Post(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPost webRequestPost = new WebRequestPost(url);
         webRequestPost.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
@@ -64,7 +64,7 @@ public static class WebRequestUtility
         return webRequestPost;
     }
 
-    public static WebRequestBase Put<T>(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static WebRequestBase Put(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         WebRequestPut webRequestPut = new WebRequestPut(url);
         webRequestPut.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
