@@ -6,6 +6,13 @@ using System;
 using System.Globalization;
 using System.Text;
 
+public enum UseDataType
+{
+    None = 0,
+    UseServerData = 1,
+    UseLocalData = 2,
+}
+
 public class ArchivingTool : EditorWindow
 {
     [MenuItem("Tools/存档工具")]
@@ -31,6 +38,7 @@ public class ArchivingTool : EditorWindow
     private string _minuteInput = String.Empty;
     private string _secondInput = String.Empty;
     private bool _isRefresh;
+    private UseDataType _useDataType = UseDataType.None;
     public static event Action<DateTime> OnJumpTimeAction;
     public static Func<DateTime> GetNowTimeFunc;
 
@@ -184,7 +192,14 @@ public class ArchivingTool : EditorWindow
         EditorGUILayout.BeginHorizontal();
         {
             float height = 20;
-            float width = 20;
+            float width = 40;
+
+            _useDataType = (UseDataType)EditorGUILayout.EnumPopup(_useDataType, GUILayout.Height(height), GUILayout.Width(150));
+            int type = EditorPrefs.GetInt("ArchivingTool_UseDataType", (int)UseDataType.None);
+            if (type != (int)_useDataType)
+            {
+                EditorPrefs.SetInt("ArchivingTool_UseDataType", (int)_useDataType);
+            }
 
             // 年输入框
             EditorGUILayout.LabelField("服务器开启时间：", GUILayout.Width(100), GUILayout.Height(height));
@@ -196,14 +211,14 @@ public class ArchivingTool : EditorWindow
 
             EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", EditorGUILayout.LongField(serverOpenTimeTimeStampMillis).ToString());
 
-            if (GUILayout.Button("+1D", GUILayout.Height(height)))
+            if (GUILayout.Button("+1D", GUILayout.Height(height), GUILayout.Width(width)))
             {
                 serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
                 serverOpenTimeTimeStampMillis += 24 * 60 * 60 * 1000;
                 EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
             }
 
-            if (GUILayout.Button("-1D", GUILayout.Height(height)))
+            if (GUILayout.Button("-1D", GUILayout.Height(height), GUILayout.Width(width)))
             {
                 serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
                 serverOpenTimeTimeStampMillis -= 24 * 60 * 60 * 1000;
