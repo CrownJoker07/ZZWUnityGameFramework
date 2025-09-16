@@ -6,7 +6,7 @@ public static class ZipTool
 {
     public static void ZipDirectory(string sourceDirectoryPath, string outputZipPath, string passward = null)
     {
-        using (FileStream fileStream = File.Create(outputZipPath))
+        using (FileStream fileStream = new FileStream(outputZipPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
         {
             using (ZipOutputStream zipOutputStream = new ZipOutputStream(fileStream))
             {
