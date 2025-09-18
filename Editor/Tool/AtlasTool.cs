@@ -82,14 +82,13 @@ public class AtlasTool
 
     private static List<string> GetAllDirectories(string path)
     {
-        List<string> directories = new List<string>();
-
         if (IsHaveDirectoryAndFile(path))
         {
-            // 直接返回该目录
-            directories.Add(path);
-            return directories;
+            Debug.LogError($"图集处理失败:{path}，文件夹下同时存在文件和文件夹，请处理成文件夹下只能有文件夹或文件一种类型");
+            return null;
         }
+
+        List<string> directories = new List<string>();
 
         // 获取当前文件夹下的所有子文件夹
         string[] subDirectories = Directory.GetDirectories(path);
