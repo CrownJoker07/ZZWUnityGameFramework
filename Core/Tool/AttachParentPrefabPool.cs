@@ -50,7 +50,7 @@ public class AttachParentPrefabPool : MonoBehaviour
         for (var index = 0; index < prefabGameObjectList.Count; index++)
         {
             GameObject prefabGameObject = prefabGameObjectList[index];
-            
+
             prefabGameObject.transform.SetParent(ParentTransform);
             prefabGameObject.transform.localPosition = Vector3.zero;
 
@@ -58,7 +58,7 @@ public class AttachParentPrefabPool : MonoBehaviour
             _objectPrefabPoolDictionary[index] = new List<Component>();
         }
 
-        transform.localScale = Vector3.zero;
+        gameObject.SetActive(false);
     }
 
     public Component Spawn(int index, Transform parent, Type type)
@@ -84,7 +84,7 @@ public class AttachParentPrefabPool : MonoBehaviour
                 }
                 else
                 {
-                    GameObject tempGameObject =  GetObjectPrefabGameObject(index);
+                    GameObject tempGameObject = GetObjectPrefabGameObject(index);
                     tempComponent = Instantiate(tempGameObject).GetComponent(type);
                 }
             }
@@ -142,7 +142,7 @@ public class AttachParentPrefabPool : MonoBehaviour
             return objectPrefabStruct.ObjectPrefab;
         }
 
-        return null; 
+        return null;
     }
 
     public void DeSpawn(int index, Component monoBehaviour)
