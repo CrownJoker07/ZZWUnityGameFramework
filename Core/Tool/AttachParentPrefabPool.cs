@@ -57,7 +57,10 @@ public class AttachParentPrefabPool : MonoBehaviour
             _objectPrefabList.Add(ObjectPrefabStruct.Create(index, prefabGameObject));
             _objectPrefabPoolDictionary[index] = new List<Component>();
         }
+    }
 
+    private void Start()
+    {
         gameObject.SetActive(false);
     }
 
