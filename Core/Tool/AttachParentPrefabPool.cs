@@ -57,11 +57,9 @@ public class AttachParentPrefabPool : MonoBehaviour
             _objectPrefabList.Add(ObjectPrefabStruct.Create(index, prefabGameObject));
             _objectPrefabPoolDictionary[index] = new List<Component>();
         }
-    }
 
-    private void Start()
-    {
-        gameObject.SetActive(false);
+        // 挪到很远的地方去
+        transform.position = Vector3.one * 9999;
     }
 
     public Component Spawn(int index, Transform parent, Type type)
