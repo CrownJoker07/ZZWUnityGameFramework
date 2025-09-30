@@ -97,6 +97,9 @@ public class PrefabBinderTool : MonoBehaviour
                 }
             }
 
+            // fieldInfoName首字母小写
+            fieldInfoName = char.ToLower(fieldInfoName[0]) + fieldInfoName.Substring(1);
+
             return fieldInfoName;
         }
 
@@ -136,7 +139,7 @@ public class PrefabBinderTool : MonoBehaviour
                 typeName = componentType.FullName;
             }
 
-            string filedInfoString = $"[SerializeField] private {typeName} {GetFieldInfoName()};";
+            string filedInfoString = $"private {typeName} {GetFieldInfoName()};";
 
             return filedInfoString;
         }
@@ -683,6 +686,8 @@ public static class PrefabBinderTool_Static
         string temFiledInfoString = string.Empty;
         foreach (var bindInfo in prefabBinderTool.bindInfos)
         {
+            temFiledInfoString += "\n";
+            temFiledInfoString += whiteSpace + "[SerializeField]";
             temFiledInfoString += "\n";
             temFiledInfoString += whiteSpace + bindInfo.GetFiledInfoString(nameSpace);
             temFiledInfoString += "\n";
