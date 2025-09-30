@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Reflection;
+using UnityEngine;
 
 /*
  * 自动绑定工具 版本: V3.1.1，设计思路：
@@ -30,7 +30,8 @@ public class PrefabBinderTool : MonoBehaviour
         public string fieldInfoName = string.Empty;
 
 #if UNITY_EDITOR
-        [NonSerialized] public int componentTypeIndex = 0;
+        [NonSerialized]
+        public int componentTypeIndex = 0;
         private string[] _componentNames;
         private List<Type> _componentTypes;
 
@@ -55,7 +56,8 @@ public class PrefabBinderTool : MonoBehaviour
                     {
                         Type componentType = _componentTypes[index];
 
-                        if (componentType != component.GetType()) continue;
+                        if (componentType != component.GetType())
+                            continue;
 
                         componentTypeIndex = index;
                         break;
@@ -115,7 +117,11 @@ public class PrefabBinderTool : MonoBehaviour
             // 使用正则表达式匹配字母和数字
             string pattern = "[^a-zA-Z0-9]";
             string replacement = "";
-            string result = System.Text.RegularExpressions.Regex.Replace(input, pattern, replacement);
+            string result = System.Text.RegularExpressions.Regex.Replace(
+                input,
+                pattern,
+                replacement
+            );
             return result;
         }
 
@@ -130,8 +136,7 @@ public class PrefabBinderTool : MonoBehaviour
                 typeName = componentType.FullName;
             }
 
-            string filedInfoString =
-                $"[SerializeField] private {typeName} {GetFieldInfoName()};";
+            string filedInfoString = $"[SerializeField] private {typeName} {GetFieldInfoName()};";
 
             return filedInfoString;
         }
@@ -201,8 +206,11 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
             Component oldComponent = _prefabBinderTool.targetComponent;
 
             _prefabBinderTool.targetComponent =
-                UnityEditor.EditorGUILayout.ObjectField(_prefabBinderTool.targetComponent, typeof(Component), true) as
-                    Component;
+                UnityEditor.EditorGUILayout.ObjectField(
+                    _prefabBinderTool.targetComponent,
+                    typeof(Component),
+                    true
+                ) as Component;
 
             if (oldComponent != _prefabBinderTool.targetComponent)
             {
@@ -228,17 +236,22 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
         }
     }
 
-
     private void DrawAutoBindArea()
     {
         GUI.color = Color.green;
         //绘制一个监听区域
-        Rect dragArea = GUILayoutUtility.GetRect(0f, 40f, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+        Rect dragArea = GUILayoutUtility.GetRect(
+            0f,
+            40f,
+            GUILayout.ExpandWidth(true),
+            GUILayout.ExpandHeight(true)
+        );
         GUI.Box(dragArea, "Drag Game Object here Can Auto Bind");
 
         Event currentEvent = Event.current;
 
-        if (!dragArea.Contains(currentEvent.mousePosition)) return;
+        if (!dragArea.Contains(currentEvent.mousePosition))
+            return;
 
         switch (currentEvent.type)
         {
@@ -287,8 +300,14 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
 
             GUILayout.BeginHorizontal("box");
             {
-                if (GUILayout.Button("", "ToggleMixed", GUILayout.ExpandWidth(true),
-                        GUILayout.ExpandHeight(true)))
+                if (
+                    GUILayout.Button(
+                        "",
+                        "ToggleMixed",
+                        GUILayout.ExpandWidth(true),
+                        GUILayout.ExpandHeight(true)
+                    )
+                )
                 {
                     UnityEditor.Undo.RecordObject(_prefabBinderTool, "Remove binding info");
 
@@ -307,7 +326,9 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                         GUILayout.Label("FieldInfoName:", GUILayout.Width(90));
 
                         string oldFieldInfoName = bindInfo.fieldInfoName;
-                        bindInfo.fieldInfoName = UnityEditor.EditorGUILayout.TextField(bindInfo.GetFieldInfoName());
+                        bindInfo.fieldInfoName = UnityEditor.EditorGUILayout.TextField(
+                            bindInfo.GetFieldInfoName()
+                        );
                         if (oldFieldInfoName != bindInfo.fieldInfoName)
                         {
                             _prefabBinderTool.CreateCode();
@@ -320,8 +341,11 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                     {
                         Component oldComponent = bindInfo.component;
                         bindInfo.component =
-                            UnityEditor.EditorGUILayout.ObjectField(bindInfo.component, typeof(Component), true) as
-                                Component;
+                            UnityEditor.EditorGUILayout.ObjectField(
+                                bindInfo.component,
+                                typeof(Component),
+                                true
+                            ) as Component;
 
                         if (oldComponent != bindInfo.component)
                         {
@@ -337,13 +361,20 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                             string[] componentTypesNames = bindInfo.componentTypesNames;
 
                             int oldComponentTypeIndex = bindInfo.componentTypeIndex;
-                            bindInfo.componentTypeIndex =
-                                UnityEditor.EditorGUILayout.Popup(bindInfo.componentTypeIndex, componentTypesNames);
+                            bindInfo.componentTypeIndex = UnityEditor.EditorGUILayout.Popup(
+                                bindInfo.componentTypeIndex,
+                                componentTypesNames
+                            );
                             if (oldComponentTypeIndex != bindInfo.componentTypeIndex)
                             {
-                                UnityEditor.Undo.RecordObject(_prefabBinderTool, "Change binding info");
+                                UnityEditor.Undo.RecordObject(
+                                    _prefabBinderTool,
+                                    "Change binding info"
+                                );
 
-                                bindInfo.component = bindInfo.component.gameObject.GetComponent(bindInfo.componentType);
+                                bindInfo.component = bindInfo.component.gameObject.GetComponent(
+                                    bindInfo.componentType
+                                );
                                 bindInfo.SetKey();
                                 _prefabBinderTool.CheckKeyIsCorrect();
 
@@ -353,7 +384,9 @@ public class PrefabBinderTool_Editor : UnityEditor.Editor
                         }
                         else
                         {
-                            Debug.LogError($"name:{_prefabBinderTool.transform.name}, 存在空节点请处理");
+                            Debug.LogError(
+                                $"name:{_prefabBinderTool.transform.name}, 存在空节点请处理"
+                            );
                         }
                     }
                     GUILayout.EndHorizontal();
@@ -406,7 +439,8 @@ public static class PrefabBinderTool_Static
 
         foreach (var prefabBinderTool in prefabBinderTools)
         {
-            if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(prefabBinderTool)) continue;
+            if (UnityEditor.PrefabUtility.IsPartOfPrefabInstance(prefabBinderTool))
+                continue;
 
             for (var index = 0; index < prefabBinderTool.bindInfos.Count; index++)
             {
@@ -454,7 +488,11 @@ public static class PrefabBinderTool_Static
     //     }
     // }
 
-    public static bool AddBindInfo(this PrefabBinderTool prefabBinderTool, Component component, bool isAutoBind = false)
+    public static bool AddBindInfo(
+        this PrefabBinderTool prefabBinderTool,
+        Component component,
+        bool isAutoBind = false
+    )
     {
         if (prefabBinderTool.CheckIsExist(component, isAutoBind))
         {
@@ -474,15 +512,21 @@ public static class PrefabBinderTool_Static
         return true;
     }
 
-    private static bool CheckIsExist(this PrefabBinderTool prefabBinderTool, Component component,
-        bool isAutoBind = false)
+    private static bool CheckIsExist(
+        this PrefabBinderTool prefabBinderTool,
+        Component component,
+        bool isAutoBind = false
+    )
     {
         foreach (var bindInfo in prefabBinderTool.bindInfos)
         {
-            if (bindInfo.component == null) continue;
+            if (bindInfo.component == null)
+                continue;
 
-            if (bindInfo.component == component ||
-                (isAutoBind && bindInfo.component.transform == component))
+            if (
+                bindInfo.component == component
+                || (isAutoBind && bindInfo.component.transform == component)
+            )
             {
                 return true;
             }
@@ -528,7 +572,8 @@ public static class PrefabBinderTool_Static
 
         string autoBindTag = "// AutoBindFieldInfo";
 
-        string tempCodeString = $@"
+        string tempCodeString =
+            $@"
 {whiteSpaces}{autoBindTag}
 {GetAllCodeString(prefabBinderTool, namespaceName, whiteSpaces)}
 {whiteSpaces}{autoBindTag}
@@ -536,7 +581,11 @@ public static class PrefabBinderTool_Static
 
         // 从scriptText 找到被// AutoBindFieldInfo包住的文本
         int startIndex = scriptText.IndexOf(autoBindTag, StringComparison.Ordinal);
-        int endIndex = scriptText.IndexOf(autoBindTag, startIndex + autoBindTag.Length, StringComparison.Ordinal);
+        int endIndex = scriptText.IndexOf(
+            autoBindTag,
+            startIndex + autoBindTag.Length,
+            StringComparison.Ordinal
+        );
 
         if (startIndex > 0 && endIndex > 0)
         {
@@ -555,13 +604,20 @@ public static class PrefabBinderTool_Static
         System.IO.File.WriteAllText(scriptPath, scriptText);
     }
 
-    private static string InsertCodeIntoScript(string scriptText, string classDeclaration, string tempCodeString)
+    private static string InsertCodeIntoScript(
+        string scriptText,
+        string classDeclaration,
+        string tempCodeString
+    )
     {
         // 找到类名定义的行
         int classIndex = scriptText.IndexOf(classDeclaration, StringComparison.Ordinal);
 
         // 找到类名定义行的结束位置（即分号或大括号）
-        int classEndIndex = scriptText.IndexOfAny(new char[] { '{', ';' }, classIndex + classDeclaration.Length);
+        int classEndIndex = scriptText.IndexOfAny(
+            new char[] { '{', ';' },
+            classIndex + classDeclaration.Length
+        );
 
         // 确保在类名定义的下一行插入代码
         int insertIndex = classEndIndex + 1;
@@ -580,8 +636,10 @@ public static class PrefabBinderTool_Static
             if (char.IsWhiteSpace(c))
             {
                 // 如果是制表符，按项目规则转换（这里假设1个\t=4空格）
-                if (c == '\t') indentCount += 4;
-                else if (c == ' ') indentCount++;
+                if (c == '\t')
+                    indentCount += 4;
+                else if (c == ' ')
+                    indentCount++;
             }
             else
             {
@@ -599,12 +657,16 @@ public static class PrefabBinderTool_Static
         return temString;
     }
 
-
-    private static string GetAllCodeString(PrefabBinderTool prefabBinderTool, string nameSpace, string whiteSpace)
+    private static string GetAllCodeString(
+        PrefabBinderTool prefabBinderTool,
+        string nameSpace,
+        string whiteSpace
+    )
     {
         string codeString = string.Empty;
 
-        if (prefabBinderTool.bindInfos.Count <= 0) return codeString;
+        if (prefabBinderTool.bindInfos.Count <= 0)
+            return codeString;
 
         codeString += $"{whiteSpace}[Header(\"PrefabBinderTool\")]";
         codeString += GetBindCodeString(prefabBinderTool, nameSpace, whiteSpace);
@@ -612,7 +674,11 @@ public static class PrefabBinderTool_Static
         return codeString;
     }
 
-    private static string GetBindCodeString(this PrefabBinderTool prefabBinderTool, string nameSpace, string whiteSpace)
+    private static string GetBindCodeString(
+        this PrefabBinderTool prefabBinderTool,
+        string nameSpace,
+        string whiteSpace
+    )
     {
         string temFiledInfoString = string.Empty;
         foreach (var bindInfo in prefabBinderTool.bindInfos)
@@ -652,14 +718,19 @@ public static class PrefabBinderTool_Static
         bool isChange = false;
         foreach (var bindInfo in prefabBinderTool.bindInfos)
         {
-            System.Reflection.FieldInfo fieldInfo = scriptType.GetField(bindInfo.GetFieldInfoName(),
-                BindingFlags.NonPublic |
-                BindingFlags.Instance |
-                BindingFlags.DeclaredOnly);
+            System.Reflection.FieldInfo fieldInfo = scriptType.GetField(
+                bindInfo.GetFieldInfoName(),
+                BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly
+            );
 
-            if (fieldInfo == null) continue;
+            if (fieldInfo == null)
+                continue;
 
-            if ((Component)fieldInfo.GetValue(prefabBinderTool.targetComponent) == bindInfo.component) continue;
+            if (
+                (Component)fieldInfo.GetValue(prefabBinderTool.targetComponent)
+                == bindInfo.component
+            )
+                continue;
 
             fieldInfo.SetValue(prefabBinderTool.targetComponent, bindInfo.component);
             isChange = true;
@@ -672,13 +743,12 @@ public static class PrefabBinderTool_Static
     }
 
     // 检测所有 Key 是否唯一
-    public static void CheckKeyIsCorrect(this PrefabBinderTool prefabBinderTool)
-    {
-    }
+    public static void CheckKeyIsCorrect(this PrefabBinderTool prefabBinderTool) { }
 
     private static void OnHierarchyWindowItemOnGUI(int instanceID, Rect selectionRect)
     {
-        GameObject gameObject = UnityEditor.EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+        GameObject gameObject =
+            UnityEditor.EditorUtility.InstanceIDToObject(instanceID) as GameObject;
 
         if (gameObject == null)
         {
@@ -689,24 +759,16 @@ public static class PrefabBinderTool_Static
         {
             foreach (var bindInfo in prefabBinderTool.bindInfos)
             {
-                if (bindInfo.component == null) continue;
-                if (bindInfo.component.gameObject != gameObject) continue;
+                if (bindInfo.component == null)
+                    continue;
+                if (bindInfo.component.gameObject != gameObject)
+                    continue;
 
-                Rect rect = new Rect(selectionRect)
-                {
-                    x = 34,
-                    width = 80
-                };
+                Rect rect = new Rect(selectionRect) { x = 34, width = 80 };
                 GUIStyle style = new GUIStyle
                 {
-                    normal =
-                    {
-                        textColor = Color.yellow
-                    },
-                    active =
-                    {
-                        textColor = Color.red
-                    }
+                    normal = { textColor = Color.yellow },
+                    active = { textColor = Color.red },
                 };
                 GUI.Label(rect, "★", style);
             }
