@@ -97,9 +97,6 @@ public class PrefabBinderTool : MonoBehaviour
                 }
             }
 
-            // fieldInfoName首字母小写
-            fieldInfoName = char.ToLower(fieldInfoName[0]) + fieldInfoName.Substring(1);
-
             return fieldInfoName;
         }
 
