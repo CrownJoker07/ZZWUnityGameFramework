@@ -192,5 +192,11 @@ namespace UniFramework.Machine
             var nodeName = nodeType.FullName;
             return TryGetNode(nodeName);
         }
+
+        public IStateNode TryGetNode<T>()
+        {
+            var nodeName = typeof(T).FullName;
+            return TryGetNode(nodeName);
+        }
     }
 }
