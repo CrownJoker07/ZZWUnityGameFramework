@@ -6,12 +6,17 @@ public class BoundsTool
 {
     private static readonly Vector3[] s_Corners = new Vector3[4];
 
-    public static Bounds GetRectTransformBounds(Transform root, RectTransform child, Transform excludeTransform = null, bool isWorld = false)
+    public static Bounds GetBounds(Transform targetTransform, Transform excludeTransform = null, List<Transform> excludeTransforms = null)
     {
-        return CalculateRelativeRectTransformBounds(root, child, excludeTransform, isWorld);
+        if (targetTransform is RectTransform rectTransform)
+        {
+            return CalculateRelativeRectTransformBounds(rectTransform, excludeTransform, excludeTransforms);
+        }
+
+        return new Bounds(Vector3.zero, Vector3.zero);
     }
 
-    private static Bounds CalculateRelativeRectTransformBounds(Transform root, Transform child, Transform excludeTransform = null, bool isWorld = false)
+    private static Bounds CalculateRelativeRectTransformBounds(RectTransform child, Transform excludeTransform = null, List<Transform> excludeTransforms = null)
     {
         List<RectTransform> componentsInChildren = new List<RectTransform>();
         child.GetComponentsInChildren(false, componentsInChildren);
@@ -25,18 +30,28 @@ public class BoundsTool
             }
         }
 
+        if (excludeTransforms != null)
+        {
+            foreach (var temTransform in excludeTransforms)
+            {
+                if (temTransform is not RectTransform temRectTransform) continue;
+
+                componentsInChildren.Remove(temRectTransform);
+            }
+        }
+
         if (componentsInChildren.Count == 0)
             return new Bounds(Vector3.zero, Vector3.zero);
         Vector3 vector3_1 = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 vector3_2 = new Vector3(float.MinValue, float.MinValue, float.MinValue);
-        Matrix4x4 worldToLocalMatrix = root.worldToLocalMatrix;
+
         int index1 = 0;
         for (int length = componentsInChildren.Count; index1 < length; ++index1)
         {
             componentsInChildren[index1].GetWorldCorners(s_Corners);
             for (int index2 = 0; index2 < 4; ++index2)
             {
-                Vector3 lhs = isWorld ? s_Corners[index2] : worldToLocalMatrix.MultiplyPoint3x4(s_Corners[index2]);
+                Vector3 lhs = s_Corners[index2];
                 vector3_1 = Vector3.Min(lhs, vector3_1);
                 vector3_2 = Vector3.Max(lhs, vector3_2);
             }
