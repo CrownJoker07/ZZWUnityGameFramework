@@ -18,10 +18,11 @@ public class GlobalTexturePostprocessorSetting : ScriptableObject
         public bool mipmapEnabled;
 
         public int maxTextureSize = -1;
-        
+        public SpriteImportMode spriteImportMode = SpriteImportMode.Single;
+
         // 各平台配置
         public List<TextureImporterPlatformSettings> platformSettings =
-            new List<TextureImporterPlatformSettings>();  
+            new List<TextureImporterPlatformSettings>();
     }
 
     public List<TextureImporterSettings> textureImporterSettings = new List<TextureImporterSettings>()
@@ -73,9 +74,9 @@ public class GlobalTexturePostprocessorSetting : ScriptableObject
             }
         }
     };
-    
 
-    
+
+
 #if UNITY_EDITOR
     /// <summary>
     /// 加载相关的配置文件
