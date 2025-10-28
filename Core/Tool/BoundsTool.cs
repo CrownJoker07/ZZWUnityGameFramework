@@ -12,8 +12,41 @@ public class BoundsTool
         {
             return CalculateRelativeRectTransformBounds(rectTransform, excludeTransform, excludeTransforms);
         }
+        else
+        {
+            var bounds = new Bounds(targetTransform.position, Vector3.zero);
 
-        return new Bounds(Vector3.zero, Vector3.zero);
+            List<Transform> transforms = new List<Transform>();
+            targetTransform.GetComponentsInChildren(false, transforms);
+
+            if (excludeTransform)
+            {
+                Transform[] temTransforms = excludeTransform.GetComponentsInChildren<Transform>(false);
+                foreach (var temRectTransform in temTransforms)
+                {
+                    transforms.Remove(temRectTransform);
+                }
+            }
+
+            if (excludeTransforms != null)
+            {
+                foreach (var temTransform in excludeTransforms)
+                {
+                    transforms.Remove(temTransform);
+                }
+            }
+
+            foreach (var transform in transforms)
+            {
+                var collider2D = transform.GetComponent<Collider2D>();
+                if (collider2D != null)
+                {
+                    bounds.Encapsulate(collider2D.bounds);
+                }
+            }
+
+            return bounds;
+        }
     }
 
     private static Bounds CalculateRelativeRectTransformBounds(RectTransform child, Transform excludeTransform = null, List<Transform> excludeTransforms = null)
