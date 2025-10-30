@@ -98,6 +98,13 @@ public abstract class CirculateNodeBase
             SpawnNode();
         }
     }
+
+    public RectTransform GetTemTargetRectTransform()
+    {
+        GameObject prefabGameObject = _attachParentPrefabPool.GetObjectPrefabGameObject(_indexID);
+        RectTransform rectTransform = prefabGameObject.GetComponent<RectTransform>();
+        return rectTransform;
+    }
 }
 
 public class CircleScrollRect : ScrollRect
@@ -176,6 +183,11 @@ public class CircleScrollRect : ScrollRect
         {
             nodeInfo.CheckBorder(TopBorder, BottomBorder, LeftBorder, RightBorder);
         }
+    }
+
+    public RectTransform GetTemTargetRectTransform()
+    {
+        return _circulateNodeBases[0].GetTemTargetRectTransform();
     }
 
     public void RefreshNodes()
