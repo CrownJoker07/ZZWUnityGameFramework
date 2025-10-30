@@ -16,6 +16,7 @@ using UnityEngine.UI;
 // MVC框架中的数据层(Model)
 public abstract class CirculateNodeBase
 {
+    public string NodeName;
     protected float AnchorPositionX;
     public float AnchorPositionX_Public => AnchorPositionX;
     protected float AnchorPositionY;
@@ -61,6 +62,14 @@ public abstract class CirculateNodeBase
 
     protected virtual void CustomSpawnNode()
     {
+        if (NodeName != null)
+        {
+            if (ObjectPrefab is Component component)
+            {
+                NodeRect = component.GetComponent<RectTransform>();
+                NodeRect.name = NodeName;
+            }
+        }
     }
 
     public void DeSpawnNode()
