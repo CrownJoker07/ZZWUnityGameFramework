@@ -15,7 +15,7 @@ public class CameraTool
         return isInView;
     }
 
-    public static bool IsContainCullingMask(int cullingMask , int layer)
+    public static bool IsContainCullingMask(int cullingMask, int layer)
     {
         int targetLayerMask = 1 << layer;
 
@@ -33,10 +33,13 @@ public class CameraTool
         foreach (Camera camera in Camera.allCameras)
         {
             if (!camera.isActiveAndEnabled) continue;
-   
-            if(!IsInScreenByWorldPosition(camera, targetTransform.position)) continue;
-            
-            if(!IsContainCullingMask(camera.cullingMask, targetTransform.gameObject.layer)) continue;
+
+            if (!IsInScreenByWorldPosition(camera, targetTransform.position)) continue;
+
+            Canvas canvas = targetTransform.gameObject.GetComponentInParent<Canvas>();
+            if (canvas != null && canvas.worldCamera == camera) return camera;
+
+            if (!IsContainCullingMask(camera.cullingMask, targetTransform.gameObject.layer)) continue;
 
             return camera;
         }
