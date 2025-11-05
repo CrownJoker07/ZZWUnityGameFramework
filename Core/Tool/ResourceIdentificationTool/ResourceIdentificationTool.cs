@@ -131,7 +131,7 @@ public partial class ResourceIdentificationTool
         UnityEditor.EditorApplication.delayCall += () =>
         {
             UnityEditor.AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
+            // UnityEditor.AssetDatabase.Refresh();
         };
     }
 
