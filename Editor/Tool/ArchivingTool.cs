@@ -13,6 +13,13 @@ public enum UseDataType
     UseLocalData = 2,
 }
 
+public enum ServerType
+{
+    None = 0,
+    测试服 = 1,
+    正式服 = 2,
+}
+
 public class ArchivingTool : EditorWindow
 {
     [MenuItem("Tools/存档工具")]
@@ -39,6 +46,7 @@ public class ArchivingTool : EditorWindow
     private string _secondInput = String.Empty;
     private bool _isRefresh;
     private UseDataType _useDataType = UseDataType.None;
+    private ServerType _serverType = ServerType.None;
     public static event Action<DateTime> OnJumpTimeAction;
     public static Func<DateTime> GetNowTimeFunc;
 
@@ -59,6 +67,9 @@ public class ArchivingTool : EditorWindow
 
     private void OnEnable()
     {
+        _serverType = (ServerType)EditorPrefs.GetInt("ArchivingTool_ServerType", (int)ServerType.None);
+        _useDataType = (UseDataType)EditorPrefs.GetInt("ArchivingTool_UseDataType", (int)UseDataType.None);
+
         RefreshUI();
     }
 
@@ -194,7 +205,14 @@ public class ArchivingTool : EditorWindow
             float height = 20;
             float width = 40;
 
-            _useDataType = (UseDataType)EditorGUILayout.EnumPopup(_useDataType, GUILayout.Height(height), GUILayout.Width(150));
+            _serverType = (ServerType)EditorGUILayout.EnumPopup(_serverType, GUILayout.Height(height), GUILayout.Width(75));
+            int serverType = EditorPrefs.GetInt("ArchivingTool_ServerType", (int)ServerType.None);
+            if (serverType != (int)_serverType)
+            {
+                EditorPrefs.SetInt("ArchivingTool_ServerType", (int)_serverType);
+            }
+
+            _useDataType = (UseDataType)EditorGUILayout.EnumPopup(_useDataType, GUILayout.Height(height), GUILayout.Width(100));
             int type = EditorPrefs.GetInt("ArchivingTool_UseDataType", (int)UseDataType.None);
             if (type != (int)_useDataType)
             {
