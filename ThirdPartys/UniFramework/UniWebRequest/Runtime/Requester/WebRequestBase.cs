@@ -18,6 +18,8 @@ namespace UniFramework.WebRequest
         protected Action _retryAction;
         public Action RetryAction => _retryAction;
 
+        public string RequestBodyString;
+
         /// <summary>
         /// 请求URL地址
         /// </summary>
