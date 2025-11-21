@@ -25,6 +25,8 @@ namespace UniFramework.WebRequest
         /// </summary>
         public string URL { private set; get; }
 
+        public abstract string kHttpVerb { get; }
+
         /// <summary>
         /// 当前状态
         /// </summary>

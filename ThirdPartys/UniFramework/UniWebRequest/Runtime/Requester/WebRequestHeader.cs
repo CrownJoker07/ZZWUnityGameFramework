@@ -6,8 +6,10 @@ using UnityEngine.Networking;
 namespace UniFramework.WebRequest
 {
 	public sealed class WebRequestHeader : WebRequestBase
-	{
-		public WebRequestHeader(string url) : base(url)
+    {
+        public override string kHttpVerb => UnityWebRequest.kHttpVerbHEAD;
+
+        public WebRequestHeader(string url) : base(url)
 		{
 		}
 

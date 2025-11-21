@@ -8,6 +8,8 @@ namespace UniFramework.WebRequest
 {
     public sealed class WebRequestPut : WebRequestBase
     {
+        public override string kHttpVerb => UnityWebRequest.kHttpVerbPUT;
+
         public WebRequestPut(string url) : base(url)
         {
         }

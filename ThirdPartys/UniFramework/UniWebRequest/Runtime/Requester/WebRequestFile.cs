@@ -8,6 +8,8 @@ namespace UniFramework.WebRequest
 {
     public sealed class WebRequestFile : WebRequestBase
     {
+        public override string kHttpVerb => UnityWebRequest.kHttpVerbGET;
+
         public WebRequestFile(string url) : base(url)
         {
         }

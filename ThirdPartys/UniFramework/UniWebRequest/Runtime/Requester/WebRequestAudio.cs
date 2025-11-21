@@ -8,6 +8,8 @@ namespace UniFramework.WebRequest
 {
     public sealed class WebRequestAudio : WebRequestBase
     {
+        public override string kHttpVerb => UnityWebRequest.kHttpVerbGET;
+
         private RequestAsset _cachedAsset;
 
         public WebRequestAudio(string url) : base(url)

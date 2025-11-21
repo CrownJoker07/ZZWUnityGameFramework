@@ -8,6 +8,8 @@ namespace UniFramework.WebRequest
 {
     public sealed class WebRequestTexture : WebRequestBase
     {
+        public override string kHttpVerb => UnityWebRequest.kHttpVerbGET;
+
         private RequestAsset _cachedAsset;
 
         public WebRequestTexture(string url) : base(url)
