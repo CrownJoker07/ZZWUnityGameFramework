@@ -56,7 +56,7 @@ public static class WebRequestUtility
 
     public static WebRequestBase Get(string url, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
-        Debug.Log($"[{Tag}] Get URL:{url}");
+        Debug.Log($"[{Tag}] ===== Get URL:{url}");
         WebRequestGet webRequestGet = new WebRequestGet(url);
         webRequestGet.SendRequest(timeout, headers, retryCount);
 
@@ -65,7 +65,7 @@ public static class WebRequestUtility
 
     public static WebRequestBase Post(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
-        Debug.Log($"[{Tag}] Post URL:{url}");
+        Debug.Log($"[{Tag}] ===== Post URL:{url}");
         WebRequestPost webRequestPost = new WebRequestPost(url);
         webRequestPost.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
 
@@ -74,7 +74,7 @@ public static class WebRequestUtility
 
     public static WebRequestBase Put(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
-        Debug.Log($"[{Tag}] Put URL:{url}");
+        Debug.Log($"[{Tag}] ===== Put URL:{url}");
         WebRequestPut webRequestPut = new WebRequestPut(url);
         webRequestPut.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
 
