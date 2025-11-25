@@ -21,9 +21,10 @@ public static class WebRequestUtility
             {
                 T bodyData = JsonConvert.DeserializeObject<T>(response);
 
+#if UNITY_EDITOR
                 Debug.Log(
                     $"[{Tag}] URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}");
-
+#endif
                 successAction?.Invoke(bodyData);
                 break;
             }
