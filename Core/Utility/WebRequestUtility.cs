@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UniFramework.WebRequest;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.IO;
 
 public static class WebRequestUtility
 {
@@ -11,6 +12,7 @@ public static class WebRequestUtility
     private static void CompletedEvent<T>(WebRequestBase webRequestBase, string response,
         Action<T> successAction = null, Action failAction = null, Func<T, string> decryptStringFunc = null)
     {
+        string logString = string.Empty;
         switch (webRequestBase.Status)
         {
             case EReqeustStatus.InProgress:
@@ -22,8 +24,8 @@ public static class WebRequestUtility
                 T bodyData = JsonConvert.DeserializeObject<T>(response);
 
 #if UNITY_EDITOR
-                Debug.Log(
-                    $"[{Tag}] URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}");
+                logString = $"[{Tag}] Succeed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}";
+                Debug.Log(logString);
 #endif
                 successAction?.Invoke(bodyData);
                 break;
@@ -32,19 +34,43 @@ public static class WebRequestUtility
             case EReqeustStatus.ConnectionError:
             case EReqeustStatus.DataProcessingError:
             {
-                Debug.LogError(
-                    $"[{Tag}] URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}");
+                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
+                Debug.LogError(logString);
                 failAction?.Invoke();
                 break;
             }
             default:
             {
-                Debug.LogError(
-                    $"[{Tag}] URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}");
+                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
+                Debug.LogError(logString);
                 failAction?.Invoke();
                 break;
             }
         }
+
+#if UNITY_EDITOR
+        // 写进一个 txt 文件
+        // LogToFile(logString + "\n\n\n");
+#endif
+    }
+
+    // 写进一个 txt 文件， 重复写进一个 log 文件
+    private static void LogToFile(string logString)
+    {
+        // 写进一个 txt 文件
+        string logFilePath = Application.dataPath + "../WebRequestLog.txt";
+        FileInfo fileInfo = new FileInfo(logFilePath);
+        if (!fileInfo.Directory.Exists)
+        {
+            fileInfo.Directory.Create();
+        }
+
+        string oldLogString = string.Empty;
+        if (fileInfo.Exists)
+        {
+            oldLogString = System.IO.File.ReadAllText(logFilePath);
+        }
+        System.IO.File.WriteAllText(logFilePath, oldLogString + logString);
     }
 
     public static void AddCompleted<T>(this WebRequestBase webRequestBase, Action<T> successAction = null, Action failAction = null, Func<T, string> decryptStringFunc = null)
