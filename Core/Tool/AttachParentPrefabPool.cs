@@ -5,6 +5,18 @@ using UnityEngine;
 
 public interface IObjectPrefab
 {
+    public int Index
+    {
+        get
+        {
+            return -1;
+        }
+        set
+        {
+
+        }
+    }
+
     public void Spawn();
 
     public void DeSpawn();
@@ -38,6 +50,18 @@ public class AttachParentPrefabPool : MonoBehaviour
 
     [SerializeField] private List<GameObject> prefabGameObjectList = new List<GameObject>();
 
+    public List<GameObject> PrefabGameObjectList
+    {
+        get
+        {
+            return prefabGameObjectList;
+        }
+        set
+        {
+            prefabGameObjectList = value;
+        }
+    }
+
     private List<ObjectPrefabStruct> _objectPrefabList = new List<ObjectPrefabStruct>();
 
     private Dictionary<int, List<Component>> _objectPrefabPoolDictionary =
@@ -51,8 +75,11 @@ public class AttachParentPrefabPool : MonoBehaviour
         {
             GameObject prefabGameObject = prefabGameObjectList[index];
 
-            prefabGameObject.transform.SetParent(ParentTransform);
-            prefabGameObject.transform.localPosition = Vector3.zero;
+            if(prefabGameObject.transform.parent != null)
+            {
+                prefabGameObject.transform.SetParent(ParentTransform);
+                prefabGameObject.transform.localPosition = Vector3.zero;
+            }
 
             _objectPrefabList.Add(ObjectPrefabStruct.Create(index, prefabGameObject));
             _objectPrefabPoolDictionary[index] = new List<Component>();
@@ -136,14 +163,9 @@ public class AttachParentPrefabPool : MonoBehaviour
 
     public GameObject GetObjectPrefabGameObject(int index)
     {
-        foreach (var objectPrefabStruct in _objectPrefabList)
-        {
-            if (objectPrefabStruct.Index != index) continue;
+        if (index >= prefabGameObjectList.Count) return null;
 
-            return objectPrefabStruct.ObjectPrefab;
-        }
-
-        return null;
+        return prefabGameObjectList[index];
     }
 
     public void DeSpawn(int index, Component monoBehaviour)
@@ -162,6 +184,25 @@ public class AttachParentPrefabPool : MonoBehaviour
         }
         else
         {
+        }
+    }
+
+    public void DeSpawn(Component monoBehaviour)
+    {
+        if (monoBehaviour is IObjectPrefab iObjectPrefab)
+        {
+            if (iObjectPrefab.Index >= 0)
+            {
+                DeSpawn(iObjectPrefab.Index, monoBehaviour);
+            }
+            else
+            {
+                Debug.LogError($"AttachParentPrefabPool DeSpawn Error: {monoBehaviour.name} Index is -1");
+            }
+        }
+        else
+        {
+            Debug.LogError($"AttachParentPrefabPool DeSpawn Error: {monoBehaviour.name} is not IObjectPrefab");
         }
     }
 }
