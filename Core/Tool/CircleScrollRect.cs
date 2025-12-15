@@ -1,8 +1,41 @@
-﻿//------------------------------------------------------------
-// File : CircleScrollRect.cs
-// Email: mailto:zewei.zhuang@kingboat.io
-// Desc :
-//------------------------------------------------------------
+﻿/*
+【整体使用流程】
+    1. 定义继承 CirculateNodeBase 的节点类，固定包含：
+        - public GamePassNodeData Data;               // 业务数据字段，字段名固定为 Data，类型根据业务更换
+        - public GamePassRewardCell GetCell() {...}   // 获取真实 Cell 的方法，方法名固定为 GetCell，返回类型根据业务更换
+       示例：
+        private class CirculateNode : CirculateNodeBase
+        {
+            public GamePassNodeData Data;
+
+            protected override void CustomSpawnNode()
+            {
+                base.CustomSpawnNode();
+                // ObjectPrefab 为节点挂载的真实 UI 组件，通过 GetCell() 封装转换
+                GetCell()?.Spawn(Data);
+            }
+
+            public GamePassRewardCell GetCell()
+            {
+                return (GamePassRewardCell)ObjectPrefab;
+            }
+        }
+       说明：
+        - Data 字段名与 GetCell 方法名在所有业务中保持不变，仅 GamePassNodeData / GamePassRewardCell 类型根据具体业务替换。
+        - 在 CustomSpawnNode 中通过 GetCell() 拿到具体 Cell，再用 Data 进行 UI 初始化。
+
+    2. 在 Spawn/Init 阶段调用 CircleScrollRect.InitData，传入：
+        - 对象池父节点（AttachParentPrefabPool）
+        - 数据列表（如 List<GamePassNodeData>）
+        - 节点与数据绑定回调（为每个 CirculateNode 赋值 Data 等字段）
+        - 可选的边距等配置（如 border、间距、方向等）
+
+    3. 需要时绑定 CircleScrollRect 的交互事件（如 BeginDragEvent, EndDragEvent），在回调中通过
+       GetCirculateNodes() 遍历节点执行排序/刷新等逻辑（如根据 Data 查找对应节点，或调用节点提供的刷新方法）。
+
+    4. 在 DeSpawn/Close 阶段调用 CircleScrollRect.DeSpawn，并解除事件绑定，完成资源与引用的清理。
+       （一定要销毁节点，否则会内存泄漏）
+*/
 
 using System;
 using System.Collections;
