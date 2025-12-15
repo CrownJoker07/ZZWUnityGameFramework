@@ -1,5 +1,4 @@
-﻿/*
-【整体使用流程】
+﻿/* 使用说明书
     1. 定义继承 CirculateNodeBase 的节点类，固定包含：
         - public GamePassNodeData Data;               // 业务数据字段，字段名固定为 Data，类型根据业务更换
         - public GamePassRewardCell GetCell() {...}   // 获取真实 Cell 的方法，方法名固定为 GetCell，返回类型根据业务更换
@@ -35,7 +34,7 @@
 
     4. 在 DeSpawn/Close 阶段调用 CircleScrollRect.DeSpawn，并解除事件绑定，完成资源与引用的清理。
        （一定要销毁节点，否则会内存泄漏）
-*/
+/使用说明书 */
 
 using System;
 using System.Collections;
