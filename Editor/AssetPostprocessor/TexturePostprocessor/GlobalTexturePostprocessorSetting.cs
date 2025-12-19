@@ -87,13 +87,13 @@ public class GlobalTexturePostprocessorSetting : ScriptableObject
         var guids = UnityEditor.AssetDatabase.FindAssets($"t:{settingType.Name}");
         if (guids.Length == 0)
         {
-            Debug.LogWarning($"Create new {settingType.Name}.asset");
-            var setting = ScriptableObject.CreateInstance<TSetting>();
-            string filePath = $"searchInFolder/{settingType.Name}.asset";
-            UnityEditor.AssetDatabase.CreateAsset(setting, filePath);
-            UnityEditor.AssetDatabase.SaveAssets();
-            UnityEditor.AssetDatabase.Refresh();
-            return setting;
+            // Debug.LogWarning($"Create new {settingType.Name}.asset");
+            // var setting = ScriptableObject.CreateInstance<TSetting>();
+            // string filePath = $"searchInFolder/{settingType.Name}.asset";
+            // UnityEditor.AssetDatabase.CreateAsset(setting, filePath);
+            // UnityEditor.AssetDatabase.SaveAssets();
+            // UnityEditor.AssetDatabase.Refresh();
+            return null;
         }
         else
         {
