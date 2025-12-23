@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RedPointSystem : Singleton<RedPointSystem>
+public class RedPointSystem : MonoSingleton<RedPointSystem>
 {
     private const string RootTreeNodeName = "Root";
 
@@ -187,9 +187,24 @@ public class RedPointSystem : Singleton<RedPointSystem>
 
         redPointSystem._callFrameDic[path] = Time.frameCount;
 
-        RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
+        ActionNextFrame(() =>
+        {
+            RedPointTreeNode redPointTreeNode = redPointSystem.GetOrAddRedPointTreeNode(path);
 
-        redPointTreeNode.NotifyAllRedPointActions();
+            redPointTreeNode.NotifyAllRedPointActions();
+        });
+    }
+
+    private static void ActionNextFrame(Action action)
+    {
+        Instance.StartCoroutine(NotifyNextFrameCoroutine(action));
+    }
+
+    private static System.Collections.IEnumerator NotifyNextFrameCoroutine(Action action)
+    {
+        yield return null; // 等待一帧
+
+        action?.Invoke();
     }
 
     private RedPointTreeNode GetOrAddRedPointTreeNode(string path)
