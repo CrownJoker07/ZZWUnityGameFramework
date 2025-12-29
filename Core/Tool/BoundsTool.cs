@@ -32,7 +32,11 @@ public class BoundsTool
             {
                 foreach (var temTransform in excludeTransforms)
                 {
-                    transforms.Remove(temTransform);
+                    Transform[] temTransforms = temTransform.GetComponentsInChildren<Transform>(false);
+                    foreach (var temRectTransform in temTransforms)
+                    {
+                        transforms.Remove(temRectTransform);
+                    }
                 }
             }
 
@@ -67,14 +71,16 @@ public class BoundsTool
         {
             foreach (var temTransform in excludeTransforms)
             {
-                if (temTransform is not RectTransform temRectTransform) continue;
-
-                componentsInChildren.Remove(temRectTransform);
+                RectTransform[] temRectTransforms = temTransform.GetComponentsInChildren<RectTransform>(false);
+                foreach (var temRectTransform in temRectTransforms)
+                {
+                    componentsInChildren.Remove(temRectTransform);
+                }
             }
         }
 
-        if (componentsInChildren.Count == 0)
-            return new Bounds(Vector3.zero, Vector3.zero);
+        if (componentsInChildren.Count == 0) return new Bounds(Vector3.zero, Vector3.zero);
+
         Vector3 vector3_1 = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         Vector3 vector3_2 = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
