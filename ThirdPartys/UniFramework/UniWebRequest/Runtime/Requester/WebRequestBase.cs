@@ -13,12 +13,16 @@ namespace UniFramework.WebRequest
     /// </summary>
     public abstract class WebRequestBase : IEnumerator
     {
+        public const string ContentType = "Content-Type";
+
         protected UnityWebRequest _webRequest;
         protected UnityWebRequestAsyncOperation _operation;
         protected System.Action<WebRequestBase> _callback;
         protected Action _retryAction;
         public Action RetryAction => _retryAction;
         protected Dictionary<string, string> _headers;
+
+        protected WWWForm _form;
 
         public string RequestBodyString;
 
@@ -165,6 +169,26 @@ namespace UniFramework.WebRequest
             }
         }
 
+        public Dictionary<string, string> GetRequestHeaders()
+        {
+            var combinedHeaders = new Dictionary<string, string>();
+            if (_headers != null)
+            {
+                foreach (var kvp in _headers)
+                {
+                    combinedHeaders[kvp.Key] = kvp.Value;
+                }
+            }
+            if (_form != null && _form.headers != null)
+            {
+                foreach (var kvp in _form.headers)
+                {
+                    combinedHeaders[kvp.Key] = kvp.Value;
+                }
+            }
+            return combinedHeaders;
+        }
+
         /// <summary>
         /// 获取响应的文本数据
         /// </summary>
@@ -222,12 +246,15 @@ namespace UniFramework.WebRequest
 
         public override string ToString()
         {
-            string headersString = _headers != null && _headers.Count > 0
-                ? string.Join("\n", _headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"))
+            Dictionary<string, string> headers = GetRequestHeaders();
+            string headersString = headers != null && headers.Count > 0
+                ? string.Join("\n", headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"))
                 : "None";
             return $"URL({kHttpVerb}): {URL}\n" +
+#if UNITY_EDITOR
                    $"Headers:\n{headersString}\n" +
                    $"RequestBodyString: {RequestBodyString}\n" +
+#endif
                    $"Response: {GetResponse()}\n" +
                    $"ResponseCode: {ResponseCode}\n" +
                    $"RequestError: {RequestError}";

@@ -17,6 +17,31 @@ namespace UniFramework.WebRequest
         /// <summary>
         /// 发送POST请求
         /// </summary>
+        /// <param name="form">POST的表单</param>
+        /// <param name="timeout">超时：从请求开始计时</param>
+        /// <param name="retryCount">重试次数</param>
+        public void SendRequest(WWWForm form, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+        {
+            if (_webRequest == null)
+            {
+                DoSendRequestWithRetry(() => CreateUnityWebRequest(form), timeout, headers, retryCount);
+                int tempRetryCount = retryCount;
+                _retryAction = () =>
+                {
+                    DoSendRequestWithRetry(() => CreateUnityWebRequest(form), timeout, headers, tempRetryCount);
+                };
+            }
+        }
+
+        private UnityWebRequest CreateUnityWebRequest(WWWForm form)
+        {
+            _form = form;
+            return UnityWebRequest.Post(URL, form);
+        }
+
+        /// <summary>
+        /// 发送POST请求
+        /// </summary>
         /// <param name="post">POST的文本内容</param>
         /// <param name="timeout">超时：从请求开始计时</param>
         /// <param name="retryCount">重试次数</param>
@@ -24,18 +49,24 @@ namespace UniFramework.WebRequest
         {
             if (_webRequest == null)
             {
-                DoSendRequestWithRetry(post, timeout, headers, retryCount);
+                DoSendRequestWithRetry(() => CreateUnityWebRequest(post, headers), timeout, headers, retryCount);
                 int tempRetryCount = retryCount;
                 _retryAction = () =>
                 {
-                    DoSendRequestWithRetry(post, timeout, headers, tempRetryCount);
+                    DoSendRequestWithRetry(() => CreateUnityWebRequest(post, headers), timeout, headers, tempRetryCount);
                 };
             }
         }
 
-        private void DoSendRequestWithRetry(string post, int timeout, Dictionary<string, string> headers, int remainingRetryCount)
+        private UnityWebRequest CreateUnityWebRequest(string post, Dictionary<string, string> headers)
         {
-            _webRequest = UnityWebRequest.Post(URL, post, "application/json");
+            string contentType = headers.ContainsKey(ContentType) ? headers[ContentType] : null;
+            return UnityWebRequest.Post(URL, post, contentType);
+        }
+
+        private void DoSendRequestWithRetry(Func<UnityWebRequest> createUnityWebRequest, int timeout, Dictionary<string, string> headers, int remainingRetryCount)
+        {
+            _webRequest = createUnityWebRequest();
             SetRequestHeader(headers);
             DownloadHandlerBuffer handler = new DownloadHandlerBuffer();
             _webRequest.downloadHandler = handler;
@@ -51,7 +82,7 @@ namespace UniFramework.WebRequest
                     _webRequest.Dispose();
                     _webRequest = null;
                     // 重试
-                    DoSendRequestWithRetry(post, timeout, headers, remainingRetryCount - 1);
+                    DoSendRequestWithRetry(createUnityWebRequest, timeout, headers, remainingRetryCount - 1);
                 }
                 else
                 {
