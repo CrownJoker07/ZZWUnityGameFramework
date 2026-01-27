@@ -24,7 +24,7 @@ public static class WebRequestUtility
                 T bodyData = JsonConvert.DeserializeObject<T>(response);
 
 #if UNITY_EDITOR
-                logString = $"[{Tag}] Succeed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}";
+                logString = $"[{Tag}] Succeed {webRequestBase.ToString()}\n------------------\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}";
                 // Debug.Log(logString);
 #endif
                 successAction?.Invoke(bodyData);
@@ -36,7 +36,7 @@ public static class WebRequestUtility
             {
                 T bodyData = JsonConvert.DeserializeObject<T>(response);
 
-                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
+                logString = $"[{Tag}] Failed {webRequestBase.ToString()}\n------------------\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}";
                 Debug.LogError(logString);
                 failAction?.Invoke();
                 break;
@@ -45,7 +45,7 @@ public static class WebRequestUtility
             {
                 T bodyData = JsonConvert.DeserializeObject<T>(response);
 
-                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
+                logString = $"[{Tag}] Failed {webRequestBase.ToString()}\n------------------\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}";
                 Debug.LogError(logString);
                 failAction?.Invoke();
                 break;

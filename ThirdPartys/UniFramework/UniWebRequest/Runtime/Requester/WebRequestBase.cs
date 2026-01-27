@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine;
+using System.Linq;
 
 namespace UniFramework.WebRequest
 {
@@ -17,6 +18,7 @@ namespace UniFramework.WebRequest
         protected System.Action<WebRequestBase> _callback;
         protected Action _retryAction;
         public Action RetryAction => _retryAction;
+        protected Dictionary<string, string> _headers;
 
         public string RequestBodyString;
 
@@ -156,6 +158,7 @@ namespace UniFramework.WebRequest
 
         public void SetRequestHeader(Dictionary<string, string> headers)
         {
+            _headers = headers;
             foreach (var header in headers)
             {
                 _webRequest.SetRequestHeader(header.Key, header.Value);
@@ -216,5 +219,18 @@ namespace UniFramework.WebRequest
             get { return null; }
         }
         #endregion
+
+        public override string ToString()
+        {
+            string headersString = _headers != null && _headers.Count > 0
+                ? string.Join("\n", _headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"))
+                : "None";
+            return $"URL({kHttpVerb}): {URL}\n" +
+                   $"Headers:\n{headersString}\n" +
+                   $"RequestBodyString: {RequestBodyString}\n" +
+                   $"Response: {GetResponse()}\n" +
+                   $"ResponseCode: {ResponseCode}\n" +
+                   $"RequestError: {RequestError}";
+        }
     }
 }
