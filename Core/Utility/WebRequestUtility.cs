@@ -34,14 +34,18 @@ public static class WebRequestUtility
             case EReqeustStatus.ConnectionError:
             case EReqeustStatus.DataProcessingError:
             {
-                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
+                T bodyData = JsonConvert.DeserializeObject<T>(response);
+
+                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
                 Debug.LogError(logString);
                 failAction?.Invoke();
                 break;
             }
             default:
             {
-                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
+                T bodyData = JsonConvert.DeserializeObject<T>(response);
+
+                logString = $"[{Tag}] Failed URL({webRequestBase.kHttpVerb}):{webRequestBase.URL}\nRequestBodyString:\n{webRequestBase.RequestBodyString}\nResponseDescrypt:\n{decryptStringFunc?.Invoke(bodyData)}\nResponse:\n{response}\nCode:{webRequestBase.ResponseCode}\nError:{webRequestBase.RequestError}";
                 Debug.LogError(logString);
                 failAction?.Invoke();
                 break;
