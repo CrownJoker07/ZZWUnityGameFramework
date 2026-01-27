@@ -57,6 +57,7 @@ public abstract class CirculateNodeBase
     protected IObjectPrefab ObjectPrefab;
     private AttachParentPrefabPool _attachParentPrefabPool;
     private int _indexID;
+    public int IndexID => _indexID;
     protected RectTransform NodeRect;
 
     public void Init(AttachParentPrefabPool attachParentPrefabPool, int indexID, float anchorPositionX,
