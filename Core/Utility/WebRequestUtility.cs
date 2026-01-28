@@ -120,4 +120,13 @@ public static class WebRequestUtility
 
         return webRequestPut;
     }
+
+    public static WebRequestBase Texture(string url, int timeout = 0)
+    {
+        // Debug.Log($"[{Tag}] ===== Texture URL:{url}");
+        WebRequestTexture webRequestTexture = new WebRequestTexture(url);
+        webRequestTexture.SendRequest(timeout);
+
+        return webRequestTexture;
+    }
 }
