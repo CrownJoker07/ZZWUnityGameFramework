@@ -94,11 +94,11 @@ public static class WebRequestUtility
         return webRequestGet;
     }
 
-    public static WebRequestBase Post(string url, WWWForm form, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+    public static WebRequestBase Post_WWWForm(string url, WWWForm form, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
     {
         // Debug.Log($"[{Tag}] ===== Post URL:{url}");
         WebRequestPost webRequestPost = new WebRequestPost(url);
-        webRequestPost.SendRequest(form, timeout, headers, retryCount);
+        webRequestPost.SendRequest_WWWForm(form, timeout, headers, retryCount);
 
         return webRequestPost;
     }

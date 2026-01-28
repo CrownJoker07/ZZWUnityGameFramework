@@ -20,7 +20,7 @@ namespace UniFramework.WebRequest
         /// <param name="form">POST的表单</param>
         /// <param name="timeout">超时：从请求开始计时</param>
         /// <param name="retryCount">重试次数</param>
-        public void SendRequest(WWWForm form, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
+        public void SendRequest_WWWForm(WWWForm form, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
         {
             if (_webRequest == null)
             {
