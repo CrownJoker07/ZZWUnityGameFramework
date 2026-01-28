@@ -53,6 +53,8 @@ public abstract class CirculateNodeBase
     public float AnchorPositionX_Public => AnchorPositionX;
     protected float AnchorPositionY;
     public float AnchorPositionY_Public => AnchorPositionY;
+    public Vector2 CellSizeDelta;
+    public Vector2 CellPivot;
     private Transform _parentTransform;
     protected IObjectPrefab ObjectPrefab;
     private AttachParentPrefabPool _attachParentPrefabPool;
@@ -121,8 +123,8 @@ public abstract class CirculateNodeBase
 
     public virtual void CheckBorder(float topBorder, float bottomBorder, float leftBorder, float rightBorder)
     {
-        if (Mathf.Abs(AnchorPositionY) < topBorder || Mathf.Abs(AnchorPositionY) > bottomBorder ||
-            Mathf.Abs(AnchorPositionX) < leftBorder || Mathf.Abs(AnchorPositionX) > rightBorder)
+        if (Mathf.Abs(AnchorPositionY) < topBorder - (CellSizeDelta.y * CellPivot.y) || Mathf.Abs(AnchorPositionY) > bottomBorder + (CellSizeDelta.y * (1 - CellPivot.y)) ||
+            Mathf.Abs(AnchorPositionX) < leftBorder - (CellSizeDelta.x * CellPivot.x) || Mathf.Abs(AnchorPositionX) > rightBorder + (CellSizeDelta.x * (1 - CellPivot.x)))
         {
             DeSpawnNode();
         }
