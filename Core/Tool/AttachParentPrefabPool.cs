@@ -108,12 +108,12 @@ public class AttachParentPrefabPool : MonoBehaviour
 
                 if (objectPrefabComponent != null)
                 {
-                    tempComponent = Instantiate(objectPrefabComponent);
+                    tempComponent = Instantiate(objectPrefabComponent, parent);
                 }
                 else
                 {
                     GameObject tempGameObject = GetObjectPrefabGameObject(index);
-                    tempComponent = Instantiate(tempGameObject).GetComponent(type);
+                    tempComponent = Instantiate(tempGameObject, parent).GetComponent(type);
                 }
             }
         }
