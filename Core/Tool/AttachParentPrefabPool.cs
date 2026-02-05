@@ -68,9 +68,12 @@ public class AttachParentPrefabPool : MonoBehaviour
         new Dictionary<int, List<Component>>();
 
     private Transform ParentTransform => this.transform;
+    private bool _isAwake = false;
 
-    private void Awake()
+    public void Awake()
     {
+        if (_isAwake) return;
+
         for (var index = 0; index < prefabGameObjectList.Count; index++)
         {
             GameObject prefabGameObject = prefabGameObjectList[index];
@@ -87,6 +90,8 @@ public class AttachParentPrefabPool : MonoBehaviour
 
         // 挪到很远的地方去
         transform.position = Vector3.one * 9999;
+
+        _isAwake = true;
     }
 
     public Component Spawn(int index, Transform parent, Type type)
