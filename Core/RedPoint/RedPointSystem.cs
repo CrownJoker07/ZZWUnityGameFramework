@@ -113,7 +113,14 @@ public class RedPointSystem : MonoSingleton<RedPointSystem>
 
                 foreach (var redPointAction in _redPointActions)
                 {
-                    redPointAction.Invoke(_redPointNum);
+                    try
+                    {
+                        redPointAction.Invoke(_redPointNum);
+                    }
+                    catch (Exception ex)
+                    {
+                        UnityEngine.Debug.LogError($"RedPointAction.Invoke 异常: {ex}");
+                    }
                 }
             }
 
