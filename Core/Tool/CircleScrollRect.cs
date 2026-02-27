@@ -284,8 +284,12 @@ public static class CircleScrollRectUtility
         float height = 0;
         float width = 0;
 
-        RectTransform cellRectTransform = attachParentPrefabPool.GetObjectPrefabComponent(indexID, typeof(TCell))
-            .GetComponent<RectTransform>();
+        RectTransform cellRectTransform = attachParentPrefabPool.GetObjectPrefabComponent(indexID, typeof(TCell))?.GetComponent<RectTransform>();
+        if (cellRectTransform == null)
+        {
+            Debug.LogError($"cellRectTransform == null, indexID: {indexID}, typeof(TCell): {typeof(TCell)}");
+            return null;
+        }
         Rect cellRect = cellRectTransform.rect;
         Rect rect = circleScrollRect.viewport.rect;
 
