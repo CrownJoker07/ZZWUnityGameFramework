@@ -182,7 +182,19 @@ public class RedPointSystem : MonoSingleton<RedPointSystem>
 
     public static void Notify(string path)
     {
+        if (string.IsNullOrEmpty(path))
+        {
+            Debug.LogError("RedPointSystem Notify path 不能为空");
+            return;
+        }
+
         RedPointSystem redPointSystem = Instance;
+
+        if(redPointSystem == null || redPointSystem._callFrameDic == null)
+        {
+            Debug.LogError("RedPointSystem Notify Instance 不能为空");
+            return;
+        }
 
         if (redPointSystem._callFrameDic.TryGetValue(path, out int lastCallFrame))
         {
