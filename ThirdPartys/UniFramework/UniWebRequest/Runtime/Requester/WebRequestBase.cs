@@ -226,16 +226,14 @@ namespace UniFramework.WebRequest
         }
 
         #region 异步相关
-        private bool _isComplete;
         protected void CompleteInternal(AsyncOperation op)
         {
             _callback?.Invoke(this);
-            _isComplete = true;
         }
 
         bool IEnumerator.MoveNext()
         {
-            return _operation != null && !_operation.isDone && !_isComplete;
+            return _operation != null && !_operation.isDone;
         }
         void IEnumerator.Reset()
         {
