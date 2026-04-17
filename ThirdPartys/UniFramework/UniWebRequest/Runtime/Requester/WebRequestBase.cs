@@ -21,6 +21,7 @@ namespace UniFramework.WebRequest
         protected Action _retryAction;
         public Action RetryAction => _retryAction;
         protected Dictionary<string, string> _headers;
+        private bool _isComplete;
 
         protected WWWForm _form;
 
@@ -229,11 +230,12 @@ namespace UniFramework.WebRequest
         protected void CompleteInternal(AsyncOperation op)
         {
             _callback?.Invoke(this);
+            _isComplete = true;
         }
 
         bool IEnumerator.MoveNext()
         {
-            return _operation != null && !_operation.isDone;
+            return !_isComplete;
         }
         void IEnumerator.Reset()
         {
