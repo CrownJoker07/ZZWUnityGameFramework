@@ -84,49 +84,4 @@ public static class WebRequestUtility
             CompletedEvent(webRequestBase, webRequestBase.GetResponse(), successAction, failAction, decryptStringFunc);
         };
     }
-
-    public static WebRequestBase Get(string url, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
-    {
-        // Debug.Log($"[{Tag}] ===== Get URL:{url}");
-        WebRequestGet webRequestGet = new WebRequestGet(url);
-        webRequestGet.SendRequest(timeout, headers, retryCount);
-
-        return webRequestGet;
-    }
-
-    public static WebRequestBase Post_WWWForm(string url, WWWForm form, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
-    {
-        // Debug.Log($"[{Tag}] ===== Post URL:{url}");
-        WebRequestPost webRequestPost = new WebRequestPost(url);
-        webRequestPost.SendRequest_WWWForm(form, timeout, headers, retryCount);
-
-        return webRequestPost;
-    }
-
-    public static WebRequestBase Post(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
-    {
-        // Debug.Log($"[{Tag}] ===== Post URL:{url}");
-        WebRequestPost webRequestPost = new WebRequestPost(url);
-        webRequestPost.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
-
-        return webRequestPost;
-    }
-
-    public static WebRequestBase Put(string url, object requestBody, int timeout = 0, Dictionary<string, string> headers = null, int retryCount = 0)
-    {
-        // Debug.Log($"[{Tag}] ===== Put URL:{url}");
-        WebRequestPut webRequestPut = new WebRequestPut(url);
-        webRequestPut.SendRequest(JsonConvert.SerializeObject(requestBody), timeout, headers, retryCount);
-
-        return webRequestPut;
-    }
-
-    public static WebRequestBase Texture(string url, int timeout = 0)
-    {
-        // Debug.Log($"[{Tag}] ===== Texture URL:{url}");
-        WebRequestTexture webRequestTexture = new WebRequestTexture(url);
-        webRequestTexture.SendRequest(timeout);
-
-        return webRequestTexture;
-    }
 }
