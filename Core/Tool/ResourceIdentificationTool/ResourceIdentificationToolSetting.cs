@@ -21,6 +21,11 @@ public class ResourceIdentificationToolSetting : ScriptableObject
     public static TSetting LoadSettingData<TSetting>() where TSetting : ScriptableObject
     {
         var settingType = typeof(TSetting);
+
+        string defaultPath = $"Assets/Editor/ScriptableObject/{settingType.Name}.asset";
+        var defaultSetting = UnityEditor.AssetDatabase.LoadAssetAtPath<TSetting>(defaultPath);
+        if (defaultSetting != null) return defaultSetting;
+
         var guids = UnityEditor.AssetDatabase.FindAssets($"t:{settingType.Name}");
         if (guids.Length == 0)
         {

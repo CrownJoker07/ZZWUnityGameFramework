@@ -58,6 +58,8 @@ public class TexturePostprocessor : AssetPostprocessor
         GlobalTexturePostprocessorSetting globalTexturePostprocessorSetting =
             GlobalTexturePostprocessorSetting.LoadSettingData<GlobalTexturePostprocessorSetting>();
 
+        if (globalTexturePostprocessorSetting == null) return;
+
         GlobalTexturePostprocessorSetting.TextureImporterSettings textureImporterSetting = null;
         // 找出最适合的配置
         int adapterPathLength = 0;
