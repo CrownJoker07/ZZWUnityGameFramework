@@ -14,12 +14,17 @@ namespace UniFramework.WebRequest
     public abstract class WebRequestBase : IEnumerator
     {
         public const string ContentType = "Content-Type";
+        private const string RequestIdHeaderName = "x-request-id";
+        private const string SessionIdHeaderName = "x-session-id";
+        public static string SessionId { private set; get; } = Guid.NewGuid().ToString("N");
 
         protected UnityWebRequest _webRequest;
         protected UnityWebRequestAsyncOperation _operation;
         protected System.Action<WebRequestBase> _callback;
         protected Action _retryAction;
         public Action RetryAction => _retryAction;
+        protected Action<int> _businessFailAction;
+        public Action<int> BusinessFailAction => _businessFailAction;
         protected Dictionary<string, string> _headers;
         private bool _isComplete;
 
@@ -31,6 +36,7 @@ namespace UniFramework.WebRequest
         /// 请求URL地址
         /// </summary>
         public string URL { private set; get; }
+        public string RequestId { private set; get; }
 
         public abstract string kHttpVerb { get; }
 
@@ -163,6 +169,10 @@ namespace UniFramework.WebRequest
 
         public void SetRequestHeader(Dictionary<string, string> headers)
         {
+            headers ??= new Dictionary<string, string>();
+            RequestId = Guid.NewGuid().ToString("N");
+            headers[RequestIdHeaderName] = RequestId;
+            headers[SessionIdHeaderName] = SessionId;
             _headers = headers;
             foreach (var header in headers)
             {
@@ -190,6 +200,11 @@ namespace UniFramework.WebRequest
             return combinedHeaders;
         }
 
+        public void SetBusinessFailAction(Action<int> businessFailAction)
+        {
+            _businessFailAction = businessFailAction;
+        }
+
         /// <summary>
         /// 获取响应的文本数据
         /// </summary>
@@ -213,6 +228,7 @@ namespace UniFramework.WebRequest
                 _operation = null;
                 _callback = null;
                 _retryAction = null;
+                _businessFailAction = null;
             }
         }
 
@@ -229,8 +245,8 @@ namespace UniFramework.WebRequest
         #region 异步相关
         protected void CompleteInternal(AsyncOperation op)
         {
-            _callback?.Invoke(this);
             _isComplete = true;
+            _callback?.Invoke(this);
         }
 
         bool IEnumerator.MoveNext()
@@ -253,13 +269,15 @@ namespace UniFramework.WebRequest
                 ? string.Join("\n", headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"))
                 : "None";
             return $"URL({kHttpVerb}): {URL}\n" +
+                   $"RequestId: {RequestId}\n" +
+                   $"SessionId: {SessionId}\n" +
+                   $"ResponseCode: {ResponseCode}\n" +
+                   $"RequestError: {RequestError}" +
 #if UNITY_EDITOR
                    $"Headers:\n{headersString}\n" +
                    $"RequestBodyString: {RequestBodyString}\n" +
 #endif
-                   $"Response: {GetResponse()}\n" +
-                   $"ResponseCode: {ResponseCode}\n" +
-                   $"RequestError: {RequestError}";
+                   $"Response: {GetResponse()}\n";
         }
     }
 }
