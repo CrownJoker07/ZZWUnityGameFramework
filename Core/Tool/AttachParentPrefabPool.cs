@@ -29,6 +29,7 @@ public interface IObjectPrefab
  * 3. 移除所有 GetComponent 逻辑，靠类型判断实现 --- v1.2.0
  * 4. 支持非IObjectPrefab的对象 --- V2.0.0
  * 5. 不再强制设置 克隆 GameObject 的 Active属性 --- v2.0.0
+ * 6. 支持模版对象默认不激活，Spawn 时再激活，避免 DOTween 等组件在模版上持续运行 --- v2.1.0
  */
 public class AttachParentPrefabPool : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class AttachParentPrefabPool : MonoBehaviour
     }
 
     [SerializeField] private List<GameObject> prefabGameObjectList = new List<GameObject>();
-
+    [SerializeField] private bool isDefaultActiveFalse = false;
     public List<GameObject> PrefabGameObjectList
     {
         get
@@ -78,10 +79,15 @@ public class AttachParentPrefabPool : MonoBehaviour
         {
             GameObject prefabGameObject = prefabGameObjectList[index];
 
-            if(prefabGameObject.transform.parent != null)
+            if (prefabGameObject.transform.parent != null)
             {
                 prefabGameObject.transform.SetParent(ParentTransform);
                 prefabGameObject.transform.localPosition = Vector3.zero;
+            }
+
+            if (isDefaultActiveFalse)
+            {
+                prefabGameObject.SetActive(false);
             }
 
             _objectPrefabList.Add(ObjectPrefabStruct.Create(index, prefabGameObject));
@@ -125,6 +131,11 @@ public class AttachParentPrefabPool : MonoBehaviour
 
         if (tempComponent != null)
         {
+            if (isDefaultActiveFalse)
+            {
+                tempComponent.gameObject.SetActive(true);
+            }
+
             if (tempComponent is IObjectPrefab iObjectPrefab)
             {
                 iObjectPrefab.Spawn();
@@ -183,6 +194,11 @@ public class AttachParentPrefabPool : MonoBehaviour
             if (monoBehaviour is IObjectPrefab iObjectPrefab)
             {
                 iObjectPrefab.DeSpawn();
+            }
+
+            if (isDefaultActiveFalse)
+            {
+                monoBehaviour.gameObject.SetActive(false);
             }
 
             objectPrefabs.Add(monoBehaviour);
