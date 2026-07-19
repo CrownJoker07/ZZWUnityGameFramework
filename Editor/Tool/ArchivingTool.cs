@@ -34,6 +34,7 @@ public class ArchivingTool : EditorWindow
 
     private const string ArchivingPath = "Assets/Editor/Archiving";
     private const string RealArchivingPath = "Assets/GameAsset/Archiving";
+    public const string DeviceIdSuffixPrefsKey = "ArchivingTool_DeviceIdSuffix";
     private Vector2 _scrollViewPosition;
     private string _archivingName = String.Empty;
     private string _screeningTag = String.Empty;
@@ -47,8 +48,10 @@ public class ArchivingTool : EditorWindow
     private bool _isRefresh;
     private UseDataType _useDataType = UseDataType.None;
     private ServerType _serverType = ServerType.None;
+    private int _deviceIdSuffix;
     public static event Action<DateTime> OnJumpTimeAction;
     public static Func<DateTime> GetNowTimeFunc;
+    public static Action SaveArchivingPreAction;
 
     private static void GetFiles(DirectoryInfo directory, string pattern, ref List<FileInfo> fileList)
     {
@@ -69,6 +72,7 @@ public class ArchivingTool : EditorWindow
     {
         _serverType = (ServerType)EditorPrefs.GetInt("ArchivingTool_ServerType", (int)ServerType.None);
         _useDataType = (UseDataType)EditorPrefs.GetInt("ArchivingTool_UseDataType", (int)UseDataType.None);
+        _deviceIdSuffix = EditorPrefs.GetInt(DeviceIdSuffixPrefsKey, 0);
 
         RefreshUI();
     }
@@ -219,28 +223,12 @@ public class ArchivingTool : EditorWindow
                 EditorPrefs.SetInt("ArchivingTool_UseDataType", (int)_useDataType);
             }
 
-            // 年输入框
-            EditorGUILayout.LabelField("服务器开启时间：", GUILayout.Width(100), GUILayout.Height(height));
-            long serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
-            if (serverOpenTimeTimeStampMillis == 0)
+            EditorGUILayout.LabelField("设备号后缀", GUILayout.Width(60), GUILayout.Height(height));
+            _deviceIdSuffix = EditorGUILayout.IntField(_deviceIdSuffix, GUILayout.Height(height), GUILayout.Width(width));
+            int deviceIdSuffix = EditorPrefs.GetInt(DeviceIdSuffixPrefsKey, 0);
+            if (deviceIdSuffix != _deviceIdSuffix)
             {
-                serverOpenTimeTimeStampMillis = 1754006400000;
-            }
-
-            EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", EditorGUILayout.LongField(serverOpenTimeTimeStampMillis).ToString());
-
-            if (GUILayout.Button("+1D", GUILayout.Height(height), GUILayout.Width(width)))
-            {
-                serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
-                serverOpenTimeTimeStampMillis += 24 * 60 * 60 * 1000;
-                EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
-            }
-
-            if (GUILayout.Button("-1D", GUILayout.Height(height), GUILayout.Width(width)))
-            {
-                serverOpenTimeTimeStampMillis = long.Parse(EditorPrefs.GetString("ServerOpenTimeTimeStampMillis", "1754006400000"));
-                serverOpenTimeTimeStampMillis -= 24 * 60 * 60 * 1000;
-                EditorPrefs.SetString("ServerOpenTimeTimeStampMillis", serverOpenTimeTimeStampMillis.ToString());
+                EditorPrefs.SetInt(DeviceIdSuffixPrefsKey, _deviceIdSuffix);
             }
         }
         EditorGUILayout.EndHorizontal();
@@ -334,6 +322,8 @@ public class ArchivingTool : EditorWindow
 
     private void SaveArchiving()
     {
+        SaveArchivingPreAction?.Invoke();
+
         string dataJson = PlayerPrefsUtility.GetDataJson();
 
         File.WriteAllText($"{ArchivingPath}/{_archivingName}.json", dataJson,
