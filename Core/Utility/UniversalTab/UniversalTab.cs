@@ -88,6 +88,11 @@ public abstract class UniversalTab : MonoBehaviour
         }
     }
 
+    protected void SetCurrentState(State state)
+    {
+        _currentState = state;
+    }
+
     protected virtual void SelectEvent()
     {
         _selectAction?.Invoke(_tabType);
