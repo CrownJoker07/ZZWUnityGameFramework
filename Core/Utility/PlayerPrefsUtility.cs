@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityGameFramework.Runtime;
 
 public static class PlayerPrefsUtility
 {
@@ -51,6 +52,11 @@ public static class PlayerPrefsUtility
             string stringValue = PlayerPrefs.GetString(key);
             if (!string.IsNullOrEmpty(stringValue))
             {
+                if (PlayerPrefsStringEncryptTool.TryDecryptString(stringValue, out string decryptValue))
+                {
+                    stringValue = decryptValue;
+                }
+
                 playerPrefsData[key] = new PlayerPrefsData()
                 {
                     type = "String",
@@ -120,6 +126,11 @@ public static class PlayerPrefsUtility
                 }
                 default:
                 {
+                    if (key != PlayerPrefsKeyTool.KeyTag && !PlayerPrefsStringEncryptTool.TryDecryptString(content, out _))
+                    {
+                        content = PlayerPrefsStringEncryptTool.EncryptString(content);
+                    }
+
                     PlayerPrefs.SetString(key, content);
                     break;
                 }
@@ -131,11 +142,37 @@ public static class PlayerPrefsUtility
 
     public static void DeleteAllData()
     {
+#if UNITY_EDITOR
+        int deviceIdSuffix = UnityEditor.EditorPrefs.GetInt("ArchivingTool_DeviceIdSuffix", 0);
+#endif
+
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
 
-#if UNITY_EDITOR
-        System.IO.Directory.Delete(Application.persistentDataPath, true);
+        try
+        {
+#if UNITY_EDITOR || UNITY_ANDROID || UNITY_IOS
+            DeleteDirectory(Application.persistentDataPath);
 #endif
+
+#if UNITY_ANDROID || UNITY_IOS
+            DeleteDirectory(Application.temporaryCachePath);
+#endif
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to delete local data: {e}");
+        }
+
+#if UNITY_EDITOR
+        UnityEditor.EditorPrefs.SetInt("ArchivingTool_DeviceIdSuffix", deviceIdSuffix);
+#endif
+    }
+
+    private static void DeleteDirectory(string directoryPath)
+    {
+        if (!System.IO.Directory.Exists(directoryPath)) return;
+
+        System.IO.Directory.Delete(directoryPath, true);
     }
 }

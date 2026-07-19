@@ -8,7 +8,7 @@ using UnityEngine;
  */
 public class PlayerPrefsKeyTool : Singleton<PlayerPrefsKeyTool>
 {
-    private const string KeyTag = "PlayerPrefsKeyTool_AllKey";
+    internal const string KeyTag = "PlayerPrefsKeyTool_AllKey";
     private readonly List<string> _keyList;
 
     public PlayerPrefsKeyTool()
