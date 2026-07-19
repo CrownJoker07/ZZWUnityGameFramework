@@ -168,8 +168,15 @@ public class CircleScrollRect : ScrollRect
     {
         _circulateNodeBases = circulateNodeBases;
         _offset = offset;
-        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, contentSizeDelta.x);
-        content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentSizeDelta.y);
+
+        if (contentSizeDelta.x > 0)
+        {
+            content.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, contentSizeDelta.x);
+        }
+        if (contentSizeDelta.y > 0)
+        {
+            content.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, contentSizeDelta.y);
+        }
 
         onValueChanged.AddListener(ValueChange);
         RefreshNodes();
@@ -275,7 +282,7 @@ public static class CircleScrollRectUtility
         AttachParentPrefabPool attachParentPrefabPool, List<TData> dataList,
         Action<TNodeBase, TData> initDataAction = null,
         float spaceX = 10f, float spaceY = 10f, int maxColumn = 0, int maxRow = 0, Vector4 border = new Vector4(),
-        float safeOffset = 100f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical)
+        float safeOffset = 100f, int indexID = 0, RectTransform.Axis axis = RectTransform.Axis.Vertical, bool autoContentSize = false)
         where TCell : Component
         where TNodeBase : CirculateNodeBase, new()
     {
@@ -367,6 +374,23 @@ public static class CircleScrollRectUtility
 
         width += leftBorder + rightBorder;
         height += topBorder + bottomBorder;
+
+        if (!autoContentSize)
+        {
+            switch (axis)
+            {
+                case RectTransform.Axis.Horizontal:
+                {
+                    height = 0;
+                    break;
+                }
+                case RectTransform.Axis.Vertical:
+                {
+                    width = 0;
+                    break;
+                }
+            }
+        }
 
         circleScrollRect.InitData(circulateNodes,
             new Vector2(Mathf.Abs(width), Mathf.Abs(height)), cellRect.height + safeOffset);
