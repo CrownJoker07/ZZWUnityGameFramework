@@ -40,7 +40,7 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
         }
     }
 
-    public string GetAssetPathById(int resourceIdentificationTypeId)
+    public string GetAssetPathById(int resourceIdentificationTypeId, bool logError = true)
     {
         if (_resourceIdentificationInfoMaps.Count == 0)
         {
@@ -55,7 +55,10 @@ public partial class ResourceIdentificationTool : Singleton<ResourceIdentificati
         }
         else
         {
-            Debug.LogError($"预制体不存在: {resourceIdentificationTypeId}");
+            if (logError)
+                Debug.LogError($"预制体不存在: {resourceIdentificationTypeId}");
+            else
+                Debug.LogWarning($"预制体不存在: {resourceIdentificationTypeId}");
         }
 
         return String.Empty;
