@@ -62,7 +62,7 @@ public static class WebRequestUtility
     private static void LogToFile(string logString)
     {
         // 写进一个 txt 文件
-        string logFilePath = Application.dataPath + "../WebRequestLog.txt";
+        string logFilePath = Application.dataPath + "/WebRequestLog.txt";
         FileInfo fileInfo = new FileInfo(logFilePath);
         if (!fileInfo.Directory.Exists)
         {
